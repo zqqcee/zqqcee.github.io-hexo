@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="MXnxXuB_QrrsHGVDyL1PctN3b34klY8nvY_MD6CFETw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zqqcee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="二叉树 先在开头总结一下，二叉树解题的思维模式分两类：  1、是否可以通过遍历一遍二叉树得到答案？如果可以，用一个 traverse 函数配合外部变量来实现，这叫「遍历」的思维模式。 2、是否可以定义一个递归函数，通过子问题（子树）的答案推导出原问题的答案？如果可以，写出这个递归函数的定义，并充分利用这个函数的返回值，这叫「分解问题」的思维模式。   写递归三步：  找整个递归的终止条件：递归应该">
+<meta property="og:type" content="website">
+<meta property="og:title" content="zqqcee">
+<meta property="og:url" content="https://zqqcee.github.io/leetcode/tree.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="二叉树 先在开头总结一下，二叉树解题的思维模式分两类：  1、是否可以通过遍历一遍二叉树得到答案？如果可以，用一个 traverse 函数配合外部变量来实现，这叫「遍历」的思维模式。 2、是否可以定义一个递归函数，通过子问题（子树）的答案推导出原问题的答案？如果可以，写出这个递归函数的定义，并充分利用这个函数的返回值，这叫「分解问题」的思维模式。   写递归三步：  找整个递归的终止条件：递归应该">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://assets.leetcode.com/uploads/2020/12/20/ex1.jpg">
+<meta property="og:image" content="https://assets.leetcode.com/uploads/2020/10/06/balance_2.jpg">
+<meta property="og:image" content="https://assets.leetcode.com/uploads/2019/02/14/116_sample.png">
+<meta property="og:image" content="https://assets.leetcode.com/uploads/2020/10/13/exx1.jpg">
+<meta property="og:image" content="https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2020/02/29/sample_1_1720.png">
+<meta property="og:image" content="https://pic.leetcode-cn.com/1627994711-iPVhEZ-:Users:admin:Downloads:sample_1_1702.jpg">
+<meta property="article:published_time" content="2023-06-17T07:19:38.925Z">
+<meta property="article:modified_time" content="2023-06-17T07:19:38.917Z">
+<meta property="article:author" content="zqqcee">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://assets.leetcode.com/uploads/2020/12/20/ex1.jpg">
+
+<link rel="canonical" href="https://zqqcee.github.io/leetcode/tree">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'en'
+  };
+</script>
+
+  <title> | zqqcee
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Comes in a big package "📦" </p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-chitchat">
+
+    <a href="/chitchat/" rel="section"><i class="fa fa-fan fa-fw"></i>Chitchat</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-leetcode">
+
+    <a href="/leetcode/" rel="section"><i class="fa fa-crosshairs fa-fw"></i>Leetcode</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="en">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><ul>
+<li><p>先在开头总结一下，二叉树解题的思维模式分两类：</p>
+<ul>
+<li><strong>1、是否可以通过遍历一遍二叉树得到答案</strong>？如果可以，用一个 <code>traverse</code> 函数配合外部变量来实现，这叫<strong>「遍历」</strong>的思维模式。</li>
+<li><strong>2、是否可以定义一个递归函数，通过子问题（子树）的答案推导出原问题的答案</strong>？如果可以，写出这个递归函数的定义，并充分利用这个函数的返回值，这叫「分解问题」的思维模式。</li>
+</ul>
+</li>
+<li><p>写递归三步：</p>
+<ol>
+<li><p><strong>找整个递归的终止条件：递归应该在什么时候结束？</strong></p>
+</li>
+<li><p><strong>找返回值：应该给上一级返回什么信息？</strong></p>
+</li>
+<li><p><strong>本级递归应该做什么：在这一级递归中，应该完成什么任务？</strong></p>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="100-相同的树"><a href="#100-相同的树" class="headerlink" title="100. 相同的树"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/same-tree/">100. 相同的树</a></h3><p><strong>题目</strong></p>
+<p>给你两棵二叉树的根节点 <code>p</code> 和 <code>q</code> ，编写一个函数来检验这两棵树是否相同。</p>
+<p>如果两个树在结构上相同，并且节点具有相同的值，则认为它们是相同的。</p>
+<p><img src="https://assets.leetcode.com/uploads/2020/12/20/ex1.jpg" alt="img"></p>
+<p><strong>思路：</strong></p>
+<p>根据函数定义，<code>isSameTree(TreeNode p , TreeNode q)</code>这个函数，输入两个节点，判断以这两个节点为根的子树是否相同</p>
+<h3 id="101-对称二叉树"><a href="#101-对称二叉树" class="headerlink" title="101. 对称二叉树"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/symmetric-tree/">101. 对称二叉树</a></h3><p><strong>题目</strong>：给你一个二叉树的根节点 <code>root</code> ， 检查它是否轴对称。</p>
+<p><strong>思路</strong>：同上，根据递归函数的定义来求</p>
+<h3 id="102-从根到叶的二进制数之和"><a href="#102-从根到叶的二进制数之和" class="headerlink" title="102. 从根到叶的二进制数之和"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/sum-of-root-to-leaf-binary-numbers/">102. 从根到叶的二进制数之和</a></h3><p><strong>思路</strong>：</p>
+<ul>
+<li>这题肯定是需要遍历全部节点得到结果</li>
+<li>前序遍历，由于是二进制，那么每往下一层，前一层的值就应该乘2，用一个参数记录前面一层的值,遍历到叶子节点就把preSum加到sum中</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> <span class="number">0</span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">resolve</span><span class="params">(TreeNode root)</span>&#123;</span><br><span class="line">  dfs(root,<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">dfs</span><span class="params">(TreeNode root,<span class="type">int</span> preSum)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"> 	preSum = preSum*<span class="number">2</span>+root.val;<span class="comment">//二进制，进入当前层后，要把前面所有层的值都乘二。</span></span><br><span class="line">  <span class="comment">//在前序位置判断是否到达叶子节点</span></span><br><span class="line">  <span class="keyword">if</span>(root.left == <span class="literal">null</span> &amp;&amp; root.right == <span class="literal">null</span>)&#123;</span><br><span class="line">    sum+=preSum;<span class="comment">//如果这步放在后序位置会报错。</span></span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  dfs(root.left,preSum);</span><br><span class="line">  dfs(root.right,preSum);</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="110-平衡二叉树"><a href="#110-平衡二叉树" class="headerlink" title="110. 平衡二叉树"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/balanced-binary-tree/">110. 平衡二叉树</a></h3><p><strong>题目：</strong></p>
+<p>给定一个二叉树，判断它是否是高度平衡的二叉树。</p>
+<p>本题中，一棵高度平衡二叉树定义为：</p>
+<blockquote>
+<p>一个二叉树<em>每个节点</em> 的左右两个子树的高度差的绝对值不超过 1 。</p>
+</blockquote>
+<p><img src="https://assets.leetcode.com/uploads/2020/10/06/balance_2.jpg" alt="img"></p>
+<p>返回false</p>
+<p><strong>思路：</strong></p>
+<p>递归计算左右子树的高度，后序位置判断左右子树高度是否相差大于1，如果有一棵子树不平衡，整个二叉树就不平衡</p>
+<h3 id="116-填充每个节点的下一个右侧节点指针"><a href="#116-填充每个节点的下一个右侧节点指针" class="headerlink" title="116. 填充每个节点的下一个右侧节点指针"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/populating-next-right-pointers-in-each-node/">116. 填充每个节点的下一个右侧节点指针</a></h3><p><strong>题目</strong></p>
+<p>给定一个 <strong>完美二叉树</strong> ，其所有叶子节点都在同一层，每个父节点都有两个子节点。</p>
+<p>填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 <code>NULL</code>。</p>
+<p><img src="https://assets.leetcode.com/uploads/2019/02/14/116_sample.png" alt="img"></p>
+<p><strong>思路：</strong></p>
+<ul>
+<li>层序遍历</li>
+<li>递归</li>
+</ul>
+<p>递归函数dfs为输入两个节点，并连接它们</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> Node <span class="title function_">connect</span><span class="params">(Node root)</span> &#123;</span><br><span class="line">    dfs(root,<span class="literal">null</span>);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">dfs</span><span class="params">(Node root, Node next)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    root.next = next;</span><br><span class="line">    dfs(root.left,root.right);</span><br><span class="line">    dfs(root.right,root.next == <span class="literal">null</span> ? <span class="literal">null</span>:root.next.left);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="124-二叉树中的最大路径和【-hard】定义解"><a href="#124-二叉树中的最大路径和【-hard】定义解" class="headerlink" title="124. 二叉树中的最大路径和【*hard】定义解"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-tree-maximum-path-sum/">124. 二叉树中的最大路径和</a>【<em>*</em>hard】定义解</h3><p><strong>题目：</strong></p>
+<p>路径 被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径序列中 至多出现一次 。该路径 至少包含一个 节点，且不一定经过根节点。路径和 是路径中各节点值的总和。给你一个二叉树的根节点 root ，返回其 最大路径和</p>
+<p><img src="https://assets.leetcode.com/uploads/2020/10/13/exx1.jpg" alt="img"></p>
+<p><strong>思路：</strong></p>
+<ul>
+<li>分解，用定义</li>
+</ul>
+<p>根据题意可以知道，</p>
+<blockquote>
+<p> 通过某个节点的最大路径值 = 左子树的最大贡献值 + 右子树的最大贡献值 + 节点值</p>
+</blockquote>
+<p>而某个节点的最大贡献值 = 左右子树的最大贡献值</p>
+<p>因为节点有负值，因此，如果该节点的贡献值最小为0，而不是负数。如果节点的某颗子树的贡献值为负数，那么就舍弃它，即将它的贡献值置为0</p>
+<p><strong>先写出模版</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//函数定义：输入一个根节点，返回这个根节点的贡献值</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">dfs</span><span class="params">(TreeNode root)</span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="type">int</span> <span class="variable">leftGain</span> <span class="operator">=</span> dfs(root.left);</span><br><span class="line">  <span class="type">int</span> <span class="variable">rightGain</span> <span class="operator">=</span> dfs(root.right);</span><br><span class="line">  <span class="comment">//后序位置</span></span><br><span class="line">  <span class="keyword">return</span> root.val+Math.max(leftGain,rightGain);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>到了后序位置，通过这个节点的最大路径值就已经得到了，用这个值来更新全局变量，代码变为</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">dfs</span><span class="params">(TreeNode root)</span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="type">int</span> <span class="variable">leftGain</span> <span class="operator">=</span> dfs(root.left);</span><br><span class="line">  <span class="type">int</span> <span class="variable">rightGain</span> <span class="operator">=</span> dfs(root.right);</span><br><span class="line">  <span class="comment">//后序位置</span></span><br><span class="line">  <span class="type">int</span> <span class="variable">current</span> <span class="operator">=</span> root.val + leftGain + rightGain;<span class="comment">//通过当前根节点的最大路径值</span></span><br><span class="line">  maxSum = Math.max(current,maxSum);<span class="comment">//更新全局变量</span></span><br><span class="line">  <span class="keyword">return</span> root.val+Math.max(leftGain,rightGain);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="543-二叉树的直径"><a href="#543-二叉树的直径" class="headerlink" title="543. 二叉树的直径"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/diameter-of-binary-tree/">543. 二叉树的直径</a></h3><p><strong>题目</strong>：</p>
+<p>给定一棵二叉树，你需要计算它的直径长度。一棵二叉树的直径长度是任意两个结点路径长度中的最大值。这条路径可能穿过也可能不穿过根结点。</p>
+<p><strong>思路</strong>：</p>
+<ul>
+<li><p>遍历思路：</p>
+<ul>
+<li><p>定义一个递归函数，从父节点遍历至叶子结点</p>
+</li>
+<li><p>定义一个计算最大深度的函数，输入当前节点，输出以当前节点为根的最大深度。</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="comment">// 记录最大直径的长度</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">maxDiameter</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">diameterOfBinaryTree</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line">        <span class="comment">// 对每个节点计算直径，求最大直径</span></span><br><span class="line">        traverse(root);</span><br><span class="line">        <span class="keyword">return</span> maxDiameter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历二叉树</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">traverse</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 对每个节点计算直径</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">leftMax</span> <span class="operator">=</span> maxDepth(root.left);<span class="comment">//以root为根，左子树的最大深度</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">rightMax</span> <span class="operator">=</span> maxDepth(root.right);<span class="comment">//以root为根，右子树的最大深度</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">myDiameter</span> <span class="operator">=</span> leftMax + rightMax;</span><br><span class="line">        <span class="comment">// 更新全局最大直径</span></span><br><span class="line">        maxDiameter = Math.max(maxDiameter, myDiameter);</span><br><span class="line">        traverse(root.left);</span><br><span class="line">        traverse(root.right);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算二叉树的最大深度</span></span><br><span class="line">    <span class="type">int</span> <span class="title function_">maxDepth</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> <span class="variable">leftMax</span> <span class="operator">=</span> maxDepth(root.left);</span><br><span class="line">        <span class="type">int</span> <span class="variable">rightMax</span> <span class="operator">=</span> maxDepth(root.right);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span> + Math.max(leftMax, rightMax);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>分解思路：</li>
+</ul>
+<p>​    后序遍历，在后序位置判断以当前root为根的子树的直径，与当前所有已经遍历过节点的直径的大小，取最大值更新。</p>
+<p>​    在后序位置，可以获取这个根节点左右子树的最大深度</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">diameterOfBinaryTree</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line">  <span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> maxDepth(root);</span><br><span class="line">  <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="type">int</span> <span class="title function_">maxDepth</span><span class="params">(TreeNode root)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="type">int</span> <span class="variable">leftMax</span> <span class="operator">=</span> maxDepth(root.left);</span><br><span class="line">  <span class="type">int</span> <span class="variable">rightMax</span> <span class="operator">=</span> maxDepth(root.right);</span><br><span class="line">  <span class="comment">//在后序位置，可以知道通过root节点的直径为多少</span></span><br><span class="line">  <span class="type">int</span> <span class="variable">current</span> <span class="operator">=</span> leftMax + rightMax;</span><br><span class="line">  res = Math.max(current,res);</span><br><span class="line">  <span class="keyword">return</span> Math.max(leftMax,rightMax)+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1080-根到叶路径上的不足节点【定义解】"><a href="#1080-根到叶路径上的不足节点【定义解】" class="headerlink" title="1080. 根到叶路径上的不足节点【定义解】"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/insufficient-nodes-in-root-to-leaf-paths/">1080. 根到叶路径上的不足节点</a>【定义解】</h3><p><strong>题目</strong>：给定一棵二叉树的根 root，请你考虑它所有 从根到叶的路径：从根到任何叶的路径。（所谓一个叶子节点，就是一个没有子节点的节点）假如通过节点 node 的每种可能的 “根-叶” 路径上值的总和全都小于给定的 limit，则该节点被称之为「不足节点」，需要被删除。请你删除所有不足节点，并返回生成的二叉树的根。</p>
+<p><strong>思路：</strong></p>
+<ul>
+<li>分解</li>
+</ul>
+<p>先写出函数定义，再根据函数定义来求解。这里要注意定义这个函数的返回值，和在后序位置应该处理的代码逻辑（见代码注释</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//函数定义：输入一个根节点，返回这个根节点是否被保留,如果被保留，就返回原始节点，如果不被保留，就返回null。</span></span><br><span class="line"><span class="keyword">public</span> TreeNode <span class="title function_">sufficientSubset</span><span class="params">(TreeNode root, <span class="type">int</span> limit)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(root.left == <span class="literal">null</span> &amp;&amp; root.right == <span class="literal">null</span>)&#123;</span><br><span class="line">    <span class="comment">//到达叶子结点</span></span><br><span class="line">    <span class="keyword">return</span> root.val&lt;limit?<span class="literal">null</span>:root;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  root.left = sufficientSubset(root.left,limit-root.val);<span class="comment">//limit减小</span></span><br><span class="line">  root.right = sufficientSubset(root.right,limit-root.val);<span class="comment">//limit减小</span></span><br><span class="line">  </span><br><span class="line">	<span class="comment">//后序位置，到这里root的左右子树都已经遍历完成了，那么需要判断左右子树是否为空，如果左右子树都空，那么root就需要被删除了，否则保留。</span></span><br><span class="line">  <span class="keyword">return</span> root.left == <span class="literal">null</span> &amp;&amp; root.right == <span class="literal">null</span>?<span class="literal">null</span>:root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>递归遍历</li>
+</ul>
+<p>这里遍历整棵树的时候需要注意，我们可以在根节点上用一个布尔值来决定左右子树是否删除。因此dfs需要返回一个布尔值，如果为<code>true</code>，就说明应该删除这个节点，反之应该保留。这个布尔值在回溯的时候会在<strong>后序位置</strong>返回给root节点，从而由root节点来删除它的左右节点</p>
+<p>注意，如果我们希望有一个值从root一直往下传递，并在每个节点上都对这个值进行操作，如本题中的preSum。有两种方法</p>
+<p>（1）设置一个全局变量，前序位置进行的操作，在后序位置要进行反向操作。比如在前序位置加了，在后序位置就要减</p>
+<p>（2）设置为dfs的一个参数，在递归传递参数时，进行操作，比如下面代码    </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> TreeNode <span class="title function_">sufficientSubset</span><span class="params">(TreeNode root, <span class="type">int</span> limit)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> dfs(root,<span class="number">0</span>,limit) ? <span class="literal">null</span> : root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//函数定义：输入一个root节点，preSum为到这个root节点之前，所有节点的值</span></span><br><span class="line"><span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">dfs</span><span class="params">(TreeNode root ,<span class="type">int</span> preSum , <span class="type">int</span> limit)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(root.left == <span class="literal">null</span> &amp;&amp; root.right== <span class="literal">null</span>)&#123;</span><br><span class="line">    <span class="comment">//到达叶子结点，决定这个叶子节点是否被删除</span></span><br><span class="line">    <span class="keyword">return</span> preSum+root.val &lt; limit;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="type">boolean</span> <span class="variable">leftDelete</span> <span class="operator">=</span> root.left != <span class="literal">null</span> ? dfs(root.left,preSum+root.val,limit) : <span class="literal">true</span>;</span><br><span class="line">  <span class="type">boolean</span> <span class="variable">rightDelete</span> <span class="operator">=</span> root.right != <span class="literal">null</span> ? dfs(root.right,preSum+root.val,limit) : <span class="literal">true</span>;</span><br><span class="line">  <span class="comment">//后序位置，已经知道左右子树是否被删除了</span></span><br><span class="line">  <span class="keyword">if</span>(leftDelete)&#123;</span><br><span class="line">    root.left = <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(rightDelete)&#123;</span><br><span class="line">    root.right = <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> leftDelete &amp;&amp; rightDelete;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1110-删点成林"><a href="#1110-删点成林" class="headerlink" title="1110. 删点成林"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/delete-nodes-and-return-forest/">1110. 删点成林</a></h3><p><strong>题目</strong>：</p>
+<p>给出二叉树的根节点 root，树上每个节点都有一个不同的值。</p>
+<p>如果节点值在 to_delete 中出现，我们就把该节点从树上删去，最后得到一个森林（一些不相交的树构成的集合）。</p>
+<p>返回森林中的每棵树。你可以按任意顺序组织答案。</p>
+<p><strong>思路</strong>：</p>
+<p>同删除节点，在后序位置判断当前root是否要删除，如果当前root要删除，就添加左右子树。</p>
+<h3 id="1367-二叉树中的链表"><a href="#1367-二叉树中的链表" class="headerlink" title="1367. 二叉树中的链表"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/linked-list-in-binary-tree/">1367. 二叉树中的链表</a></h3><p><strong>题目</strong></p>
+<p>如果在二叉树中，存在一条一直向下的路径，且每个点的数值恰好一一对应以 <code>head</code> 为首的链表中每个节点的值，那么请你返回 <code>True</code> ，否则返回 <code>False</code></p>
+<p><img src="https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2020/02/29/sample_1_1720.png" alt="img"></p>
+<p><strong>思路</strong></p>
+<ul>
+<li>写的第一版解法复杂度较高，用的是遍历的思想</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">boolean</span> <span class="variable">flag</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isSubPath</span><span class="params">(ListNode head, TreeNode root)</span> &#123;</span><br><span class="line">  dfs(head,root);</span><br><span class="line">  <span class="keyword">return</span> flag;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//遍历每个节点</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">dfs</span><span class="params">(ListNode head, TreeNode root)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  validate(head,root);</span><br><span class="line">  dfs(head,root.left);</span><br><span class="line">  dfs(head,root.right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//判断以某个节点为根，是否能够成功，如果能成，就修改全局变量</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">validate</span><span class="params">(ListNode head, TreeNode root)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(head == <span class="literal">null</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(root == <span class="literal">null</span> &amp;&amp; head != <span class="literal">null</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(root.val == head.val &amp;&amp; (validate(head.next,root.left) || validate(head.next,root.right)))&#123;</span><br><span class="line">    flag = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>第二个题解时间复杂度较低，采用了分解的思路</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//一颗树如果满足条件，那么意味着以root节点为根的节点满足条件或root节点的左右子树满足条件</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isSubPath</span><span class="params">(ListNode head, TreeNode root)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span>(root == <span class="literal">null</span>)<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  <span class="keyword">return</span> validate(head,root) || isSubPath(head,root.left) || isSubPath(head,root.right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//输入root，判断是否满足条件</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">validate</span><span class="params">(ListNode head, TreeNode root)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(head == <span class="literal">null</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> root.val == head.val &amp;&amp; (validate(head.next,root.left)|| validate(head.next,root.right));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    </p>
+<h3 id="1372-二叉树中的最长交错路径【mid｜暴力遍历超时】"><a href="#1372-二叉树中的最长交错路径【mid｜暴力遍历超时】" class="headerlink" title="1372. 二叉树中的最长交错路径【mid｜暴力遍历超时】"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-zigzag-path-in-a-binary-tree/">1372. 二叉树中的最长交错路径</a>【mid｜暴力遍历超时】</h3><ul>
+<li><p>从父节点中带两个参数，分别是当前节点作为左孩子的路径长度，和当前节点作为右孩子的路径长度</p>
+<p><img src="https://pic.leetcode-cn.com/1627994711-iPVhEZ-:Users:admin:Downloads:sample_1_1702.jpg" alt=":Users:admin:Downloads:sample_1_1702.jpg"></p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">path</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">longestZigZag</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;<span class="keyword">return</span> <span class="number">0</span>;&#125;</span><br><span class="line">  dfs(root,<span class="number">0</span>,<span class="number">0</span>);<span class="comment">//根节点没有父节点，所以两个都是0</span></span><br><span class="line">  <span class="keyword">return</span> path;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">dfs</span><span class="params">(TreeNode root,<span class="type">int</span> l,<span class="type">int</span> r)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  path = Math.max(path,Math.max(l,r));</span><br><span class="line">  dfs(root.left,r+<span class="number">1</span>,<span class="number">0</span>); <span class="comment">//如果往左走，那就把左孩子的l值设为父节点的r+1</span></span><br><span class="line">  dfs(root.right,<span class="number">0</span>,l+<span class="number">1</span>);<span class="comment">//如果往右走，那就把右孩子的r值设为父节点的l+1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>暴力遍历，超时</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">path</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">longestZigZag</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;<span class="keyword">return</span> <span class="number">0</span>;&#125;</span><br><span class="line">    dfs(root);</span><br><span class="line">    <span class="keyword">return</span> path;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">dfs</span><span class="params">(TreeNode root)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    go(root,<span class="literal">true</span>,<span class="number">0</span>);</span><br><span class="line">    go(root,<span class="literal">false</span>,<span class="number">0</span>);</span><br><span class="line">    dfs(root.left);</span><br><span class="line">    dfs(root.right);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//flag true:左，false：右</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">go</span><span class="params">(TreeNode root, <span class="type">boolean</span> flag,<span class="type">int</span> level)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root ==<span class="literal">null</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    path = Math.max(level,path);</span><br><span class="line">    <span class="keyword">if</span>(flag)&#123;</span><br><span class="line">        go(root.right,!flag,level+<span class="number">1</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        go(root.left,!flag,level+<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>修改后：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">path</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">longestZigZag</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;<span class="keyword">return</span> <span class="number">0</span>;&#125;</span><br><span class="line">  dfs(root,<span class="literal">true</span>,<span class="number">0</span>); <span class="comment">// true说明可以往左走</span></span><br><span class="line">  dfs(root,<span class="literal">false</span>,<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">return</span> path;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//输入一个root节点</span></span><br><span class="line"><span class="comment">//如果可以往左走，那么就要判断往左走的累加路径和以当前节点为root，往右走的路径</span></span><br><span class="line"><span class="comment">//如果可以往右走，xxxxxx（同上）</span></span><br><span class="line"><span class="keyword">private</span> <span class="title function_">dfs</span><span class="params">(TreeNode root,<span class="type">boolean</span> dir,<span class="type">int</span> depth)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  path = Math.max(depth,path);</span><br><span class="line">  <span class="keyword">if</span>(dir)&#123;</span><br><span class="line">    <span class="comment">//说明可以往左走</span></span><br><span class="line">    <span class="keyword">if</span>(root.left)&#123;dfs(root.left,<span class="literal">false</span>,depth+<span class="number">1</span>);&#125;</span><br><span class="line">    <span class="keyword">if</span>(root.right)&#123;dfs(root.right,<span class="literal">true</span>,<span class="number">1</span>);&#125;<span class="comment">//如果往右走了，depth重置为1，因为传到右节点时已经走了一条边</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	  <span class="comment">//说明可以往右走</span></span><br><span class="line">  	<span class="keyword">if</span>(root.right)&#123;dfs(root.right,<span class="literal">true</span>,depth+<span class="number">1</span>);&#125;</span><br><span class="line">  	<span class="keyword">if</span>(root.left)&#123;dfs(root.left,<span class="literal">false</span>,<span class="number">1</span>);&#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="二叉树-位运算"><a href="#二叉树-位运算" class="headerlink" title="二叉树+位运算"></a>二叉树+位运算</h2><h5 id="222-完全二叉树的节点个数"><a href="#222-完全二叉树的节点个数" class="headerlink" title="222. 完全二叉树的节点个数"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/count-complete-tree-nodes/">222. 完全二叉树的节点个数</a></h5><p><strong>题目：</strong> 完全二叉树 的根节点 root ，求出该树的节点个数。完全二叉树 的定义如下：在完全二叉树中，除了最底层节点可能没填满外，其余每层节点数都达到最大值，并且最下面一层的节点都集中在该层最左边的若干位置。若最底层为第 h 层，则该层包含 1~ 2h 个节点。</p>
+<p><strong>思路：</strong></p>
+<ul>
+<li><p>直接dfs，用一个外部变量记录节点的个数，但是这里不记录这种解法</p>
+</li>
+<li><p>位运算+二分搜索：</p>
+<p>完全二叉树的节点路径可以用一个二进制数来表示，比如第二层中有两个节点，它们的索引分别是10，和11，表示第二个和第三个节点。</p>
+<p>可以看到这两个数字的最高位都是1，而除最高位外的所有数字表示从根节点到当前节点的路径，0表示左，1表示右。比如10表示第二层，从根节点往左走到达的孩子节点；11表示从根节点往右走到达的节点。</p>
+<p>明确了完全二叉树这个性质之后，我们只需要知道它有几层即可。并且对最底层的节点使用二分搜索，最底层的节点索引值范围是:<code>[1&lt;&lt;height,(1&lt;&lt;(height+1))-1]</code>。表示从根节点一直往左走到达，和从根节点一直往右走到达的节点。二分搜索判断是否存在某一个节点，相当于找一个右边界</p>
+</li>
+</ul>
+<p>代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">countNodes</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> <span class="variable">height</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="type">TreeNode</span> <span class="variable">cur</span> <span class="operator">=</span> root;</span><br><span class="line">      	<span class="comment">//看这个二叉树有几层。注意，如果有两层的话，这里的height是1。因为第二层的节点，索引有2位，且最高位一定为1。</span></span><br><span class="line">	      <span class="comment">//因此对于第二层的节点，只需要把1右移1位即可。对于其他层同理。这里的height记录的其实是要右移多少位1。</span></span><br><span class="line">        <span class="keyword">while</span>(cur.left!=<span class="literal">null</span>)&#123;</span><br><span class="line">            height++;</span><br><span class="line">            cur = cur.left;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> <span class="variable">l</span> <span class="operator">=</span> <span class="number">1</span>&lt;&lt;height;</span><br><span class="line">        <span class="type">int</span> <span class="variable">r</span> <span class="operator">=</span> (<span class="number">1</span>&lt;&lt;(height+<span class="number">1</span>))-<span class="number">1</span>;</span><br><span class="line">	      <span class="comment">//二分找右边界</span></span><br><span class="line">        <span class="keyword">while</span>(l&lt;=r)&#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">mid</span> <span class="operator">=</span> (l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span>(exist(root,height,mid))&#123;</span><br><span class="line">                l = mid+<span class="number">1</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                r = mid-<span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> r;</span><br><span class="line">    &#125;</span><br><span class="line">		</span><br><span class="line">  	<span class="comment">//validate函数，判断点是否存在</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">exist</span><span class="params">(TreeNode root,<span class="type">int</span> level,<span class="type">int</span> k)</span>&#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">bit</span> <span class="operator">=</span> <span class="number">1</span>&lt;&lt;(level-<span class="number">1</span>);<span class="comment">//要校验的那一位为1，其他为0。校验当前节点要往左还是往右走。比如</span></span><br><span class="line">        <span class="type">TreeNode</span> <span class="variable">node</span> <span class="operator">=</span> root;</span><br><span class="line">        <span class="keyword">while</span>(node!=<span class="literal">null</span> &amp;&amp; bit&gt;<span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>((bit &amp; k) == <span class="number">0</span>)&#123;</span><br><span class="line">	              <span class="comment">//如果这一位是0，那么往左走</span></span><br><span class="line">                node = node.left;</span><br><span class="line">            &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">              	<span class="comment">//如果这一位是1，那么往右走</span></span><br><span class="line">                node = node.right;</span><br><span class="line">            &#125;</span><br><span class="line">          	<span class="comment">//校验下一位</span></span><br><span class="line">            bit&gt;&gt;=<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">            <span class="keyword">return</span> node!=<span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-number">1.</span> <span class="nav-text">二叉树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#100-%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A0%91"><span class="nav-number">1.1.</span> <span class="nav-text">100. 相同的树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#101-%E5%AF%B9%E7%A7%B0%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-number">1.2.</span> <span class="nav-text">101. 对称二叉树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#102-%E4%BB%8E%E6%A0%B9%E5%88%B0%E5%8F%B6%E7%9A%84%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%95%B0%E4%B9%8B%E5%92%8C"><span class="nav-number">1.3.</span> <span class="nav-text">102. 从根到叶的二进制数之和</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#110-%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-number">1.4.</span> <span class="nav-text">110. 平衡二叉树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#116-%E5%A1%AB%E5%85%85%E6%AF%8F%E4%B8%AA%E8%8A%82%E7%82%B9%E7%9A%84%E4%B8%8B%E4%B8%80%E4%B8%AA%E5%8F%B3%E4%BE%A7%E8%8A%82%E7%82%B9%E6%8C%87%E9%92%88"><span class="nav-number">1.5.</span> <span class="nav-text">116. 填充每个节点的下一个右侧节点指针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#124-%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E7%9A%84%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C%E3%80%90-hard%E3%80%91%E5%AE%9A%E4%B9%89%E8%A7%A3"><span class="nav-number">1.6.</span> <span class="nav-text">124. 二叉树中的最大路径和【*hard】定义解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#543-%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E7%9B%B4%E5%BE%84"><span class="nav-number">1.7.</span> <span class="nav-text">543. 二叉树的直径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1080-%E6%A0%B9%E5%88%B0%E5%8F%B6%E8%B7%AF%E5%BE%84%E4%B8%8A%E7%9A%84%E4%B8%8D%E8%B6%B3%E8%8A%82%E7%82%B9%E3%80%90%E5%AE%9A%E4%B9%89%E8%A7%A3%E3%80%91"><span class="nav-number">1.8.</span> <span class="nav-text">1080. 根到叶路径上的不足节点【定义解】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1110-%E5%88%A0%E7%82%B9%E6%88%90%E6%9E%97"><span class="nav-number">1.9.</span> <span class="nav-text">1110. 删点成林</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1367-%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E7%9A%84%E9%93%BE%E8%A1%A8"><span class="nav-number">1.10.</span> <span class="nav-text">1367. 二叉树中的链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1372-%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E7%9A%84%E6%9C%80%E9%95%BF%E4%BA%A4%E9%94%99%E8%B7%AF%E5%BE%84%E3%80%90mid%EF%BD%9C%E6%9A%B4%E5%8A%9B%E9%81%8D%E5%8E%86%E8%B6%85%E6%97%B6%E3%80%91"><span class="nav-number">1.11.</span> <span class="nav-text">1372. 二叉树中的最长交错路径【mid｜暴力遍历超时】</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91-%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="nav-number">2.</span> <span class="nav-text">二叉树+位运算</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#222-%E5%AE%8C%E5%85%A8%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E8%8A%82%E7%82%B9%E4%B8%AA%E6%95%B0"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">222. 完全二叉树的节点个数</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"> Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

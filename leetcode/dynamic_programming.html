@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="MXnxXuB_QrrsHGVDyL1PctN3b34klY8nvY_MD6CFETw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zqqcee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="动态规划300. 最长递增子序列【重要】 题目   给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。   例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。  思路  这里暴力DP在一些复合困难题中会超时，比如354. 俄罗斯套娃信封问题。因此只记录二分查找法。  将数组nums按蜘蛛纸牌的方式，放置在不同的牌堆中，每次放置必须保证这个牌尽可能放在靠前（即">
+<meta property="og:type" content="website">
+<meta property="og:title" content="zqqcee">
+<meta property="og:url" content="https://zqqcee.github.io/leetcode/dynamic_programming.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="动态规划300. 最长递增子序列【重要】 题目   给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。   例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。  思路  这里暴力DP在一些复合困难题中会超时，比如354. 俄罗斯套娃信封问题。因此只记录二分查找法。  将数组nums按蜘蛛纸牌的方式，放置在不同的牌堆中，每次放置必须保证这个牌尽可能放在靠前（即">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zqqcee.github.io/leetcode/img/poker3.png">
+<meta property="og:image" content="https://zqqcee.github.io/leetcode/img/sample_11_1592.png">
+<meta property="og:image" content="https://zqqcee.github.io/leetcode/img/image-20230609101208137.png">
+<meta property="og:image" content="https://zqqcee.github.io/leetcode/img/rob1-tree.png">
+<meta property="og:image" content="https://zqqcee.github.io/leetcode/img/tree1.png">
+<meta property="article:published_time" content="2023-06-17T07:19:30.246Z">
+<meta property="article:modified_time" content="2023-06-17T07:13:10.744Z">
+<meta property="article:author" content="zqqcee">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zqqcee.github.io/leetcode/img/poker3.png">
+
+<link rel="canonical" href="https://zqqcee.github.io/leetcode/dynamic_programming">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'en'
+  };
+</script>
+
+  <title> | zqqcee
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Comes in a big package "📦" </p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-chitchat">
+
+    <a href="/chitchat/" rel="section"><i class="fa fa-fan fa-fw"></i>Chitchat</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-leetcode">
+
+    <a href="/leetcode/" rel="section"><i class="fa fa-crosshairs fa-fw"></i>Leetcode</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="en">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h4 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h4><h4 id="300-最长递增子序列【重要】"><a href="#300-最长递增子序列【重要】" class="headerlink" title="300. 最长递增子序列【重要】"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-increasing-subsequence/">300. 最长递增子序列</a>【重要】</h4><ul>
+<li><p>题目</p>
+<p>  给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。</p>
+</li>
+</ul>
+<p>例如，[3,6,2,7] 是数组 [0,<strong>3</strong>,1,6,2,<strong>2</strong>,<strong>7</strong>] 的子序列。</p>
+<ul>
+<li>思路</li>
+</ul>
+<p>这里暴力DP在一些复合困难题中会超时，比如<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/russian-doll-envelopes/">354. 俄罗斯套娃信封问题</a>。因此只记录二分查找法。</p>
+<p><img src="img/poker3.png" alt="img"></p>
+<p>将数组nums按蜘蛛纸牌的方式，放置在不同的牌堆中，<strong>每次放置必须保证这个牌尽可能放在靠前（即左边）的牌堆中。</strong>最后得到的牌堆数就是最长子序列的长度（证明不会）将二分查找法，用在寻找这个数的左边界上，来提速。</p>
+<h2 id="二维DP"><a href="#二维DP" class="headerlink" title="二维DP"></a>二维DP</h2><h4 id="115-不同的子序列【重要】"><a href="#115-不同的子序列【重要】" class="headerlink" title="115. 不同的子序列【重要】"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/distinct-subsequences/">115. 不同的子序列</a>【重要】</h4><ul>
+<li><p>题目</p>
+<p>给定一个字符串 s 和一个字符串 t ，计算在 s 的子序列中 t 出现的个数。</p>
+<p>字符串的一个 子序列 是指，通过删除一些（也可以不删除）字符且不干扰剩余字符相对位置所组成的新字符串。（例如，”ACE” 是 “ABCDE” 的一个子序列，而 “AEC” 不是）</p>
+<p>eg：s=”bagg“,t=’’bag”, return 2，因为s中有2个t的不同子序列。</p>
+</li>
+<li><p>思路</p>
+<ul>
+<li><p>第一步：明确dp的含义。<br><strong>做dp的题只需要理解<code>dp[i][j]</code>的含义是什么，由什么推到出来即可。</strong>在这题中，令<code>dp[i][j]</code>的含义为<code>s</code>的前<code>i</code>个字符，包括第<code>i</code>个，也就是<code>s[0...i-1]</code>中有多少个t的前<code>j</code>个字符。<br>举个例子，s = “bagg”, t =”bag”，那么<code>dp[3][3] = 1</code>，因为s的前3个字符”bag”中，有1个t的前三个字符组成的子串” bag”，而<code>dp[4][3] = 2</code>,因为s的前四个字符”bagg”有2个t的前前三个字符”bag”组成的子串。</p>
+</li>
+<li><p>第二步：写出状态转移方程：</p>
+<script type="math/tex; mode=display">
+dp[i][j] = \begin{cases}
+dp[i-1][j-1]+dp[i-1][j] , &s[i-1] = t[j-1]\\
+dp[i-1][j],&s[i-1]!=t[j-1]
+
+\end{cases}</script><p>下面解释一下这个状态方程，当执行到<code>dp[i][j]</code>时：</p>
+<ul>
+<li><p>当<code>s[i-1]=t[j-1]</code>时，有两种情况，对应着dp中相加的两项。分别为使用s[i-1]这个字符和不使用s[i-1]这个字符。<br>如果使用了<code>s[i-1]</code>那么<code>dp[i][j]</code>，即子序列数量 = <code>dp[i-1][j-1]</code>，因为当前检测的这两个字符相同，再加上这个字符的子序列数量是等于<code>s[0....i-2]</code>中<code>t[0....j-2]</code>的子序列数量的。<br>如果没有使用<code>s[i-1]</code>，<code>dp[i][j]</code>，即子序列数量 = <code>dp[i-1][j]</code>,说明<code>s[i-1]</code>这个字符对于子序列数量没有帮助，等于<code>s[0...i-2]</code>中<code>t[0···j-1]</code>的子序列数量。</p>
+</li>
+<li><p>当<code>s[i-1]!=t[j-1]</code>时，s[i-1]这个字符肯定不能使用，同上，不使用<code>s[i-1]</code></p>
+</li>
+</ul>
+<p>举例：比如s = “bag”,t = “bag”，<code>i = 2,j = 2; s[i-1] = a, t[j-1] = a</code></p>
+<blockquote>
+<p><code>dp[2][2]=dp[1][1]+dp[1][2]</code>，使用s中的“a”匹配，其子序列数量等于 “b”中 “b” 的子序列数量；不使用s中的”a”进行匹配，其子序列的数量等于”b”中”ba”的数量。</p>
+</blockquote>
+</li>
+<li><p>第三步：确定初始状态</p>
+<ul>
+<li>初始状态的定义需要根据状态转移方程得出，因为这里矩阵x轴放t，y轴放x。递推从左上方向右下方，上方向下方推进。因此我们要初始化的是第一行和第一列。根据定义得出：<ul>
+<li>第一行：0 ， 因为代表着<code>空串</code>中有多少个<code>t串</code>构成的子序列</li>
+<li>第一列：1，代表着<code>s串</code>中有多少个<code>空串</code>构成的子序列</li>
+<li><code>dp[0][0]</code>：1，代表<code>空串</code>中有一个<code>空串</code>构成的子序列</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>第四步：迭代</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i&lt;dp.length;i++)&#123;</span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>;j&lt;dp[i].length;j++)&#123;</span><br><span class="line">    <span class="keyword">if</span>(s[i-<span class="number">1</span>] == t[j-<span class="number">1</span>])&#123;</span><br><span class="line">      	dp[i][j] = dp[i-<span class="number">1</span>][j-<span class="number">1</span>] + dp[i-<span class="number">1</span>][j];</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      	dp[i][j] = dp[i-<span class="number">1</span>][j];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> dp[dp.length-<span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>记忆化搜索写法</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="type">int</span>[][] memo;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">numDistinct</span><span class="params">(String s, String t)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> s.length();</span><br><span class="line">        <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> t.length();</span><br><span class="line">        memo = <span class="keyword">new</span> <span class="title class_">int</span>[m][n];</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span> ;i&lt;m ;i++)&#123;</span><br><span class="line">            Arrays.fill(memo[i],-<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(s.length()&lt;t.length())&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dfs(s,<span class="number">0</span>,t,<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="title function_">dfs</span><span class="params">(String s , <span class="type">int</span> i ,String t , <span class="type">int</span> j)</span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//basecase1: t已经全部匹配完毕，返回1</span></span><br><span class="line">        <span class="keyword">if</span>(j==t.length())&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//basecase2: s剩余的内容长度比t剩余的长度少，t无法匹配完成，返回0。</span></span><br><span class="line">        <span class="keyword">if</span>(s.length()-i&lt;t.length()-j)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(memo[i][j]!=-<span class="number">1</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> memo[i][j];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> <span class="variable">res</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span>(s.charAt(i)==t.charAt(j))&#123;</span><br><span class="line">            res = res + dfs(s,i+<span class="number">1</span>,t,j+<span class="number">1</span>) + dfs(s,i+<span class="number">1</span>,t,j);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            res += dfs(s,i+<span class="number">1</span>,t,j);</span><br><span class="line">        &#125;</span><br><span class="line">        memo[i][j] = res;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="139-单词拆分【变式】"><a href="#139-单词拆分【变式】" class="headerlink" title="139. 单词拆分【变式】"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/word-break/">139. 单词拆分</a>【变式】</h4><ul>
+<li>题目：</li>
+</ul>
+<p>给你一个字符串 s 和一个字符串列表 wordDict 作为字典。请你判断是否可以利用字典中出现的单词拼接出 s 。注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。</p>
+<blockquote>
+<p>输入: s = “leetcode”, wordDict = [“leet”, “code”]<br>输出: true<br>解释: 返回 true 因为 “leetcode” 可以由 “leet” 和 “code” 拼接成。</p>
+</blockquote>
+<ul>
+<li><p>思路：</p>
+<p>和上一题一样，只不过t变成了单词，而问题变成了s中有没有t组成的子序列。同样按照上面的四步</p>
+<ul>
+<li><p>第一步：dp的含义：</p>
+<p>这道题中，根据问题，dp[i]的含义可以表示为s[0….i-1]是否能够由所提供的单词构成，是一个boolean数组，true表示可以，false表示不可以。</p>
+</li>
+<li><p>第二步：状态转移方程</p>
+<p>考虑dp[i]怎么由dp[0….i-1]推出。</p>
+<p>如果dp[0…i-1]中有一个位置的值为true，假设这个位置的索引是x，那么我们就需要判断s[x…i-1]，即<code>s.substring(x,i-1)</code>是否可以组成一个单词，如果可以组成，那么dp[i]就是true，写出状态转移方程。<br><strong>注</strong>：这里dp[i]指的是s[0…i-1]，所以dp[x]=true表示s[0….x-1]可以组成单词，现在需要判断s[x,i-1]是否可以组成单词，所以是<code>s.substring(x,i)</code>。</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+dp[i] = true,& dp[x]=true\&\&wordDict.contains(s.substring(x,i)),x\in[0,i-1]\\
+dp[i] = false, &other
+\end{cases}</script></li>
+<li><p>第三步：初始化</p>
+<p><strong>这里dp[0]必须为true</strong>(这里最后写错了)，不然dp的任何一个值都不可能为true。事实上，dp[0]指的是空串能否被dict中的单词组成。</p>
+</li>
+<li><p>第四步：迭代</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i&lt;dp.length;i++)&#123;</span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">0</span>;x&lt;i;x++)&#123;</span><br><span class="line">    dp[i] = dp[i]||(dp[x] &amp;&amp; wordDict.contains(s.substring(x,i)));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> dp[dp.length-<span class="number">1</span>];</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="暴力DP过不了，优化的方法"><a href="#暴力DP过不了，优化的方法" class="headerlink" title="暴力DP过不了，优化的方法"></a>暴力DP过不了，优化的方法</h2><h4 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h4><p><strong>模版：</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//设置一个双向队列Deque，里面存放nums的索引</span></span><br><span class="line">Deque&lt;Integer&gt; window = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span> ; i&lt; nums.length; i++)&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//入队过程</span></span><br><span class="line">  <span class="keyword">while</span>(!window.isEmpty() &amp;&amp; nums[window.pollFirst()]&gt;nums[i])&#123;</span><br><span class="line">    window.pollLast();</span><br><span class="line">  &#125;</span><br><span class="line">  window.offerLast(i);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//队首元素滑出滑动窗口后的调整过程</span></span><br><span class="line">  <span class="keyword">if</span>(i-window.peekFirst()&gt;=k)&#123;</span><br><span class="line">    window.pollFirst()</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//一些其他的操作</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h5 id="239-滑动窗口最大值"><a href="#239-滑动窗口最大值" class="headerlink" title="239. 滑动窗口最大值"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/sliding-window-maximum/">239. 滑动窗口最大值</a></h5><ul>
+<li>题目：</li>
+</ul>
+<p>给你一个整数数组 <code>nums</code>，有一个大小为 <code>k</code> 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 <code>k</code> 个数字。滑动窗口每次只向右移动一位。</p>
+<blockquote>
+<p>输入：nums = [1,3,-1,-3,5,3,6,7], k = 3<br>输出：[3,3,5,5,6,7]<br>解释：<br>滑动窗口的位置                最大值</p>
+<hr>
+<p>[1  3  -1] -3  5  3  6  7       3<br>1 [3  -1  -3] 5  3  6  7       3<br>1  3 [-1  -3  5] 3  6  7       5<br>1  3  -1 [-3  5  3] 6  7       5<br>1  3  -1  -3 [5  3  6] 7       6<br>1  3  -1  -3  5 [3  6  7]      7</p>
+</blockquote>
+<ul>
+<li>思路</li>
+</ul>
+<p>设置一个双端队列，<code>Deque&lt;&gt; window = new LinkedList&lt;&gt;()</code>，这个双端队列中队首和队尾都可以出队。这个队列中的元素<code>w[1],w[2]...w[n]</code>遵循以下规则：<code>nums[w[i]]&gt;nums[w[j]] &amp;&amp; w[i]&lt;w[j]</code>也就是说，这个队中存的是nums数组中的索引，且必须保证索引大，值小的数字，排在索引小，值大的数字后面。</p>
+<p>举例：比如<code>nums=[6,1,2,3,8]，window.size=2</code>那么window的变化应该为：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[6]-&gt;[6,1]-&gt;[6,2]-&gt;[6,3]-&gt;[8]</span><br></pre></td></tr></table></figure>
+<p>为什么这么设定？因为在滑动窗口滑动的过程中，队首元素可能会滑到窗口外，因此我们要选择一个候选人，使得队首元素滑出后，候选人接着成为队首。那么当前在窗口内的元素中，值越大的元素更应该成为候选人，在队中的排列更靠近队首。</p>
+<p>明确Deque的定义后，我们要定义队列中的元素什么时候入队什么时候出队。当某个元素可以成为候选人的时候，就入队，当这个元素需要替换队列中的候选人的时候，就while循环，让那些比它差的候选人出队，最后让当前元素入队。</p>
+<p>当队首元素滑出滑动窗口了之后，就将队首元素出队，让后面那个候选人当队首元素</p>
+<ul>
+<li>代码</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">resolve</span><span class="params">(<span class="type">int</span>[]nums,<span class="type">int</span> k)</span>&#123;</span><br><span class="line">  Deque&lt;&gt; window = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();<span class="comment">//注意，这里存的是nums中的索引</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i &lt; nums.length ; i++)&#123;</span><br><span class="line">    <span class="keyword">while</span>(!window.isEmpty() &amp;&amp; nums[i]&lt;nums[window.peekLast()])&#123;</span><br><span class="line">      <span class="comment">//队尾元素不适合当候选人，出队</span></span><br><span class="line">      window.pollLast();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//出while以后，向队列中添加新候选人</span></span><br><span class="line">    window.offerLast(nums[i]);</span><br><span class="line">    	</span><br><span class="line">    <span class="comment">//判断队首元素是否滑出滑动窗口,如果滑出要更新队首元素</span></span><br><span class="line">    <span class="keyword">if</span>(i-window.peekFirst()&gt;=k)&#123;</span><br><span class="line">      window.pollFirst();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//一些其他的操作，本题是将滑动窗口中的最大值加入结果数组中</span></span><br><span class="line">    <span class="keyword">if</span>(i&gt;=k-<span class="number">1</span>)&#123;</span><br><span class="line">      res[index] = nums[windowIndex.peekFirst()];</span><br><span class="line">      index++;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="1696-跳跃游戏-VI"><a href="#1696-跳跃游戏-VI" class="headerlink" title="1696. 跳跃游戏 VI"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/jump-game-vi/">1696. 跳跃游戏 VI</a></h5><ul>
+<li>题目</li>
+</ul>
+<p>给你一个下标从 0 开始的整数数组 nums 和一个整数 k 。一开始你在下标 0 处。每一步，你最多可以往前跳 k 步，但你不能跳出数组的边界。也就是说，你可以从下标 i 跳到 [i + 1， min(n - 1, i + k)] 包含 两个端点的任意位置。你的目标是到达数组最后一个位置（下标为 n - 1 ），你的 得分 为经过的所有数字之和。请你返回你能得到的 最大得分 。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：nums = [1,-1,-2,4,-7,3], k = 2</span><br><span class="line">输出：7</span><br><span class="line">解释：你可以选择子序列 [1,-1,4,3] 和为 7 。</span><br></pre></td></tr></table></figure>
+<ul>
+<li>思路，暴力DP的思路如下：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span>[] dp = <span class="keyword">new</span> <span class="title class_">int</span>[nums.length];</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i&lt;dp.length;i++)&#123;</span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> ; i-j&gt;=<span class="number">0</span> &amp;&amp; j&lt;k ; j++)&#123;</span><br><span class="line">    dp[i] = Math.max(dp[j]+nums[i],dp[i]);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>滑动窗口解法：</li>
+</ul>
+<p>因为同样的，这里我们只需要找到dp[i-k….i]中的最大值即可，因此用一个滑动窗口来维护这段最大值</p>
+<h3 id="状态压缩"><a href="#状态压缩" class="headerlink" title="状态压缩"></a>状态压缩</h3><p>一维数组变为两个常量，二维数组变为滚动数组<code>dp[2][j]</code></p>
+<h5 id="309-最佳买卖股票时机含冷冻期"><a href="#309-最佳买卖股票时机含冷冻期" class="headerlink" title="309. 最佳买卖股票时机含冷冻期"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-cooldown/">309. 最佳买卖股票时机含冷冻期</a></h5><p><strong>题目：</strong></p>
+<p>给定一个整数数组prices，其中第  prices[i] 表示第 i 天的股票价格 。设计一个算法计算出最大利润。在满足以下约束条件下，你可以尽可能地完成更多的交易（多次买卖一支股票。卖出股票后，你无法在第二天买入股票 (即冷冻期为 1 天)。<br>注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。</p>
+<p><strong>思路：</strong></p>
+<p>思路比较简单，直接看代码。注意压缩状态，滚动更新时，存储上一状态的地方</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">maxProfit</span><span class="params">(<span class="type">int</span>[] prices)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">dp0</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">dp1</span> <span class="operator">=</span> Integer.MIN_VALUE;</span><br><span class="line">        <span class="type">int</span> <span class="variable">pre0</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span> ; i&lt;prices.length;i++)&#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">temp</span> <span class="operator">=</span> dp0; <span class="comment">// 这里存储的是dp[i-1][0],用于更新下面的dp[1]</span></span><br><span class="line">            dp0 = Math.max(dp0,dp1+prices[i]);</span><br><span class="line">            dp1 = Math.max(dp1,-prices[i]); <span class="comment">//前三天可以自由买卖，因为前两天如果买了股票，第1，2天是不可能卖出股票的</span></span><br><span class="line">            <span class="keyword">if</span>(i-<span class="number">2</span>&gt;=<span class="number">0</span>)&#123;</span><br><span class="line">                dp1 = Math.max(dp1,pre0-prices[i]);</span><br><span class="line">            &#125;</span><br><span class="line">            pre0 = temp; <span class="comment">//这里存储的是dp[i-2][0]，用于更新上面的dp[1]。这行代码必须要放在for循环的最后</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp0;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="路径问题【记忆化搜索dfs，dfs转dp，双dp数组】"><a href="#路径问题【记忆化搜索dfs，dfs转dp，双dp数组】" class="headerlink" title="路径问题【记忆化搜索dfs，dfs转dp，双dp数组】"></a>路径问题【记忆化搜索dfs，dfs转dp，双dp数组】</h2><h4 id="固定起点，固定方向问题，"><a href="#固定起点，固定方向问题，" class="headerlink" title="固定起点，固定方向问题，"></a>固定起点，固定方向问题，</h4><p>可以用一般的二维dp来做，可以优化空间复杂度。</p>
+<ul>
+<li><p>滚动数组：<br>因为下一行的dp值仅与上一行有关，因此，我们只需要开辟<code>dp[2][n]</code>即可。获取并更新dp值时，用<code>dp[i &amp;1][j]</code>来更新即可，这等同于<code>d[i % 2][j]</code>。</p>
+</li>
+<li><p>优先队列：<br><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-falling-path-sum-ii/">1289. 下降路径最小和  II</a></p>
+<p>题目：给你一个 n x n 整数矩阵 arr ，请你返回 非零偏移下降路径 数字和的最小值。非零偏移下降路径 定义为：从 arr 数组中的每一行选择一个数字，且按顺序选出来的数字中，相邻数字不在原数组的同一列。<br>解法：将二维dp数组压缩成一个大小为n的优先队列。每次取头两个元素。分别是上一行中最小的两个值及它们的列索引。当下一行中，列索引与上一行中最小值的列索引相同时，需要用第二小的元素来更新。</p>
+</li>
+</ul>
+<h4 id="记忆化搜索"><a href="#记忆化搜索" class="headerlink" title="记忆化搜索"></a>记忆化搜索</h4><p>使用一个memo数组来记录每一次递归的结果，如果有结果直接返回，不会进入dfs</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">dfs(i)&#123;</span><br><span class="line">  <span class="keyword">if</span>(memo[i]!=-<span class="number">1</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> memo[i];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="1575-统计所有可行路径"><a href="#1575-统计所有可行路径" class="headerlink" title="1575. 统计所有可行路径"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/count-all-possible-routes/">1575. 统计所有可行路径</a></h5><p><strong>题目</strong>：</p>
+<p>给你一个 互不相同 的整数数组，其中 locations[i] 表示第 i 个城市的位置。同时给你 start，finish 和 fuel 分别表示出发城市、目的地城市和你初始拥有的汽油总量。每一步中，如果你在城市 i ，你可以选择任意一个城市 j ，满足  j != i 且 0 &lt;= j &lt; locations.length ，并移动到城市 j 。从城市 i 移动到 j 消耗的汽油量为 |locations[i] - locations[j]|，|x| 表示 x 的绝对值。<br>请注意， fuel 任何时刻都 不能 为负，且你 可以 经过任意城市超过一次<strong>（包括 start 和 finish ）</strong>。<br>请你返回从 start 到 finish 所有可能路径的数目。<br>由于答案可能很大， 请将它对 10^9 + 7 取余后返回。</p>
+<p><strong>思路</strong>：</p>
+<ul>
+<li>记忆化搜索</li>
+</ul>
+<p>难点在于定义basecase。做这种题的时候不要多想，直接看dfs的定义，从定义入手。<br>本题dfs的定义是：<code>dfs(int[] location,int start,int end,int fuel)</code>，代表从<code>start</code>位置到<code>end</code>位置，剩余汽油为<code>fuel</code>的情况下有多少路径数。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">dfs</span><span class="params">(<span class="type">int</span>[] location,<span class="type">int</span> start,<span class="type">int</span> end,<span class="type">int</span> fuel)</span>&#123;</span><br><span class="line">  <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> start == end?<span class="number">1</span>:<span class="number">0</span>;<span class="comment">//如果start=end，说明当前的路径有一条，就是不用动。</span></span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i&lt;location[i];i++&#123;</span><br><span class="line">    <span class="keyword">if</span>(i!=start)&#123;</span><br><span class="line">      <span class="comment">//不能自己到自己,不然永远不会跳出循环了。但是可以从end出发，因为题目说可以经过任意城市超过一次</span></span><br><span class="line">      <span class="type">int</span> <span class="variable">need</span> <span class="operator">=</span> Math.abs(location[start]-start[i])</span><br><span class="line">      <span class="keyword">if</span>(need&lt;=fuel)&#123;</span><br><span class="line">        <span class="comment">//只有汽油足够到，才能计算路径</span></span><br><span class="line">        sum+=dfs(location,i,end,fuel-need);</span><br><span class="line">        sum%=mod;<span class="comment">//题目要求</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  memo[start][fuel] = sum; <span class="comment">//记录，表示从start开始，到end，剩余汽油为fuel的情况下，有sum条路径</span></span><br><span class="line">  <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>优化：</strong></p>
+<p>考虑一个baseCase： 如果当前的汽油量无法到达任何一个location，那么就返回0</p>
+<p>优化为：如果当前的汽油量无法一步到达终点，那么就返回0</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">need</span> <span class="operator">=</span> Math.abs(locations[start]-locations[finish]);<span class="comment">//如果当前不能一步到达，那么就永远无法到达</span></span><br><span class="line"><span class="keyword">if</span>(fuel&lt;need)&#123;</span><br><span class="line">  memo[start][fuel] = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>dp</p>
+<p>根据记忆化搜索，我们可以将<code>dfs</code>翻译为状态方程：这里其实dfs的备忘录<code>memo</code>就是我们的dp数组。<code>dp[i][fuel]</code>表示：从<code>i</code>出发，剩余汽油<code>fuel</code>的情况下，到达<code>finish</code>有多少条路径。</p>
+<ul>
+<li><p>初始状态</p>
+<p>根据记忆化搜索，我们知道初始状态是<code>dp[finish][fuel] = 1</code>，</p>
+</li>
+<li><p>状态</p>
+<p>这里的状态是<code>fuel</code>，和<code>i</code>。</p>
+</li>
+<li><p>状态转移方程：<code>f[i][fuel] += f[k][fuel-need]</code>，其中，k是从<code>i</code>能够到达的地点</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>代码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i&lt;=fuel;i++)&#123;</span><br><span class="line">  dp[finish][i] = <span class="number">1</span>;<span class="comment">//初始化路径</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> <span class="variable">cur</span> <span class="operator">=</span> <span class="number">0</span>;cur&lt;=fuel;cur++)&#123;</span><br><span class="line"> 	<span class="comment">//最外层fuel</span></span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">    <span class="comment">//当前起点i</span></span><br><span class="line">    <span class="keyword">if</span>(Math.abs(locations[i]-locations[finish])&lt;<span class="number">0</span>)&#123;</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">k</span> <span class="operator">=</span> <span class="number">0</span>;k&lt;n;k++)&#123;</span><br><span class="line">      <span class="comment">//i能够到达的k</span></span><br><span class="line">      <span class="keyword">if</span>(i!=k)&#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">need</span> <span class="operator">=</span> Math.abs(locations[i]-locations[k]);</span><br><span class="line">        <span class="keyword">if</span>(need&lt;=cur)&#123;</span><br><span class="line">          dp[i][cur] += dp[k][cur-need];</span><br><span class="line">          dp[i][cur] %= mod;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="1335-工作计划的最低难度"><a href="#1335-工作计划的最低难度" class="headerlink" title="1335. 工作计划的最低难度"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule/">1335. 工作计划的最低难度</a></h5><p><strong>题目：</strong></p>
+<p>你需要制定一份 d 天的工作计划表。工作之间存在依赖，要想执行第 i 项工作，你必须完成全部 j 项工作（ 0 &lt;= j &lt; i）。你每天 至少 需要完成一项任务。工作计划的总难度是这 d 天每一天的难度之和，而一天的工作难度是当天应该完成工作的最大难度。给你一个整数数组 jobDifficulty 和一个整数 d，分别代表工作难度和需要计划的天数。第 i 项工作的难度是 jobDifficulty[i]。返回整个工作计划的 最小难度 。如果无法制定工作计划，则返回 -1 。</p>
+<p><strong>思路：</strong></p>
+<p><strong>【难点】状态转移方程：</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">dp[i][j] 表示第i+<span class="number">1</span>天，需要完成前j个任务需要的工作难度。</span><br><span class="line">dp[i][j] = dp[i-<span class="number">1</span>][k-<span class="number">1</span>] + max(jobDifficulty[k]到jobDifficulty[n-<span class="number">1</span>]) </span><br></pre></td></tr></table></figure>
+<ul>
+<li>翻译为记忆化搜索：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//dfs(i,j) 表示第i+1天，需要完成前j个任务需要的工作难度。</span></span><br><span class="line"><span class="comment">//dfs(i,j) = dfs(i-1,k-1) + max(k到n-1)</span></span><br><span class="line"><span class="comment">//memo[i][j]表示第i+1天，需要完成前j个任务需要的工作难度，已经计算过了，就不用重复计算了，缩减子问题规模</span></span><br><span class="line"><span class="keyword">private</span> <span class="type">int</span> <span class="title function_">dfs</span><span class="params">(<span class="type">int</span> day,<span class="type">int</span> job)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(memo[day][job]!=-<span class="number">1</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> memo[day][job];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(day==<span class="number">1</span>)&#123;</span><br><span class="line">    <span class="comment">//只剩一天了，需要返回了</span></span><br><span class="line">    <span class="keyword">return</span> max(job);<span class="comment">//返回job中的最大值</span></span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="type">int</span> <span class="variable">mx</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">  <span class="type">int</span> <span class="variable">ans</span> <span class="operator">=</span> Integer.MAX_VALUE;</span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> job; i&gt;=day; i--)&#123;</span><br><span class="line">    mx = Math.max(mx,jobDifficulty[i])</span><br><span class="line">    <span class="type">int</span> <span class="variable">ans</span> <span class="operator">=</span> dfs(day,i-<span class="number">1</span>) + mx;</span><br><span class="line">  &#125;</span><br><span class="line">  memo[day][job] = ans</span><br><span class="line">  <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>翻译为朴素dp</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>; i &lt; d; i++) &#123;</span><br><span class="line">  <span class="comment">//天数</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> n - <span class="number">1</span>; j &gt;= i; j--) &#123;</span><br><span class="line">    <span class="comment">//填充dp[i][...]</span></span><br><span class="line">    f[i][j] = Integer.MAX_VALUE;</span><br><span class="line">    <span class="type">int</span> <span class="variable">mx</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">k</span> <span class="operator">=</span> j; k &gt;= i; k--) &#123;</span><br><span class="line">      mx = Math.max(mx, a[k]); <span class="comment">// 从 a[k] 到 a[j] 的最大值</span></span><br><span class="line">      f[i][j] = Math.min(f[i][j], f[i - <span class="number">1</span>][k - <span class="number">1</span>] + mx);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="记忆化搜索分割矩形-华子笔试"><a href="#记忆化搜索分割矩形-华子笔试" class="headerlink" title="记忆化搜索分割矩形-华子笔试"></a>记忆化搜索分割矩形-华子笔试</h4><h5 id="1240-铺瓷砖"><a href="#1240-铺瓷砖" class="headerlink" title="1240. 铺瓷砖"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/tiling-a-rectangle-with-the-fewest-squares/">1240. 铺瓷砖</a></h5><p><strong>题目：</strong></p>
+<p>分割一个nxm的矩形，最少需要用到多少块正方形瓷砖</p>
+<p><img src="img/sample_11_1592.png" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：n = 2, m = 3</span><br><span class="line">输出：3</span><br><span class="line">解释：3 块地砖就可以铺满卧室。</span><br><span class="line">     2 块 1x1 地砖</span><br><span class="line">     1 块 2x2 地砖</span><br></pre></td></tr></table></figure>
+<p><strong>解答：</strong></p>
+<ul>
+<li>设一个大小为a的正方形，放置在<code>i，j</code>处，将矩形分割为4块：Rect1 ,Rect2, Rect3, Rect4。分割子问题</li>
+<li><code>dfs(n,m)</code>的定义为：将大小为<code>n x m</code>矩形使用正方形分割需要用多少块。可以用memo消除重叠子问题</li>
+</ul>
+<p><img src="img/image-20230609101208137.png" alt="image-20230609101208137"></p>
+<p><strong>代码</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="type">int</span>[][] memo;</span><br><span class="line">    <span class="type">int</span> cnt;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">tilingRectangle</span><span class="params">(<span class="type">int</span> n, <span class="type">int</span> m)</span> &#123;</span><br><span class="line">        memo = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">14</span>][<span class="number">14</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i&lt;memo.length;i++)&#123;</span><br><span class="line">            Arrays.fill(memo[i],-<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dfs(n,m);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="title function_">dfs</span><span class="params">(<span class="type">int</span> n,<span class="type">int</span> m)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(n==<span class="number">0</span>||m==<span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(memo[n][m]!=-<span class="number">1</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> memo[n][m];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> <span class="variable">cnt</span> <span class="operator">=</span> Math.max(n,m);</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;m;j++)&#123;</span><br><span class="line">                <span class="keyword">for</span>(<span class="type">int</span> a=<span class="number">1</span>;a&lt;=Math.min(n-i,m-j);a++)&#123;</span><br><span class="line">                    <span class="type">int</span> x1=dfs(i,j+a);</span><br><span class="line">                    <span class="type">int</span> x2=dfs(i+a,m-j-a);</span><br><span class="line">                    <span class="type">int</span> x3=dfs(n-i,j);</span><br><span class="line">                    <span class="type">int</span> x4=dfs(n-(i+a),m-j);</span><br><span class="line">                    cnt=Math.min(cnt,x1+x2+x3+x4+<span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        memo[n][m] = cnt;</span><br><span class="line">        <span class="keyword">return</span> cnt;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="统计路径的个数"><a href="#统计路径的个数" class="headerlink" title="统计路径的个数"></a>统计路径的个数</h4><h5 id="1301-最大得分的路径数目"><a href="#1301-最大得分的路径数目" class="headerlink" title="1301. 最大得分的路径数目"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/number-of-paths-with-max-score/">1301. 最大得分的路径数目</a></h5><p><strong>题目</strong>：</p>
+<p>给你一个正方形字符数组 board ，你从数组最右下方的字符 ‘S’ 出发。你的目标是到达数组最左上角的字符 ‘E’ ，数组剩余的部分为数字字符 1, 2, …, 9 或者障碍 ‘X’。在每一步移动中，你可以向上、向左或者左上方移动，可以移动的前提是到达的格子没有障碍。一条路径的 「得分」 定义为：路径上所有数字的和。请你返回一个列表，包含两个整数：第一个整数是 「得分」 的最大值，第二个整数是得到最大得分的方案数，请把结果对 10^9 + 7 取余。如果没有任何路径可以到达终点，请返回 [0, 0] 。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：board = [&quot;E23&quot;,&quot;2X2&quot;,&quot;12S&quot;]</span><br><span class="line">输出：[7,1]</span><br></pre></td></tr></table></figure>
+<p><strong>思路：</strong></p>
+<p>正常dp即可，将’’X”字符处的dp值置为<code>Integer.MIN_VALUE</code>即可。主要是路径数怎么算。</p>
+<p>路径数也用dp来做，开一个路径数的dp数组，这里有三个方向:<code>dp[i+1][j+1],dp[i+1][j],dp[i][j+1]</code> ,<code>cnt[m-1][n-1]=1</code>，如果三个方向的dp最大值相同，比如<code>max = dp[i+1][j+1]=dp[i+1][j]</code> ，那么<code>cnt[i][j] =cnt[i+1][j+1]+cnt[i+1][j]</code>。</p>
+<p><strong>优化：</strong></p>
+<p>因为是正方形，可以把二维dp数组平铺为一维的，加一个转化函数<code>getIdx(i,j) return i*n+j</code>。</p>
+<h2 id="树形DP"><a href="#树形DP" class="headerlink" title="树形DP"></a>树形DP</h2><p><strong>题目：</strong></p>
+<p>小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 root 。除了 root 之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。 如果 两个直接相连的房子在同一天晚上被打劫 ，房屋将自动报警。给定二叉树的 root 。返回 在不触动警报的情况下 ，小偷能够盗取的最高金额 。</p>
+<p>eg:</p>
+<p> <img src="img/rob1-tree.png" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入: root = [3,2,3,null,3,null,1]</span><br><span class="line">输出: 7 </span><br><span class="line">解释: 小偷一晚能够盗取的最高金额 3 + 3 + 1 = 7</span><br></pre></td></tr></table></figure>
+<p><strong>思路：</strong></p>
+<ul>
+<li>分解子问题，使用memo避免重叠子问题</li>
+</ul>
+<p>首先明确dfs的定义：<code>dfs(TreeNode root)</code>表示以root节点为偷窃起点，获取金额的最大值</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    Map&lt;TreeNode,Integer&gt; memo = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">    <span class="comment">//定义，返回以当前节点为开始的金额最大值</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">rob</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(memo.containsKey(root))&#123;</span><br><span class="line">            <span class="keyword">return</span> memo.get(root);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> <span class="variable">rob</span> <span class="operator">=</span> root.val + (root.left == <span class="literal">null</span>?<span class="number">0</span>:rob(root.left.left)+rob(root.left.right)) +  (root.right == <span class="literal">null</span>?<span class="number">0</span>:rob(root.right.left)+rob(root.right.right));</span><br><span class="line">        <span class="type">int</span> <span class="variable">no</span> <span class="operator">=</span> rob(root.left)+rob(root.right);</span><br><span class="line">        <span class="type">int</span> <span class="variable">res</span> <span class="operator">=</span> Math.max(rob,no);</span><br><span class="line">        memo.put(root,res);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>【省空间】自顶向下dp，用一个二维数组记录每个节点抢与不抢的最大值金额</li>
+</ul>
+<p>dfs返回一个数组，0号位置是抢root，1号位置是不抢root。在后序位置能够获取这个节点的左右子树抢与不抢的最大值。</p>
+<p>如果抢root，那么左右子树都不能抢，如果不抢root，那么左右子树抢不抢都行</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123; </span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">rob</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.max(dfs(root)[<span class="number">0</span>],dfs(root)[<span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span>[] dfs(TreeNode root)&#123;</span><br><span class="line">        <span class="keyword">if</span>(root == <span class="literal">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">int</span>[]&#123;<span class="number">0</span>,<span class="number">0</span>&#125;;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span>[] left = dfs(root.left);</span><br><span class="line">        <span class="type">int</span>[] right = dfs(root.right);</span><br><span class="line">        </span><br><span class="line">        <span class="type">int</span> <span class="variable">rob</span> <span class="operator">=</span> root.val+left[<span class="number">1</span>] + right[<span class="number">1</span>]; </span><br><span class="line">        <span class="type">int</span> <span class="variable">no</span> <span class="operator">=</span> Math.max(left[<span class="number">0</span>],left[<span class="number">1</span>])+Math.max(right[<span class="number">0</span>],right[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">int</span>[]&#123;rob,no&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="区间DP"><a href="#区间DP" class="headerlink" title="区间DP"></a>区间DP</h2><h5 id="1130-叶值的最小代价生成树"><a href="#1130-叶值的最小代价生成树" class="headerlink" title="1130. 叶值的最小代价生成树"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-cost-tree-from-leaf-values/">1130. 叶值的最小代价生成树</a></h5><p><strong>题目：</strong></p>
+<p>给你一个正整数数组 arr，考虑所有满足以下条件的二叉树：</p>
+<ul>
+<li>每个节点都有 0 个或是 2 个子节点。</li>
+<li>数组 arr 中的值与树的中序遍历中每个叶节点的值一一对应。</li>
+<li>每个非叶节点的值等于其左子树和右子树中叶节点的最大值的乘积。</li>
+</ul>
+<p>在所有这样的二叉树中，返回每个非叶节点的值的最小可能总和。这个和的值是一个 32 位整数。</p>
+<p>eg:</p>
+<p><img src="img/tree1.png" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：arr = [6,2,4]</span><br><span class="line">输出：32</span><br><span class="line">解释：有两种可能的树，第一种的非叶节点的总和为 36 ，第二种非叶节点的总和为 32 。 </span><br></pre></td></tr></table></figure>
+<p><strong>思路：</strong></p>
+<ul>
+<li><p>确定方法：dp。可以将数组划分为两部分，建树。可以证明任何两个非空子数组都可以建成题目中的树。因此利用数组<code>arr</code>建成一颗最小代价生成树这个问题可以拆分子问题：将数组拆分成两个子数组，两个子数组都是代价最小的树，那么整棵树代价最小。</p>
+</li>
+<li><p>明确dp含义：<code>dp[i][j]</code>表示当<code>arr[i]</code>到<code>arr[j]</code>为叶子结点建成的子树的最小代价。</p>
+</li>
+<li><p>写出状态转移方程：</p>
+<script type="math/tex; mode=display">
+dp[i][j] = \begin{cases}
+0\\
+dp[i][j] = dp[i][k] + dp[k+1][j] + mx(i,k) * mx(k+1,j)
+\end{cases}</script></li>
+</ul>
+<p>​    其中，<code>mx(i,k)</code>表示<code>arr[i]</code>到<code>arr[k]</code>这段子数组中的最大值，最后一项<code>mx(i,k)*mx(k+1,j)</code>表示根节点的值。</p>
+<p><strong>代码：</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">mctFromLeafValues</span><span class="params">(<span class="type">int</span>[] arr)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> arr.length;</span><br><span class="line">        <span class="type">int</span>[][] dp = <span class="keyword">new</span> <span class="title class_">int</span>[n][n];</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span>[] d:dp)&#123;</span><br><span class="line">            Arrays.fill(d,Integer.MAX_VALUE);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span>[][] maxval = <span class="keyword">new</span> <span class="title class_">int</span>[n][n];</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>;j&lt;n;j++)&#123;</span><br><span class="line">            dp[j][j] = <span class="number">0</span>;</span><br><span class="line">            maxval[j][j] = arr[j];</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> j-<span class="number">1</span> ;i&gt;=<span class="number">0</span>; i--)&#123;</span><br><span class="line">                maxval[i][j] = Math.max(arr[i],maxval[i+<span class="number">1</span>][j]);<span class="comment">//叶子节点的最大值</span></span><br><span class="line">                <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">k</span> <span class="operator">=</span> i; k&lt;j; k++)&#123;</span><br><span class="line">                    dp[i][j] = Math.min(dp[i][j],dp[i][k]+dp[k+<span class="number">1</span>][j] + maxval[i][k]*maxval[k+<span class="number">1</span>][j]);   </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[<span class="number">0</span>][n-<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="nav-number">1.</span> <span class="nav-text">动态规划</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#300-%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97%E3%80%90%E9%87%8D%E8%A6%81%E3%80%91"><span class="nav-number">2.</span> <span class="nav-text">300. 最长递增子序列【重要】</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E7%BB%B4DP"><span class="nav-number"></span> <span class="nav-text">二维DP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#115-%E4%B8%8D%E5%90%8C%E7%9A%84%E5%AD%90%E5%BA%8F%E5%88%97%E3%80%90%E9%87%8D%E8%A6%81%E3%80%91"><span class="nav-number">1.</span> <span class="nav-text">115. 不同的子序列【重要】</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#139-%E5%8D%95%E8%AF%8D%E6%8B%86%E5%88%86%E3%80%90%E5%8F%98%E5%BC%8F%E3%80%91"><span class="nav-number">2.</span> <span class="nav-text">139. 单词拆分【变式】</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9A%B4%E5%8A%9BDP%E8%BF%87%E4%B8%8D%E4%BA%86%EF%BC%8C%E4%BC%98%E5%8C%96%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number"></span> <span class="nav-text">暴力DP过不了，优化的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"><span class="nav-number">1.</span> <span class="nav-text">滑动窗口</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#239-%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%80%E5%A4%A7%E5%80%BC"><span class="nav-number">1.1.</span> <span class="nav-text">239. 滑动窗口最大值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1696-%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F-VI"><span class="nav-number">1.2.</span> <span class="nav-text">1696. 跳跃游戏 VI</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E5%8E%8B%E7%BC%A9"><span class="nav-number"></span> <span class="nav-text">状态压缩</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#309-%E6%9C%80%E4%BD%B3%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E6%97%B6%E6%9C%BA%E5%90%AB%E5%86%B7%E5%86%BB%E6%9C%9F"><span class="nav-number">0.1.</span> <span class="nav-text">309. 最佳买卖股票时机含冷冻期</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84%E9%97%AE%E9%A2%98%E3%80%90%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2dfs%EF%BC%8Cdfs%E8%BD%ACdp%EF%BC%8C%E5%8F%8Cdp%E6%95%B0%E7%BB%84%E3%80%91"><span class="nav-number"></span> <span class="nav-text">路径问题【记忆化搜索dfs，dfs转dp，双dp数组】</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%BA%E5%AE%9A%E8%B5%B7%E7%82%B9%EF%BC%8C%E5%9B%BA%E5%AE%9A%E6%96%B9%E5%90%91%E9%97%AE%E9%A2%98%EF%BC%8C"><span class="nav-number">1.</span> <span class="nav-text">固定起点，固定方向问题，</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2"><span class="nav-number">2.</span> <span class="nav-text">记忆化搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1575-%E7%BB%9F%E8%AE%A1%E6%89%80%E6%9C%89%E5%8F%AF%E8%A1%8C%E8%B7%AF%E5%BE%84"><span class="nav-number">2.1.</span> <span class="nav-text">1575. 统计所有可行路径</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1335-%E5%B7%A5%E4%BD%9C%E8%AE%A1%E5%88%92%E7%9A%84%E6%9C%80%E4%BD%8E%E9%9A%BE%E5%BA%A6"><span class="nav-number">2.2.</span> <span class="nav-text">1335. 工作计划的最低难度</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%B0%E5%BF%86%E5%8C%96%E6%90%9C%E7%B4%A2%E5%88%86%E5%89%B2%E7%9F%A9%E5%BD%A2-%E5%8D%8E%E5%AD%90%E7%AC%94%E8%AF%95"><span class="nav-number">3.</span> <span class="nav-text">记忆化搜索分割矩形-华子笔试</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1240-%E9%93%BA%E7%93%B7%E7%A0%96"><span class="nav-number">3.1.</span> <span class="nav-text">1240. 铺瓷砖</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E8%B7%AF%E5%BE%84%E7%9A%84%E4%B8%AA%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">统计路径的个数</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1301-%E6%9C%80%E5%A4%A7%E5%BE%97%E5%88%86%E7%9A%84%E8%B7%AF%E5%BE%84%E6%95%B0%E7%9B%AE"><span class="nav-number">4.1.</span> <span class="nav-text">1301. 最大得分的路径数目</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%91%E5%BD%A2DP"><span class="nav-number"></span> <span class="nav-text">树形DP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BA%E9%97%B4DP"><span class="nav-number"></span> <span class="nav-text">区间DP</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1130-%E5%8F%B6%E5%80%BC%E7%9A%84%E6%9C%80%E5%B0%8F%E4%BB%A3%E4%BB%B7%E7%94%9F%E6%88%90%E6%A0%91"><span class="nav-number">0.1.</span> <span class="nav-text">1130. 叶值的最小代价生成树</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"> Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

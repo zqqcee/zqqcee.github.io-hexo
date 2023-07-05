@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="MXnxXuB_QrrsHGVDyL1PctN3b34klY8nvY_MD6CFETw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zqqcee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="古典概率学派认为概率是客观存在的，而贝叶斯学派认为概率是一个人对于一件事的信念强度，概率是主观的。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="机器学习——贝叶斯定理">
+<meta property="og:url" content="https://zqqcee.github.io/post_backup/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%AE%9A%E7%90%86.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="古典概率学派认为概率是客观存在的，而贝叶斯学派认为概率是一个人对于一件事的信念强度，概率是主观的。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210603110011729.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2021060311003157.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210603110951741.png">
+<meta property="article:published_time" content="2023-05-18T07:17:44.544Z">
+<meta property="article:modified_time" content="2022-08-03T10:03:58.977Z">
+<meta property="article:author" content="zqqcee">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20210603110011729.png">
+
+<link rel="canonical" href="https://zqqcee.github.io/post_backup/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%AE%9A%E7%90%86">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'en'
+  };
+</script>
+
+  <title>机器学习——贝叶斯定理 | zqqcee
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Comes in a big package "📦" </p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-chitchat">
+
+    <a href="/chitchat/" rel="section"><i class="fa fa-fan fa-fw"></i>Chitchat</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-leetcode">
+
+    <a href="/leetcode/" rel="section"><i class="fa fa-crosshairs fa-fw"></i>Leetcode</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="en">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">机器学习——贝叶斯定理
+</h1>
+
+<div class="post-meta">
+    <div class="post-description">古典概率学派认为概率是客观存在的，而贝叶斯学派认为概率是一个人对于一件事的信念强度，概率是主观的。</div>
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1 id="贝叶斯定理"><a href="#贝叶斯定理" class="headerlink" title="贝叶斯定理"></a>贝叶斯定理</h1><h2 id="由来"><a href="#由来" class="headerlink" title="由来"></a>由来</h2><p>古典概率学派认为概率是客观存在的，而贝叶斯学派认为概率是一个人对于一件事的信念强度，概率是主观的。</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><h3 id="贝叶斯定理-1"><a href="#贝叶斯定理-1" class="headerlink" title="贝叶斯定理"></a>贝叶斯定理</h3><p><img src="https://img-blog.csdnimg.cn/20210603110011729.png" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/2021060311003157.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>换一种更便于理解的公式陈列方式：</p>
+<script type="math/tex; mode=display">
+P(类别|特征) = \frac{P(特征|类别)P(特征)}{P(特征)}</script><h3 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h3><script type="math/tex; mode=display">
+P（H|X）= \frac{P(X|H)P(H)}{P(X)}\\
+P(X|H)=P(X_1|H)P(X_2|H)...P(X_n|H)=\frac{P(X_1|H)}{P(X_1)}\frac{P(X_2|H)}{P(X_2)}...\frac{P(X_n|H)}{P(X_n)}</script><p>eg.</p>
+<p><img src="https://img-blog.csdnimg.cn/20210603110951741.png" alt="在这里插入图片描述"></p>
+<h4 id="⭐成立前提：各假设特征之间相互独立"><a href="#⭐成立前提：各假设特征之间相互独立" class="headerlink" title="⭐成立前提：各假设特征之间相互独立"></a>⭐成立前提：各假设特征之间相互独立</h4><h4 id="朴素贝叶斯实际问题应用："><a href="#朴素贝叶斯实际问题应用：" class="headerlink" title="朴素贝叶斯实际问题应用："></a>朴素贝叶斯实际问题应用：</h4><p>现在给我们的问题是，如果一对男女朋友，男生想女生求婚，男生的四个特点分别是不帅，性格不好，身高矮，不上进，请你判断一下女生是嫁还是不嫁？</p>
+<p>这是一个典型的分类问题，转为数学问题就是比较下面两者的概率，谁的概率大，我就能给出嫁或者不嫁的答案！</p>
+<ul>
+<li><p>p(嫁|(不帅、性格不好、身高矮、不上进))</p>
+</li>
+<li><p>p(不嫁|(不帅、性格不好、身高矮、不上进))</p>
+</li>
+</ul>
+<h4 id="“朴素”一词的由来"><a href="#“朴素”一词的由来" class="headerlink" title="“朴素”一词的由来"></a>“朴素”一词的由来</h4><p>朴素贝叶斯的特点是，这个模型做了一个较强的假设，而牺牲了分类的准确率。<br>这个假设就是假设各个特征之间相互独立。如果没有这个假设的话，统计将变成不可能。</p>
+<p>假如我们没有假设特征之间相互独立，那么我们统计的时候，就需要在<strong>整个特征空间中去找</strong>，比如统计p(不帅、性格不好、身高矮、不上进|嫁),我们就需要在嫁的条件下，去找<strong>四种特征全满足</strong>分别是不帅，性格不好，身高矮，不上进的人的个数。这样的话，<strong>由于数据的稀疏性，很容易统计到0的情况</strong>。 这样是不合适的。</p>
+<hr>
+<h2 id="贝叶斯分类的三种模型"><a href="#贝叶斯分类的三种模型" class="headerlink" title="贝叶斯分类的三种模型"></a>贝叶斯分类的三种模型</h2><h3 id="多项式模型"><a href="#多项式模型" class="headerlink" title="多项式模型"></a>多项式模型</h3><p>文本进行分词处理后，模型将<strong>重复出现的词语</strong>视为<strong>多次出现</strong></p>
+<p>“代开发票，增值税发票，正规发票”，分词后向量为{代开，发票，增值税，发票，正规，发票}</p>
+<h3 id="伯努利模型"><a href="#伯努利模型" class="headerlink" title="伯努利模型"></a>伯努利模型</h3><p>文本进行分词处理后，模型将<strong>重复出现的词语</strong>视为<strong>只出现一次</strong></p>
+<p>“代开发票，增值税发票，正规发票”，分词后向量为{代开，发票，增值税，正规}</p>
+<h3 id="高斯模型"><a href="#高斯模型" class="headerlink" title="高斯模型"></a>高斯模型</h3><p><strong>用途</strong>：用于计算连续性变量的取值概率</p>
+<p>将人的身高这一连续变量转换为离散型的值，一般处理方式是将连续型身高变量分为三个种类：</p>
+<ul>
+<li>160cm以下，对应向量：（1，0，0）</li>
+<li>160cm-175cm，对应向量：（0，1，0）</li>
+<li>175以上，，对应向量：（0，0，1）</li>
+</ul>
+<p>不过这些处理方法都不够细腻，而高斯模型就可以完美解决这个问题。</p>
+<p><strong>使用方法</strong>： 当使用高斯模型时，我们会<strong>假定特征属于高斯分布（即正态分布）</strong>，然后基于训练样本计算特征均值和标准差，这样就可以得到<strong>该特征下</strong>的每一个属性值的先验概率。</p>
+<p>概率密度函数：由于连续型随机变量在每一点的概率是0，概率密度函数度量的是每一点的相对概率大小。</p>
+<p>高斯模型的问题求解举例：</p>
+<p>[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-BFWo02my-1622689124236)(C:\Users\cc\AppData\Roaming\Typora\typora-user-images\image-20210519161545766.png)]</p>
+<hr>
+<h2 id="词袋模型"><a href="#词袋模型" class="headerlink" title="词袋模型"></a>词袋模型</h2><p>用一个字典存储一段文本，字典中不记录该文本中单词的顺序，只记录单词出现的频率</p>
+<h2 id="TF-IDF"><a href="#TF-IDF" class="headerlink" title="TF-IDF"></a>TF-IDF</h2><p>TF-IDF是一种统计方法，用以评估一字词对于一个文件集或一个语料库中的其中一份文件的重要程度</p>
+<p>其主要思想是：如果某个单词在一篇文章中出现的频率TF高，并且在其他文章中很少出现，则认为此词或者短语具有很好的类别区分能力，适合用来分类。</p>
+<h3 id="TF：词频"><a href="#TF：词频" class="headerlink" title="TF：词频"></a>TF：词频</h3><p>一般使用归一化，防止出现词频偏向文本长度长的文件。记录了某单词在一个文件中出现的频率</p>
+<h3 id="IDF-逆向文件频率"><a href="#IDF-逆向文件频率" class="headerlink" title="IDF 逆向文件频率"></a>IDF 逆向文件频率</h3><p>某一特定词语的IDF，可以由总文件数目除以包含该词语的文件的数目，再将得到的商取对数得到。如果包含词条t的文档越少, IDF越大，则说明词条具有很好的类别区分能力</p>
+<script type="math/tex; mode=display">
+IDF = \log(\frac{语料库的文档总数}{包含该词的文档数+1})\\
++1的原因：防止分母为0</script><hr>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/asialee_bird/article/details/81486700">https://blog.csdn.net/asialee_bird/article/details/81486700</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/cindy407/article/details/93533080">https://blog.csdn.net/cindy407/article/details/93533080</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/ac540101928/article/details/103941495">https://blog.csdn.net/ac540101928/article/details/103941495</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/158771382">https://zhuanlan.zhihu.com/p/158771382</a></li>
+</ul>
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%AE%9A%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">贝叶斯定理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%B1%E6%9D%A5"><span class="nav-number">1.1.</span> <span class="nav-text">由来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">1.2.</span> <span class="nav-text">定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%AE%9A%E7%90%86-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">贝叶斯定理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF"><span class="nav-number">1.2.2.</span> <span class="nav-text">朴素贝叶斯</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%AD%90%E6%88%90%E7%AB%8B%E5%89%8D%E6%8F%90%EF%BC%9A%E5%90%84%E5%81%87%E8%AE%BE%E7%89%B9%E5%BE%81%E4%B9%8B%E9%97%B4%E7%9B%B8%E4%BA%92%E7%8B%AC%E7%AB%8B"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">⭐成立前提：各假设特征之间相互独立</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%AE%9E%E9%99%85%E9%97%AE%E9%A2%98%E5%BA%94%E7%94%A8%EF%BC%9A"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">朴素贝叶斯实际问题应用：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%9C%E6%9C%B4%E7%B4%A0%E2%80%9D%E4%B8%80%E8%AF%8D%E7%9A%84%E7%94%B1%E6%9D%A5"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">“朴素”一词的由来</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E7%9A%84%E4%B8%89%E7%A7%8D%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.</span> <span class="nav-text">贝叶斯分类的三种模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E9%A1%B9%E5%BC%8F%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.1.</span> <span class="nav-text">多项式模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%AF%E5%8A%AA%E5%88%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.2.</span> <span class="nav-text">伯努利模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AB%98%E6%96%AF%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.3.</span> <span class="nav-text">高斯模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%8D%E8%A2%8B%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.4.</span> <span class="nav-text">词袋模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TF-IDF"><span class="nav-number">1.5.</span> <span class="nav-text">TF-IDF</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TF%EF%BC%9A%E8%AF%8D%E9%A2%91"><span class="nav-number">1.5.1.</span> <span class="nav-text">TF：词频</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDF-%E9%80%86%E5%90%91%E6%96%87%E4%BB%B6%E9%A2%91%E7%8E%87"><span class="nav-number">1.5.2.</span> <span class="nav-text">IDF 逆向文件频率</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"> Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+</body>
+</html>

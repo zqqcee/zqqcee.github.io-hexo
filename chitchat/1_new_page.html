@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="MXnxXuB_QrrsHGVDyL1PctN3b34klY8nvY_MD6CFETw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zqqcee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="hexo next主题，新建一个专栏background今天突发奇想，想要在自己的博客中增加一个新的专栏，记录自己的一些随想。起因是不想让博客成为一个纯粹记录技术成长的网站，（毕竟如果真的有人要看技术内容我估计会直接跑去CSDN 掘金 segmentfault这些地方），还是想在个人博客中记录一些个人的成长与思考。最近偶然刷到云谦老师sorrycc的信息流分享，大佬创建了前端周刊MDH。每天都有新">
+<meta property="og:type" content="website">
+<meta property="og:title" content="zqqcee">
+<meta property="og:url" content="https://zqqcee.github.io/chitchat/1_new_page.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="hexo next主题，新建一个专栏background今天突发奇想，想要在自己的博客中增加一个新的专栏，记录自己的一些随想。起因是不想让博客成为一个纯粹记录技术成长的网站，（毕竟如果真的有人要看技术内容我估计会直接跑去CSDN 掘金 segmentfault这些地方），还是想在个人博客中记录一些个人的成长与思考。最近偶然刷到云谦老师sorrycc的信息流分享，大佬创建了前端周刊MDH。每天都有新">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306161354985.png">
+<meta property="article:published_time" content="2023-07-04T13:12:21.262Z">
+<meta property="article:modified_time" content="2023-06-18T07:05:03.331Z">
+<meta property="article:author" content="zqqcee">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306161354985.png">
+
+<link rel="canonical" href="https://zqqcee.github.io/chitchat/1_new_page">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'en'
+  };
+</script>
+
+  <title> | zqqcee
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Comes in a big package "📦" </p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-chitchat">
+
+    <a href="/chitchat/" rel="section"><i class="fa fa-fan fa-fw"></i>Chitchat</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-leetcode">
+
+    <a href="/leetcode/" rel="section"><i class="fa fa-crosshairs fa-fw"></i>Leetcode</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="en">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h1 id="hexo-next主题，新建一个专栏"><a href="#hexo-next主题，新建一个专栏" class="headerlink" title="hexo next主题，新建一个专栏"></a>hexo next主题，新建一个专栏</h1><h3 id="background"><a href="#background" class="headerlink" title="background"></a>background</h3><p>今天突发奇想，想要在自己的博客中增加一个新的专栏，记录自己的一些随想。起因是不想让博客成为一个纯粹记录技术成长的网站，（毕竟如果真的有人要看技术内容我估计会直接跑去CSDN 掘金 segmentfault这些地方），还是想在个人博客中记录一些个人的成长与思考。最近偶然刷到<a target="_blank" rel="noopener" href="https://github.com/sorrycc">云谦老师sorrycc</a>的信息流分享，大佬创建了<a target="_blank" rel="noopener" href="https://mdhweekly.com/">前端周刊MDH</a>。每天都有新的内容输入，内化，输出，就像一台机器，不断汲取知识，消化知识，输出知识。我觉得这种方式挺酷的，虽然我只是无名之辈，但是每天的怪想法却很多，听到一些好玩的博客，技术访谈，会产生一些有趣的联想。哈哈，所以趁着自己还没成名之前，开个小专栏记录一下这些想法，也满足一下自己的表达欲。</p>
+<h3 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a>Intro</h3><p>这篇文章记录如何在hexo，next主题中<strong>新建一个page</strong>，来存放其他的文章，使它不要出现在Home page中。</p>
+<p>可以使用这个方法来：</p>
+<ul>
+<li>创建About，在博客中存放自己的简历</li>
+<li>创建Link，在博客中存放友链</li>
+<li>创建ChitChat，在博客中存放自己的一些杂谈</li>
+<li>创建Favorite，在博客中存放自己的喜爱博文</li>
+<li>创建……</li>
+</ul>
+<p>方法很简单，不需要编写任何的脚本文件。但是出乎意料的是，我搜索：next主题下如何创建一个新的Page，存放博文。居然没有一个人教我怎么做，全网千篇一律地都在说如何创建About，也就是个人简介界面。经过我一个早上的摸索，总结了一个方法：</p>
+<h3 id="How-to-do-that？"><a href="#How-to-do-that？" class="headerlink" title="How to do that？"></a>How to do that？</h3><ul>
+<li><p>首先，向大多数博主教的那样，打开终端，cd到你博客存放的目录下，运行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo new page example</span><br></pre></td></tr></table></figure>
+<p>这里，example需要换成你想要创建的page名，这里我需要创建的是chitchat页面，就把example换成chitchat</p>
+<p>创建好后，你会发现<code>/source</code>目录下会出现一个文件夹，里面有一个<code>index.md</code>文件，这就说明你已经创建成功了</p>
+</li>
+<li><p>接着，在<code>/themes/next</code>目录下找到<code>_config.yml</code>，找到<code>menu</code>，在<code>menu</code>处添加你需要创建的page名。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">menu:</span><br><span class="line">  #....other</span><br><span class="line">  Chitchat: /chitchat/ || fa fa-fan</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>最后，打开<code>/source</code>目录下你刚刚创建的那个文件夹，编辑index.md文件，加入</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;article1&quot;</span>&gt;</span>文章1<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>就可以了。</p>
+<p>效果是这样的：</p>
+<p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306161354985.png" alt="image-20230616135434516"></p>
+</li>
+</ul>
+<h3 id="🎈"><a href="#🎈" class="headerlink" title="🎈"></a>🎈</h3><ul>
+<li><p>我的个人博客地址：<a target="_blank" rel="noopener" href="https://github.com/zqqcee">zqqcee</a></p>
+</li>
+<li><p>我的github地址：<a target="_blank" rel="noopener" href="https://github.com/zqqcee">zqqcee</a></p>
+</li>
+</ul>
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#hexo-next%E4%B8%BB%E9%A2%98%EF%BC%8C%E6%96%B0%E5%BB%BA%E4%B8%80%E4%B8%AA%E4%B8%93%E6%A0%8F"><span class="nav-number">1.</span> <span class="nav-text">hexo next主题，新建一个专栏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#background"><span class="nav-number">1.0.1.</span> <span class="nav-text">background</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Intro"><span class="nav-number">1.0.2.</span> <span class="nav-text">Intro</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#How-to-do-that%EF%BC%9F"><span class="nav-number">1.0.3.</span> <span class="nav-text">How to do that？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%8E%88"><span class="nav-number">1.0.4.</span> <span class="nav-text">🎈</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"> Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="MXnxXuB_QrrsHGVDyL1PctN3b34klY8nvY_MD6CFETw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zqqcee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文记录了我从发现bug，排查bug到给G6提PR，与仓库管理员沟通，最终PR被成功merge的过程。给想要参与开源，为自己喜欢的项目贡献绵薄之力的朋友提供一套完整的贡献流程参考">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pull Request完整过程【记一次给antvis&#x2F;G6的PR】">
+<meta property="og:url" content="https://zqqcee.github.io/2023/06/08/aea9cc721cd4/index.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="本文记录了我从发现bug，排查bug到给G6提PR，与仓库管理员沟通，最终PR被成功merge的过程。给想要参与开源，为自己喜欢的项目贡献绵薄之力的朋友提供一套完整的贡献流程参考">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306082202885.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306082202026.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306082202094.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306082202467.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306082203170.png">
+<meta property="article:published_time" content="2023-06-08T12:31:05.655Z">
+<meta property="article:modified_time" content="2023-07-04T13:37:34.871Z">
+<meta property="article:author" content="zqqcee">
+<meta property="article:tag" content="git">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306082202885.png">
+
+<link rel="canonical" href="https://zqqcee.github.io/2023/06/08/aea9cc721cd4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Pull Request完整过程【记一次给antvis/G6的PR】 | zqqcee</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Comes in a big package "📦" </p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-chitchat">
+
+    <a href="/chitchat/" rel="section"><i class="fa fa-fan fa-fw"></i>Chitchat</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-leetcode">
+
+    <a href="/leetcode/" rel="section"><i class="fa fa-crosshairs fa-fw"></i>Leetcode</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zqqcee.github.io/2023/06/08/aea9cc721cd4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="zqqcee">
+      <meta itemprop="description" content=" Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zqqcee">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Pull Request完整过程【记一次给antvis/G6的PR】
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-06-08 20:31:05" itemprop="dateCreated datePublished" datetime="2023-06-08T20:31:05+08:00">2023-06-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-07-04 21:37:34" itemprop="dateModified" datetime="2023-07-04T21:37:34+08:00">2023-07-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/thought/" itemprop="url" rel="index"><span itemprop="name">thought</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <div class="post-description">本文记录了我从发现bug，排查bug到给G6提PR，与仓库管理员沟通，最终PR被成功merge的过程。给想要参与开源，为自己喜欢的项目贡献绵薄之力的朋友提供一套完整的贡献流程参考</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Pull-Request完整过程【记一次给antvis-G6的PR】"><a href="#Pull-Request完整过程【记一次给antvis-G6的PR】" class="headerlink" title="Pull Request完整过程【记一次给antvis/G6的PR】"></a>Pull Request完整过程【记一次给antvis/G6的PR】</h1><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>G6正在进行<code>v4</code>到<code>v5</code>的版本升级，发了几个Issue Hunt，因为很喜欢G6，所以想尝试帮助完成一个矩形Item的迁移。在编写测试demo的过程中，发现了G6的一个严重bug。本文记录了我从发现bug，排查bug到给G6提PR，与仓库管理员沟通，最终PR被成功merge的过程。这是我给G6的第二个PR，给想要参与开源，为自己喜欢的项目贡献绵薄之力的朋友提供一套完整的贡献流程参考。附上两次Pull Request的链接</p>
+<ul>
+<li>Doc fix ：<a target="_blank" rel="noopener" href="https://github.com/antvis/G6/pull/4554">Fix issue#4552, another 404 not found and typo errors #4554</a></li>
+<li>Bug fix ：<a target="_blank" rel="noopener" href="https://github.com/antvis/G6/pull/4608">Fix: “Node not found” error from ‘getNode()’#4608</a></li>
+</ul>
+<h3 id="Bug-重现"><a href="#Bug-重现" class="headerlink" title="Bug 重现"></a>Bug 重现</h3><p>这是我在编写测试demo时，发现G6中存在的一个bug。报错信息显示：<code>Node not found for id: 1</code>。</p>
+<p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306082202885.png" alt="image"></p>
+<p>根据字面意思，某个方法收到了<code>id</code>为1的节点，但是在我传入的数据中并不存在这个节点。</p>
+<h3 id="问题排查"><a href="#问题排查" class="headerlink" title="问题排查"></a>问题排查</h3><p>我在<code>Graph.getNode()</code>这个方法的前后调试了很久，更奇怪的是，直接调用<code>Graph.getNode(1)</code>居然是能够返回节点的。由于G6的代码中写的是:</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="title class_">Object</span>.<span class="title function_">keys</span>(data).<span class="title function_">forEach</span>(<span class="function">(<span class="params">id</span>)=&gt;</span>&#123;</span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line">  <span class="keyword">const</span> innerModel = graphCore.<span class="title function_">getNode</span>(id);</span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>我在getNode之前在控制台<code>console.log</code>了<code>id</code>, 控制台输出<code>1</code>。这就很奇怪了，我一度怀疑是<code>getNode</code>这个方法出现了问题，但是<code>getNode</code>是一个核心方法，应该不可能出错。</p>
+<p>如果直接调用<code>Graph.getNode(1)</code> 能够返回节点，那么说明id就不是1，于是我输出了<code>id==1</code>，果不其然控制台输出<code>false</code>。进一步使用<code>typeof</code>查看<code>id</code>的类型，才发现id不知道怎么已经变成了<code>string</code>。原来使用<code>Object.keys()</code>生成的数组，无论<code>key</code>的类型是什么，统一生成为<code>string</code>数组。这个<code>bug</code>很严重啊，如果用户在数据中定义的<code>id</code>是<code>number</code>类型，那么将无法获取到这个<code>Node</code>。</p>
+<p>到这里，问题就定位完毕了。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>其实要解决这个问题很简单，有以下三种方法：</p>
+<ul>
+<li>在用户的id为<code>number</code>类型时，使用<code>Number(id)</code>进行一次转换，而在用户<code>id</code>为<code>string</code>类型时，不做任何处理</li>
+<li>修改<code>getNode()</code>，使他能够识别用户传入数据中<code>id</code>的类型</li>
+<li>在文档中强制限制用户输入<code>string</code>类型，并且使用类型检查将用户输入的data限制为string</li>
+</ul>
+<p>三种方法首先排除第二种，因为<code>getNode()</code>是一个核心方法，是从<code>antv</code>的核心代码仓中<code>import</code>过来的一个方法，找不到修改的入口</p>
+<p>我这里选择了第一种方法，并在PR中提示了，如果不做修改的话需要在文档中明确标注<code>id</code>必须为<code>string</code>类型</p>
+<p>在解决这个问题的时候，我还考虑到了一种情况，如果用户比较调皮，<strong>输入的<code>id</code>中又有<code>string</code>类型，又有<code>number</code>类型</strong>应该怎么解决呢？这里我采用了添加<code>try-catch</code>代码块来进行解决。</p>
+<h4 id="old-version"><a href="#old-version" class="headerlink" title="old version"></a>old version</h4><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// &#x27;id&#x27; variable is always string in here, but one in user data is number, possibly.    </span></span><br><span class="line"><span class="title class_">Object</span>.<span class="title function_">keys</span>(data).<span class="title function_">forEach</span>(<span class="function">(<span class="params">id</span>)=&gt;</span>&#123;</span><br><span class="line">  <span class="keyword">const</span> innerModel = graphCore.<span class="title function_">getNode</span>(id);</span><br><span class="line">	<span class="keyword">const</span> relatedEdgeInnerModels = graphCore.<span class="title function_">getRelatedEdges</span>(id);</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="new-version"><a href="#new-version" class="headerlink" title="new version"></a>new version</h4><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="title class_">Object</span>.<span class="title function_">keys</span>(data).<span class="title function_">forEach</span>(<span class="function">(<span class="params">id</span>)=&gt;</span>&#123;</span><br><span class="line">  <span class="keyword">let</span> innerModel</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    innerModel = graphCore.<span class="title function_">getNode</span>(id);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    innerModel = graphCore.<span class="title function_">getNode</span>(<span class="title class_">Number</span>(id))</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> relatedEdgeInnerModels;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    relatedEdgeInnerModels = graphCore.<span class="title function_">getRelatedEdges</span>(id);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    relatedEdgeInnerModels = graphCore.<span class="title function_">getRelatedEdges</span>(<span class="title class_">Number</span>(id));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>并且我在我的PR底下，做了如下说明，来询问这么做是否合理：</p>
+<blockquote>
+<p>An error is throwed from this function ‘getNode()’; msg: “Node not found for id: 1”<br>After testing, I found that ‘id’ variable is always string after <code>Object.keys(update).forEach((id)=&gt;&#123;...&#125;)</code>, but one in user data is number, possibly.<br>I tried adding a <code>try-catch</code> block to fix this bug, but <strong>it doesn’t seem very reasonable to do so</strong>. I guess you can restrict the user to set the <code>id</code> to a string type in the document, or force the <code>id</code> to a string type in the <code>transformer data</code> layer to avoid this error.</p>
+<hr>
+<p><code>getNode()</code>方法抛出了一个异常； 报错信息为：“找不到 id为1的节点“<br>经过测试，我发现<code>id</code>变量在<code>Object.keys(update).forEach((id)=&gt;&#123;...&#125;)</code>之后总是字符串类型，但是这个<code>id</code>变量在用户数据中很有可能是数字类型。<br>我尝试添加一个 <code>try-catch</code> 块来修复这个错误，但<strong>这样做似乎不太合理</strong>。 我想你们可以在文档中说明：限制 <code>id</code> 为字符串类型，或者在 <code>transformer data</code> 层强制将 <code>id</code> 设置为字符串类型来避免这个错误。</p>
+</blockquote>
+<h4 id="收到回复"><a href="#收到回复" class="headerlink" title="收到回复"></a>收到回复</h4><p>很快，我收到了仓库管理员<strong>十吾</strong>的回复，她回复了一个👍，我好开心，我问她这是可以接受的吗，如果是的话，需不需要重新创建一个PR来进行提交（因为我一开始提交的PR有其他修改，但是另外的修改无法被merge）。</p>
+<p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306082202026.png" alt="image-20230608213348021"></p>
+<h3 id="PR提交完整过程"><a href="#PR提交完整过程" class="headerlink" title="PR提交完整过程"></a>PR提交完整过程</h3><p>这一部分记录完整的PR提交过程，其中包含了我遇到的问题，一并做陈述并给出解决方案。因为这是我第二次给开源仓库做贡献，所以一些看起来很简单的细节我也记录在这里，帮后面的同学少踩一些坑。</p>
+<h4 id="fork仓库-amp-clone代码仓"><a href="#fork仓库-amp-clone代码仓" class="headerlink" title="fork仓库 &amp; clone代码仓"></a>fork仓库 &amp; clone代码仓</h4><p>直接fork，选仅fork默认分支即可。fork仓库后，在自己的github主页就能看到一个一摸一样的代码仓了。这一步注意，是要clone自己fork后的代码仓，比如我需要clone的地址是：<code>https://github.com/zqqcee/G6.git</code>,这里<code>zqqcee</code>是自己的用户名，不要clone错了。</p>
+<h4 id="添加upstream"><a href="#添加upstream" class="headerlink" title="添加upstream"></a>添加upstream</h4><p>这一步的目的是将<code>antvis</code>的源仓库添加为上游仓库，不然我们无法同步它们的更新。运行：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git remote add upstream &quot;https://github.com/antvis/G6.git&quot;</span><br></pre></td></tr></table></figure>
+<p>运行完毕后，输入<code>git remote -v</code> ，能够看到</p>
+<blockquote>
+<p>origin:xxxx<br>origin:xxxx<br>upstream:xxxx<br>upstream:xxxx</p>
+</blockquote>
+<h4 id="fetch-新分支"><a href="#fetch-新分支" class="headerlink" title="fetch 新分支"></a>fetch 新分支</h4><p>由于我是给<strong>v5分支</strong>提的PR，因此我需要先<strong>fetch v5分支</strong>。运行：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git fetch upstream/v5</span><br></pre></td></tr></table></figure>
+<p>输入<code>git branch -a</code>就可以看到有一个红色的分支<code>upstream/v5</code>，这说明已经fetch成功了</p>
+<p>下一步，我们就需要把这个分支的内容在本地创建，并进行修改。</p>
+<h4 id="创建新分支"><a href="#创建新分支" class="headerlink" title="创建新分支"></a>创建新分支</h4><p>这一步在我执行的时候有一个很大的坑：我在master分支上直接运行：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git checkout -b v5</span><br><span class="line">git rebase xxx</span><br></pre></td></tr></table></figure>
+<p>结果出了<strong>一堆冲突</strong>，后来才知道是<strong>我的v5分支是从master分支上创建的，而不是从远程拉过来的</strong>。</p>
+<p>应该输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git checkout -b origin/v5 upstream/v5</span><br></pre></td></tr></table></figure>
+<p>这一步的意思是从<code>upstream/v5</code>分支创建一个<code>origin/v5</code>分支。</p>
+<p>到这里还没结束，因为这个<code>origin/v5</code>分支是我们从upstream中拉取出来的，我的习惯是要在这个分支上再新建一个分支做开发，分支名也有一些含义，于是接着运行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git checkout -b v5-fix#NodeNotFound</span><br></pre></td></tr></table></figure>
+<h4 id="完成修改（注意commit规范）"><a href="#完成修改（注意commit规范）" class="headerlink" title="完成修改（注意commit规范）"></a>完成修改（注意commit规范）</h4><p>写完代码后注意自己的commit规范，每一个commit都要让别人能看懂，不要全部修改完再做提交。这里我把每一个修改的含义都分得比较清楚，如下：</p>
+<ul>
+<li>bug 重现 commit</li>
+<li>bug 修复 commit</li>
+</ul>
+<h4 id="push到个人仓库"><a href="#push到个人仓库" class="headerlink" title="push到个人仓库"></a>push到个人仓库</h4><p>在这一步我遇到了大麻烦，由于G6发布了<code>issue hunt</code>,因此这里我push到个人仓库时，由于我的<strong><code>personal token</code>没有包含workflow，</strong>因此push不成功。报错：<strong>“refusing to allow a Personal Access Token to create or update workflow <code>.github/workflows/build.yml</code> without <code>workflow</code> scope”</strong></p>
+<p>这一步正确的解决方案是重新创建一个Token并push，但是我为了省事，直接把workflow删掉了。结果PR就没有被合，并且收到了这个comment：</p>
+<p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306082202094.png" alt="image-20230608215157196"></p>
+<p>对于这个问题，解决方案我也记录在此处：</p>
+<ul>
+<li><p>首先，创建一个token,勾选workflow，这一步在网上有很多教程，跟着做就好了，这里不做过多赘述</p>
+</li>
+<li><p>接着，重新设置<code>origin</code>。运行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git remote remove origin </span><br><span class="line">git remote add origin https://&#123;token&#125;@github.com/zqqcee/G6.git</span><br></pre></td></tr></table></figure>
+<p>将<code>&#123;token&#125;</code>替换为刚刚创建的带workflow的token</p>
+</li>
+<li><p>最后，重新push就能成功了</p>
+</li>
+</ul>
+<h4 id="创建Pull-Request"><a href="#创建Pull-Request" class="headerlink" title="创建Pull Request"></a>创建Pull Request</h4><p>到fork的仓库中，push成功后，仓库中会显示有一个新的分支。然后点击<code>Pull Request</code></p>
+<p>创建一个新的<code>Pull Request</code></p>
+<p>这一步没什么好说的，重点是要选对你要修改的分支</p>
+<p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306082202467.png" alt="image-20230608215845380"></p>
+<h4 id="填写PR信息"><a href="#填写PR信息" class="headerlink" title="填写PR信息"></a>填写PR信息</h4><p>PR信息非常关键，必须非常清楚地说明你为什么要创建这个PR ，以及这个PR修复了什么问题。这里直接贴上我的PR 说明，供参考。</p>
+<p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202306082203170.png" alt="iShot_2023-06-08_21.59.51"></p>
+<hr>
+<p><strong>以上就是全部的解决过程了，很开心能为G6做了贡献，希望有机会能加入AntV团队，也希望自己能为更多仓库创建更优秀的PR～！</strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/git/" rel="tag"># git</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/03/24/3423a90bb58e/" rel="prev" title="实现autoZoom(),画布自适应放缩并居中@D3.js-v5">
+      <i class="fa fa-chevron-left"></i> 实现autoZoom(),画布自适应放缩并居中@D3.js-v5
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pull-Request%E5%AE%8C%E6%95%B4%E8%BF%87%E7%A8%8B%E3%80%90%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BB%99antvis-G6%E7%9A%84PR%E3%80%91"><span class="nav-number">1.</span> <span class="nav-text">Pull Request完整过程【记一次给antvis&#x2F;G6的PR】</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.0.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bug-%E9%87%8D%E7%8E%B0"><span class="nav-number">1.0.2.</span> <span class="nav-text">Bug 重现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5"><span class="nav-number">1.0.3.</span> <span class="nav-text">问题排查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">1.0.4.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#old-version"><span class="nav-number">1.0.4.1.</span> <span class="nav-text">old version</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#new-version"><span class="nav-number">1.0.4.2.</span> <span class="nav-text">new version</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%B6%E5%88%B0%E5%9B%9E%E5%A4%8D"><span class="nav-number">1.0.4.3.</span> <span class="nav-text">收到回复</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PR%E6%8F%90%E4%BA%A4%E5%AE%8C%E6%95%B4%E8%BF%87%E7%A8%8B"><span class="nav-number">1.0.5.</span> <span class="nav-text">PR提交完整过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#fork%E4%BB%93%E5%BA%93-amp-clone%E4%BB%A3%E7%A0%81%E4%BB%93"><span class="nav-number">1.0.5.1.</span> <span class="nav-text">fork仓库 &amp; clone代码仓</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0upstream"><span class="nav-number">1.0.5.2.</span> <span class="nav-text">添加upstream</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fetch-%E6%96%B0%E5%88%86%E6%94%AF"><span class="nav-number">1.0.5.3.</span> <span class="nav-text">fetch 新分支</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B0%E5%88%86%E6%94%AF"><span class="nav-number">1.0.5.4.</span> <span class="nav-text">创建新分支</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%8C%E6%88%90%E4%BF%AE%E6%94%B9%EF%BC%88%E6%B3%A8%E6%84%8Fcommit%E8%A7%84%E8%8C%83%EF%BC%89"><span class="nav-number">1.0.5.5.</span> <span class="nav-text">完成修改（注意commit规范）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#push%E5%88%B0%E4%B8%AA%E4%BA%BA%E4%BB%93%E5%BA%93"><span class="nav-number">1.0.5.6.</span> <span class="nav-text">push到个人仓库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAPull-Request"><span class="nav-number">1.0.5.7.</span> <span class="nav-text">创建Pull Request</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A1%AB%E5%86%99PR%E4%BF%A1%E6%81%AF"><span class="nav-number">1.0.5.8.</span> <span class="nav-text">填写PR信息</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"> Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+</body>
+</html>

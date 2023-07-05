@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="MXnxXuB_QrrsHGVDyL1PctN3b34klY8nvY_MD6CFETw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zqqcee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="一张节点链接图，实现一个自适应放缩方法，使画布按照屏幕的尺寸进行放缩，并将元素居中展示。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实现autoZoom(),画布自适应放缩并居中@D3.js-v5">
+<meta property="og:url" content="https://zqqcee.github.io/2023/03/24/3423a90bb58e/index.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="一张节点链接图，实现一个自适应放缩方法，使画布按照屏幕的尺寸进行放缩，并将元素居中展示。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202303241514591.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202303241514564.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202303241517212.png">
+<meta property="article:published_time" content="2023-03-24T06:14:39.270Z">
+<meta property="article:modified_time" content="2023-07-04T13:37:34.873Z">
+<meta property="article:author" content="zqqcee">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202303241514591.png">
+
+<link rel="canonical" href="https://zqqcee.github.io/2023/03/24/3423a90bb58e/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>实现autoZoom(),画布自适应放缩并居中@D3.js-v5 | zqqcee</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Comes in a big package "📦" </p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-chitchat">
+
+    <a href="/chitchat/" rel="section"><i class="fa fa-fan fa-fw"></i>Chitchat</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-leetcode">
+
+    <a href="/leetcode/" rel="section"><i class="fa fa-crosshairs fa-fw"></i>Leetcode</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://zqqcee.github.io/2023/03/24/3423a90bb58e/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="zqqcee">
+      <meta itemprop="description" content=" Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zqqcee">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          实现autoZoom(),画布自适应放缩并居中@D3.js-v5
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-03-24 14:14:39" itemprop="dateCreated datePublished" datetime="2023-03-24T14:14:39+08:00">2023-03-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-07-04 21:37:34" itemprop="dateModified" datetime="2023-07-04T21:37:34+08:00">2023-07-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/visual-analytics/" itemprop="url" rel="index"><span itemprop="name">visual analytics</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <div class="post-description">一张节点链接图，实现一个自适应放缩方法，使画布按照屏幕的尺寸进行放缩，并将元素居中展示。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="实现autoZoom-画布自适应放缩并居中-D3-js-v5"><a href="#实现autoZoom-画布自适应放缩并居中-D3-js-v5" class="headerlink" title="实现autoZoom(),画布自适应放缩并居中 @D3.js-v5"></a>实现<code>autoZoom()</code>,画布自适应放缩并居中 @D3.js-v5</h1><h3 id="需求陈述："><a href="#需求陈述：" class="headerlink" title="需求陈述："></a>需求陈述：</h3><p>​    画出了一张节点链接图，虽然可以固定布局中心，但每次使用不同屏幕时，这个布局中心总是会改变，导致节点链接图无法位于画布中央，且大小不适宜，因此需要实现一个自适应放缩方法，使画布按照屏幕的尺寸进行放缩，并将元素居中展示。</p>
+<p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202303241514591.png" alt="image-20230324144012412"></p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>​    这是一个画布的嵌套方式。</p>
+<p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202303241514564.png" alt=""></p>
+<ul>
+<li>首先，创建一个<code>&lt;svg&gt;</code>标签（图中为灰绿色），长宽与用户界面/组件的长宽相同。这个<code>&lt;svg&gt;</code>只是一个包裹的容器，一般是不直接在其中放置图元的。</li>
+<li>接着，在<code>&lt;svg&gt;</code>内部创建一个<code>&lt;g&gt;</code>标签（图中为黑色），我们真正需要绘制的图元，都会放置在这个<code>&lt;g&gt;</code>标签中。</li>
+<li>为<code>&lt;svg&gt;</code>标签绑定<code>d3.zoom()</code>事件，并将这个<code>zoom</code>事件的<code>transform</code>对象，应用在<g>中</li>
+</ul>
+<p>​    只要理解了最后一步，就理解了这整个流程。为什么要把<code>d3.zoom()</code>绑定在外部的<code>&lt;svg&gt;</code>标签上呢？我们需要设想一个场景：假设我们把zoom事件绑定在了内部的<code>&lt;g&gt;</code>标签上，那么当用户将<g>标签全部拖动到<svg>外部时，就没办法拖回来了。因为此时用户鼠标已经无法选中<g>标签了。比如下面这种情况：</p>
+<p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202303241517212.png" alt="image-20230324145631127"></p>
+<p>​    因此，为了避免用户将画布拖走后无法拖回来，我们应该设置一个“静止”的窗口，将拖动和放缩事件绑定在这上面，并且将这个事件作用来这个静止窗口内部的元素上。这里的静止窗口就是<code>&lt;svg&gt;</code>,而事件作用的元素就是<code>&lt;g&gt;</code>，这也解释了为什么要选用这种嵌套的形式。</p>
+<p>​    理解了这点，代码就很好写了。我们只需要向放缩的函数中传入外部<svg>的id，内部<g>的id，<code>zoomObj</code>即可。这里还可以传入<code>padding</code>，和<code>duration</code>，设置画布的左右间隙和补间动效。</p>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><h5 id="设置用户摁下ctrl键，就自适应放缩并居中"><a href="#设置用户摁下ctrl键，就自适应放缩并居中" class="headerlink" title="设置用户摁下ctrl键，就自适应放缩并居中"></a>设置用户摁下<code>ctrl</code>键，就自适应放缩并居中</h5><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> zoomObj = d3.<span class="title function_">zoom</span>().<span class="title function_">scaleExtent</span>([<span class="number">1</span> / <span class="number">50</span>, <span class="number">2</span>]);</span><br><span class="line"><span class="variable language_">document</span>.<span class="property">onkeydown</span> = <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (e.<span class="property">keyCode</span> === <span class="number">17</span>) &#123;</span><br><span class="line">    <span class="title function_">autoZoom</span>(</span><br><span class="line">      zoomObj,<span class="comment">//传入zoomObj</span></span><br><span class="line">      <span class="string">&#x27;svgContainer&#x27;</span>,<span class="comment">//&lt;svg&gt;的id</span></span><br><span class="line">      <span class="string">&#x27;svg&#x27;</span>,<span class="comment">//&lt;g&gt;的id</span></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">row</span>: <span class="number">20</span>,</span><br><span class="line">        <span class="attr">col</span>: <span class="number">10</span></span><br><span class="line">      &#125;,<span class="comment">//间隙参数（自定）</span></span><br><span class="line">      <span class="number">1000</span> <span class="comment">// 补间时长（自定）</span></span><br><span class="line">    )</span><br><span class="line">  s</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="autoZoom-函数实现"><a href="#autoZoom-函数实现" class="headerlink" title="autoZoom()函数实现"></a><code>autoZoom()</code>函数实现</h5><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">//autoZoom() function body</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  <span class="doctag">@param</span> zoomObj: 放缩对象，设置了放缩比率</span></span><br><span class="line"><span class="comment">  <span class="doctag">@param</span> svgContainerId: 容器 &lt;svg&gt;</span></span><br><span class="line"><span class="comment">  <span class="doctag">@param</span> svgBodyId: 画布 &lt;g&gt;</span></span><br><span class="line"><span class="comment">  <span class="doctag">@param</span> marginParam: 间隙参数（自定义）</span></span><br><span class="line"><span class="comment">  <span class="doctag">@param</span> duration: 补间时长</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">autoZoom</span> = (<span class="params">zoomObj, svgContainerId, svgBodyId, marginParam, duration</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> svgContainer = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">`#<span class="subst">$&#123;svgContainerId&#125;</span>`</span>);</span><br><span class="line">  <span class="keyword">const</span> svgBody = d3.<span class="title function_">select</span>(<span class="string">`#<span class="subst">$&#123;svgBodyId&#125;</span>`</span>);</span><br><span class="line">  <span class="keyword">if</span> (!svgContainer) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> viewBox = svgBody.<span class="title function_">node</span>().<span class="title function_">getBBox</span>();<span class="comment">//必须用d3.select,才有getBox，获取到长和宽</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">//svg（它是静止的）</span></span><br><span class="line">  <span class="keyword">const</span> containerWidth = svgContainer.<span class="property">clientWidth</span><span class="comment">//svg标签的宽</span></span><br><span class="line">  <span class="keyword">const</span> containerHeight = svgContainer.<span class="property">clientHeight</span><span class="comment">//svg标签的高</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// margin setting</span></span><br><span class="line">  <span class="keyword">const</span> rowMargin = marginParam.<span class="property">row</span></span><br><span class="line">  <span class="keyword">const</span> colMargin = marginParam.<span class="property">col</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">//计算放缩倍数</span></span><br><span class="line">  <span class="keyword">const</span> scale = <span class="title class_">Math</span>.<span class="title function_">min</span>((containerWidth - rowMargin) / viewBox.<span class="property">width</span>, (containerHeight - colMargin) / viewBox.<span class="property">height</span>)</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//计算如果要居中，画布需要的偏移量</span></span><br><span class="line">  <span class="keyword">const</span> offsetX = (containerWidth - rowMargin) / <span class="number">2</span> - (viewBox.<span class="property">x</span> + viewBox.<span class="property">width</span> / <span class="number">2</span>) * scale</span><br><span class="line">  <span class="keyword">const</span> offsetY = (containerHeight - colMargin) / <span class="number">2</span> - (viewBox.<span class="property">y</span> + viewBox.<span class="property">height</span> / <span class="number">2</span>) * scale</span><br><span class="line"></span><br><span class="line">  <span class="comment">// d3.zoomIdentity:缩放参数，返回Transform&#123;k:1,x:0,y:0&#125;</span></span><br><span class="line">  <span class="keyword">const</span> t = d3.<span class="property">zoomIdentity</span>.<span class="title function_">translate</span>(offsetX + rowMargin / <span class="number">2</span>, offsetY).<span class="title function_">scale</span>(scale)</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//计算完毕得到放缩参数t，&lt;svg&gt;标签调用zoomObj和计算好的t</span></span><br><span class="line">  d3.<span class="title function_">select</span>(<span class="string">`#<span class="subst">$&#123;svgContainerId&#125;</span>`</span>).<span class="title function_">transition</span>().<span class="title function_">duration</span>(duration).<span class="title function_">call</span>(zoomObj.<span class="property">transform</span>, t)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/javascript/" rel="tag"># javascript</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11/13/3e5d23898d6d/" rel="prev" title="由“object is not extensible”报错引发的思考及解决方案@React-Toolkit/@Immer.js">
+      <i class="fa fa-chevron-left"></i> 由“object is not extensible”报错引发的思考及解决方案@React-Toolkit/@Immer.js
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/06/08/aea9cc721cd4/" rel="next" title="Pull Request完整过程【记一次给antvis/G6的PR】">
+      Pull Request完整过程【记一次给antvis/G6的PR】 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0autoZoom-%E7%94%BB%E5%B8%83%E8%87%AA%E9%80%82%E5%BA%94%E6%94%BE%E7%BC%A9%E5%B9%B6%E5%B1%85%E4%B8%AD-D3-js-v5"><span class="nav-number">1.</span> <span class="nav-text">实现autoZoom(),画布自适应放缩并居中 @D3.js-v5</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%E9%99%88%E8%BF%B0%EF%BC%9A"><span class="nav-number">1.0.1.</span> <span class="nav-text">需求陈述：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">1.0.2.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.0.3.</span> <span class="nav-text">代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%94%A8%E6%88%B7%E6%91%81%E4%B8%8Bctrl%E9%94%AE%EF%BC%8C%E5%B0%B1%E8%87%AA%E9%80%82%E5%BA%94%E6%94%BE%E7%BC%A9%E5%B9%B6%E5%B1%85%E4%B8%AD"><span class="nav-number">1.0.3.0.1.</span> <span class="nav-text">设置用户摁下ctrl键，就自适应放缩并居中</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#autoZoom-%E5%87%BD%E6%95%B0%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.0.3.0.2.</span> <span class="nav-text">autoZoom()函数实现</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"> Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+</body>
+</html>

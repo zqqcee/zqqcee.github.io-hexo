@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="MXnxXuB_QrrsHGVDyL1PctN3b34klY8nvY_MD6CFETw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zqqcee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="模运算X % Q &#x3D;&#x3D; (X + Q) % Q(X + Y) % Q &#x3D;&#x3D; (X % Q + Y % Q) % Q在前缀和中，通常会用到同模pre[i] % Q &#x3D; hpre[j] % Q &#x3D; h那么 pre[i]-pre[j] % Q &#x3D; h， 反之亦然 1015. 可被 K 整除的最小整数题目： 给定正整数 k ，你需要找出可以被 k 整除的、仅包含数字 1 的最 小 正整数 n 的长度。返回">
+<meta property="og:type" content="website">
+<meta property="og:title" content="zqqcee">
+<meta property="og:url" content="https://zqqcee.github.io/leetcode/trick.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="模运算X % Q &#x3D;&#x3D; (X + Q) % Q(X + Y) % Q &#x3D;&#x3D; (X % Q + Y % Q) % Q在前缀和中，通常会用到同模pre[i] % Q &#x3D; hpre[j] % Q &#x3D; h那么 pre[i]-pre[j] % Q &#x3D; h， 反之亦然 1015. 可被 K 整除的最小整数题目： 给定正整数 k ，你需要找出可以被 k 整除的、仅包含数字 1 的最 小 正整数 n 的长度。返回">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-07-04T13:07:00.391Z">
+<meta property="article:modified_time" content="2023-07-04T13:07:00.380Z">
+<meta property="article:author" content="zqqcee">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zqqcee.github.io/leetcode/trick">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'en'
+  };
+</script>
+
+  <title> | zqqcee
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Comes in a big package "📦" </p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-chitchat">
+
+    <a href="/chitchat/" rel="section"><i class="fa fa-fan fa-fw"></i>Chitchat</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-leetcode">
+
+    <a href="/leetcode/" rel="section"><i class="fa fa-crosshairs fa-fw"></i>Leetcode</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="en">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h2 id="模运算"><a href="#模运算" class="headerlink" title="模运算"></a>模运算</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">X % Q == (X + Q) % Q</span><br><span class="line">(X + Y) % Q == (X % Q + Y % Q) % Q</span><br><span class="line"></span><br><span class="line">在前缀和中，通常会用到同模</span><br><span class="line">pre[i] % Q = h</span><br><span class="line">pre[j] % Q = h</span><br><span class="line">那么 pre[i]-pre[j] % Q = h， 反之亦然</span><br></pre></td></tr></table></figure>
+<h5 id="1015-可被-K-整除的最小整数"><a href="#1015-可被-K-整除的最小整数" class="headerlink" title="1015. 可被 K 整除的最小整数"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/smallest-integer-divisible-by-k/">1015. 可被 K 整除的最小整数</a></h5><p><strong>题目：</strong></p>
+<p>给定正整数 k ，你需要找出可以被 k 整除的、仅包含数字 1 的最 小 正整数 n 的长度。返回 n 的长度。如果不存在这样的 n ，就返回-1。</p>
+<p>注意： n 不符合 64 位带符号整数。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：k = 1</span><br><span class="line">输出：1</span><br><span class="line">解释：最小的答案是 n = 1，其长度为 1。</span><br></pre></td></tr></table></figure>
+<p><strong>思路：</strong></p>
+<p>要掌握一个模数的定理：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(n*p+q) % k = ((p%k)*n + q) % k</span><br></pre></td></tr></table></figure>
+<p>根据这个模数定理，因为数字全由1构成，因此可以推导出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">new = old * 10 + 1</span><br><span class="line">因此，new % k = ( old * 10 +1 ) % k = ((old%k) *10 +1) %k</span><br><span class="line">old % k 正是上一次的模运算结果</span><br><span class="line">设 old % k = x</span><br><span class="line">new = (x*10+1)%k</span><br></pre></td></tr></table></figure>
+<p>因此，我们可以从1开始，不断<code>%k</code>, 因为一个数 <code>%k</code> 的结果的数据范围在[1,k-1] 之间，因此，最多做k-1次运算就能够知道一个数的是否能被k整除， 因为如果一个数无法被k整除，那么k次运算中<code>x</code>的取值必有一次会重复，如果有重复的话，那么这个数无论添加多少个1，都不会被k除了，直接return -1。</p>
+<p>使用<code>HashSet</code>来记录是否出现重复的数字</p>
+<h2 id="数学"><a href="#数学" class="headerlink" title="数学"></a>数学</h2><h5 id="1330-翻转子数组得到最大的数组值"><a href="#1330-翻转子数组得到最大的数组值" class="headerlink" title="1330. 翻转子数组得到最大的数组值"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/reverse-subarray-to-maximize-array-value/">1330. 翻转子数组得到最大的数组值</a></h5><p><strong>题目：</strong></p>
+<p>给你一个整数数组 nums 。「数组值」定义为所有满足 0 &lt;= i &lt; nums.length-1 的 |nums[i]-nums[i+1]| 的和。你可以选择给定数组的任意子数组，并将该子数组翻转。但你只能执行这个操作 一次 。请你找到可行的最大 数组值 。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：nums = [2,3,1,5,4]</span><br><span class="line">输出：10</span><br><span class="line">解释：通过翻转子数组 [3,1,5] ，数组变成 [2,5,1,3,4] ，数组值为 10 。</span><br></pre></td></tr></table></figure>
+<p><strong>思路：</strong></p>
+<p>翻转前与翻转后的数组值的差值越大，最终找到的数组值就越大。那么如果想要使最终的数组值最大，就要使这个差值最大。对子数组进行翻转， 只会影响到4个数字，假设翻转前数组为<code>[...a,b,...c,d...]</code>翻转后为<code>[...a,c,...b,d...]</code>，那么这时候，新旧数组值的差值为：<code>diff=|c-a|+|d-b|-|a-b|-|c-d|</code></p>
+<p><strong>我们只需要使得这个diff最大，即可。那么问题就转化为了使diff最大</strong></p>
+<p>我们需要对这个diff进行分类讨论，讨论<code>a,c与b,d</code>之间的大小。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">①当a&gt;c b&gt;d时，原式=(a-c)+(b-d)-|a-b|-|c-d|=(a+b)-|a-b|-(c+d)-|c-d|</span><br><span class="line">②当a&lt;c b&gt;d时，原式=(c-a)+(b-d)-|a-b|-|c-d|=(c-d)-|c-d|+(b-a)-|b-a|&lt;0，舍去</span><br><span class="line">③当a&gt;c b&lt;d时，原式=(a-c)+(d-b)-|a-b|-|c-d|=(a-b)-|a-b|+(d-c)-|d-c|&lt;0，舍去</span><br><span class="line">④当a&gt;c b&lt;d时，原式=(c-a)+(d-b)-|a-b|-|c-d|=(c+d)-|c-d|-(a+b)-|a-b|</span><br></pre></td></tr></table></figure>
+<p>综上，我们只需要讨论①④两种情况</p>
+<p>这两种情况都转变为了形如:<code>（x+y) + |x-y|</code>和<code>(x+y)-|x-y|</code> 这种形式。</p>
+<p><strong>对于两个数差的绝对值，我们可以使用最大值与最小值拆掉它的绝对值号，下面的公式是解题的关键</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(x+y)+|x-y| = max(x,y)+min(x,y)+max(x,y)-min(x,y) = 2max(x,y)</span><br><span class="line">(x+y)-|x-y| = max(x,y)+min(x,y)-max(x,y)+min(x,y) = 2min(x,y)</span><br></pre></td></tr></table></figure>
+<p>因此，上面的①④可以转化为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">①2min(a,b)-2max(c,d)</span><br><span class="line">④2min(c,d)-2max(a,b)</span><br></pre></td></tr></table></figure>
+<p>我们再看上面两个式子，a和b，c和d其实都是相邻的两个数。我们要使得①④两个式子最大，就需要<strong>使<code>min(x,y)</code>最大，使<code>max(x,y)</code>最小</strong>。注：这里<code>x</code>和<code>y</code>指的是数组中相邻的两个数。<br>最后，需要判断一下边界情况，也就是<code>a = nums[0]</code> 和<code>b=nums[n-1]</code>的情况</p>
+<p><strong>完整代码</strong>：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">maxValueAfterReverse</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> nums.length;</span><br><span class="line">        <span class="type">int</span> <span class="variable">mx</span> <span class="operator">=</span> Integer.MIN_VALUE; <span class="comment">//min(x,y)的最大值</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">mn</span> <span class="operator">=</span> Integer.MAX_VALUE; <span class="comment">//max(x,y)的最小值</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> <span class="number">0</span>; <span class="comment">//旧的数组值</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">d</span> <span class="operator">=</span> Integer.MIN_VALUE;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span> ; i&lt;n ; i++)&#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> nums[i-<span class="number">1</span>];</span><br><span class="line">            <span class="type">int</span> <span class="variable">b</span> <span class="operator">=</span> nums[i];</span><br><span class="line">            <span class="type">int</span> <span class="variable">diff</span> <span class="operator">=</span> Math.abs(a-b); <span class="comment">//相邻两个数的差值</span></span><br><span class="line">            mx = Math.max(mx,Math.min(a,b));</span><br><span class="line">            mn = Math.min(mn,Math.max(a,b));</span><br><span class="line">            sum+=diff;</span><br><span class="line">            d = Math.max(d,Math.max(</span><br><span class="line">              Math.abs(nums[<span class="number">0</span>]-b)-diff ,<span class="comment">//a = nums[0]的情况</span></span><br><span class="line">              Math.abs(nums[n-<span class="number">1</span>]-a)-diff <span class="comment">//b = nums[n-1]的情况</span></span><br><span class="line">            )); <span class="comment">// 这里这个d计算的是边界情况</span></span><br><span class="line">          </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum+Math.max(d,<span class="number">2</span>*(mx-mn)); <span class="comment">// 旧的数组值 + 这个最大的差值 = 新的数组值</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><h4 id="创建一个优先级队列的array"><a href="#创建一个优先级队列的array" class="headerlink" title="创建一个优先级队列的array"></a>创建一个优先级队列的array</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">PriorityQueue&lt;Integer&gt;[] pq = <span class="keyword">new</span> <span class="title class_">PriorityQueue</span>[m];</span><br><span class="line">pq[i] = <span class="keyword">new</span> <span class="title class_">PriorityQueue</span>&lt;Integer&gt;((a, b)-&gt;a-b);</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E8%BF%90%E7%AE%97"><span class="nav-number">1.</span> <span class="nav-text">模运算</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1015-%E5%8F%AF%E8%A2%AB-K-%E6%95%B4%E9%99%A4%E7%9A%84%E6%9C%80%E5%B0%8F%E6%95%B4%E6%95%B0"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">1015. 可被 K 整除的最小整数</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%AD%A6"><span class="nav-number">2.</span> <span class="nav-text">数学</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1330-%E7%BF%BB%E8%BD%AC%E5%AD%90%E6%95%B0%E7%BB%84%E5%BE%97%E5%88%B0%E6%9C%80%E5%A4%A7%E7%9A%84%E6%95%B0%E7%BB%84%E5%80%BC"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">1330. 翻转子数组得到最大的数组值</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E4%BC%98%E5%85%88%E7%BA%A7%E9%98%9F%E5%88%97%E7%9A%84array"><span class="nav-number">3.0.1.</span> <span class="nav-text">创建一个优先级队列的array</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"> Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

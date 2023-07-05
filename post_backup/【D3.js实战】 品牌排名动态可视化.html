@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="MXnxXuB_QrrsHGVDyL1PctN3b34klY8nvY_MD6CFETw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zqqcee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="做出一个能根据时间更新变换的品牌动态排行榜，包含设计思路与源代码">
+<meta property="og:type" content="website">
+<meta property="og:title" content="【d3】品牌排名动态可视化 @ D3.js">
+<meta property="og:url" content="https://zqqcee.github.io/post_backup/%E3%80%90D3.js%E5%AE%9E%E6%88%98%E3%80%91%20%E5%93%81%E7%89%8C%E6%8E%92%E5%90%8D%E5%8A%A8%E6%80%81%E5%8F%AF%E8%A7%86%E5%8C%96.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="做出一个能根据时间更新变换的品牌动态排行榜，包含设计思路与源代码">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202208022101926.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/bbd6c30f676f49c196b935cc826ce3c0.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/d3dbe9f0f81b460397450415296dd07f.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2023-05-18T07:17:44.544Z">
+<meta property="article:modified_time" content="2022-08-03T03:02:18.093Z">
+<meta property="article:author" content="zqqcee">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202208022101926.png">
+
+<link rel="canonical" href="https://zqqcee.github.io/post_backup/%E3%80%90D3.js%E5%AE%9E%E6%88%98%E3%80%91%20%E5%93%81%E7%89%8C%E6%8E%92%E5%90%8D%E5%8A%A8%E6%80%81%E5%8F%AF%E8%A7%86%E5%8C%96">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【d3】品牌排名动态可视化 @ D3.js | zqqcee
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Comes in a big package "📦" </p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-chitchat">
+
+    <a href="/chitchat/" rel="section"><i class="fa fa-fan fa-fw"></i>Chitchat</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-leetcode">
+
+    <a href="/leetcode/" rel="section"><i class="fa fa-crosshairs fa-fw"></i>Leetcode</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="en">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">【d3】品牌排名动态可视化 @ D3.js
+</h1>
+
+<div class="post-meta">
+    <div class="post-description">做出一个能根据时间更新变换的品牌动态排行榜，包含设计思路与源代码</div>
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h2 id="品牌排名动态可视化-D3-js"><a href="#品牌排名动态可视化-D3-js" class="headerlink" title="品牌排名动态可视化   @ D3.js"></a>品牌排名动态可视化   @ D3.js</h2><h3 id="任务清单"><a href="#任务清单" class="headerlink" title="任务清单"></a>任务清单</h3><ul>
+<li>做出一个类似于下图所示的能根据时间更新变换的品牌动态排行榜</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202208022101926.png" alt="在这里插入图片描述"></p>
+<ul>
+<li><p>数据地址<br><a target="_blank" rel="noopener" href="https://gist.github.com/jrzief/70f1f8a5d066a286da3a1e699823470f">https://gist.github.com/jrzief/70f1f8a5d066a286da3a1e699823470f</a><br>整个clone下来即可</p>
+</li>
+<li><p>要求：1.动画效果，2.各品牌的排名与数值根据年份进行修改</p>
+</li>
+</ul>
+<h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><ul>
+<li>画布初始化</li>
+<li>数据预处理</li>
+<li>首次数据-图元绑定，即首次data-join</li>
+<li>设置时间触发器（d3.interval / setInterval）</li>
+<li>编写更新函数<ul>
+<li>更新数据，即重新得到前12名数据</li>
+<li>更新x坐标轴（因为数据值会变大，原来的坐标轴不适用了）</li>
+<li>重新进行数据-图元绑定</li>
+<li>年份更新</li>
+</ul>
+</li>
+</ul>
+<h3 id="画布初始化"><a href="#画布初始化" class="headerlink" title="画布初始化"></a>画布初始化</h3><p>首先要进行画布初始化，创建初始画布svg，定义全局变量，绘制标题，副标题，坐标轴等等。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> svg = d3.<span class="title function_">select</span>(<span class="string">&#x27;body&#x27;</span>).<span class="title function_">select</span>(<span class="string">&#x27;svg&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> top_n = <span class="number">12</span>;</span><br><span class="line"><span class="keyword">const</span> margin = &#123;</span><br><span class="line">    top : <span class="number">80</span>,</span><br><span class="line">    right : <span class="number">65</span>,</span><br><span class="line">    bottom : <span class="number">5</span>,</span><br><span class="line">    left : <span class="number">20</span> </span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> height = +(svg.<span class="title function_">attr</span>(<span class="string">&#x27;height&#x27;</span>))</span><br><span class="line"><span class="keyword">let</span> width = +(svg.<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>))</span><br><span class="line"><span class="keyword">let</span> xAxis;</span><br><span class="line"><span class="keyword">let</span> xScale;</span><br><span class="line"><span class="keyword">let</span> yScale;</span><br><span class="line"><span class="keyword">let</span> yearText;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> barPadding = (+svg.<span class="title function_">attr</span>(<span class="string">&#x27;height&#x27;</span>)-margin.<span class="property">top</span>-margin.<span class="property">bottom</span>)/(top_n*<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> title = svg.<span class="title function_">append</span>(<span class="string">&#x27;text&#x27;</span>)</span><br><span class="line">.<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>,<span class="string">&#x27;Title&#x27;</span>)</span><br><span class="line">.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="number">30</span>)</span><br><span class="line">.<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>,width/<span class="number">2</span> )</span><br><span class="line">.<span class="title function_">text</span>(<span class="string">&#x27;BrandRank&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> subTitle = svg.<span class="title function_">append</span>(<span class="string">&#x27;text&#x27;</span>)</span><br><span class="line">.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="number">55</span> )</span><br><span class="line">.<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>, width-margin.<span class="property">right</span>-<span class="number">70</span>)</span><br><span class="line">.<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;subTitle&#x27;</span> )</span><br><span class="line">.<span class="title function_">text</span>(<span class="string">&quot;Brand value  ,  $m&quot;</span>)</span><br><span class="line"><span class="keyword">let</span> year = <span class="number">2000</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> tickDuration = <span class="number">500</span>;<span class="comment">//执行间隔</span></span><br></pre></td></tr></table></figure>
+<h3 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h3><p>这里的数据预处理有以下几点需要注意的</p>
+<h4 id="注意将所有值转换为数值类型"><a href="#注意将所有值转换为数值类型" class="headerlink" title="注意将所有值转换为数值类型"></a>注意将所有值转换为数值类型</h4><p>因为d3.csv默认读进来数据都是字符串类型的，因此为了方便后续计算，要转换成数值类型</p>
+<h4 id="注意设置缺失值的缺省值"><a href="#注意设置缺失值的缺省值" class="headerlink" title="注意设置缺失值的缺省值"></a>注意设置缺失值的缺省值</h4><p>由于数据中有许多 NaN，集中在value字段，因此在value字段要多进行一步缺省。<br><strong>注意：缺省必须在转换为数值之后</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">d.<span class="property">value</span> = +(d.<span class="property">value</span>)</span><br><span class="line">d.<span class="property">value</span> = <span class="built_in">isNaN</span>(d.<span class="property">value</span>) ? <span class="number">0</span> : d.<span class="property">value</span></span><br></pre></td></tr></table></figure>
+<h4 id="为每个数据设置颜色"><a href="#为每个数据设置颜色" class="headerlink" title="为每个数据设置颜色"></a>为每个数据设置颜色</h4><p>这里比较有意思，设置颜色这步完全可以挪到data-join的时候，但是这里可以默认为某个数据绑定上一个默认的颜色，使用到的是<code>d3.hsl()</code>这个接口。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">d.<span class="property">color</span> = d3.<span class="title function_">hsl</span>(<span class="title class_">Math</span>.<span class="title function_">random</span>()*<span class="number">360</span>,<span class="number">0.75</span>,<span class="number">0.75</span>,<span class="number">0.8</span>)</span><br></pre></td></tr></table></figure>
+<p>这是设置完的color数据值，最后一个参数是透明度，缺省值为1。</p>
+<p><img src="https://img-blog.csdnimg.cn/bbd6c30f676f49c196b935cc826ce3c0.png" alt="在这里插入图片描述"></p>
+<h4 id="过滤数据，仅保留当前年份的，数据切片，设置排名"><a href="#过滤数据，仅保留当前年份的，数据切片，设置排名" class="headerlink" title="过滤数据，仅保留当前年份的，数据切片，设置排名"></a>过滤数据，仅保留当前年份的，数据切片，设置排名</h4><ul>
+<li><p>用<code>data.filter()</code>过滤数据。然后由于绑定只需要使用到前12名数据，因此这里用到了<code>slice()</code>切片函数进行了数据切片处理。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> yearSlice = data.<span class="title function_">filter</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">year</span> == year &amp;&amp; !<span class="built_in">isNaN</span>(d.<span class="property">value</span>))</span><br><span class="line">.<span class="title function_">sort</span>(<span class="function">(<span class="params">a,b</span>) =&gt;</span> b.<span class="property">value</span> - a.<span class="property">value</span>)</span><br><span class="line">.<span class="title function_">slice</span>(<span class="number">0</span>,top_n)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>由于最终需要根据数值排名来设置矩形的位置，因此要设置一下<code>yearSlice</code>中的数据排名</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//此时索引就是排名了</span></span><br><span class="line">yearSlice.<span class="title function_">forEach</span>(<span class="function">(<span class="params">d,i</span>) =&gt;</span> d.<span class="property">rank</span> = i)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="首次数据绑定"><a href="#首次数据绑定" class="headerlink" title="首次数据绑定"></a>首次数据绑定</h3><p>首次数据绑定我这里为了让逻辑更加清晰，封装成了一个函数<code>render_init(yearSlice)</code>，而没有写在<code>d3.csv.then()</code>中 ，参数是<strong>已经切分好的当前年份top12的数据</strong>。注意，<code>render_init()</code>中的内容是<strong>后续需要更新的图元</strong>，由于<strong>坐标轴后续也需要更新</strong>，因此将坐标轴也放在<code>render_init()</code>中</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//yearSilce：切片好了的数据</span></span><br><span class="line"><span class="keyword">const</span> render_init = <span class="keyword">function</span>(<span class="params">yearSlice</span>)&#123;</span><br><span class="line">    <span class="comment">//functionBody()</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="坐标轴"><a href="#坐标轴" class="headerlink" title="坐标轴"></a>坐标轴</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">xScale = d3.<span class="title function_">scaleLinear</span>()</span><br><span class="line">    .<span class="title function_">domain</span>([<span class="number">0</span>,d3.<span class="title function_">max</span>(yearSlice,<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">value</span>)])</span><br><span class="line">    .<span class="title function_">range</span>([margin.<span class="property">left</span> , width-margin.<span class="property">right</span>])</span><br><span class="line">    .<span class="title function_">nice</span>()</span><br><span class="line"></span><br><span class="line">yScale = d3.<span class="title function_">scaleLinear</span>()</span><br><span class="line">    .<span class="title function_">domain</span>([top_n, <span class="number">0</span>])</span><br><span class="line">    .<span class="title function_">range</span>([height-margin.<span class="property">bottom</span>, margin.<span class="property">top</span>]);</span><br><span class="line"></span><br><span class="line">xAxis = d3.<span class="title function_">axisTop</span>(xScale)</span><br><span class="line">    .<span class="title function_">ticks</span>(width &gt; <span class="number">500</span> ? <span class="number">5</span>:<span class="number">2</span>)</span><br><span class="line">    .<span class="title function_">tickSize</span>(-(height-margin.<span class="property">top</span>-margin.<span class="property">bottom</span>))</span><br><span class="line">    .<span class="title function_">tickFormat</span>(<span class="function"><span class="params">d</span> =&gt;</span> d3.<span class="title function_">format</span>(<span class="string">&#x27;,&#x27;</span>)(d))</span><br><span class="line">;</span><br><span class="line"></span><br><span class="line">svg.<span class="title function_">append</span>(<span class="string">&#x27;g&#x27;</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>,<span class="string">&#x27;xAxis&#x27;</span>)</span><br><span class="line">    .<span class="title function_">call</span>(xAxis)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;transform&#x27;</span>,<span class="string">`translate(<span class="subst">$&#123;margin.left&#125;</span>,<span class="subst">$&#123;margin.top&#125;</span>)`</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="矩形bar"><a href="#矩形bar" class="headerlink" title="矩形bar"></a>矩形bar</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//首次join rect</span></span><br><span class="line">svg.<span class="title function_">selectAll</span>(<span class="string">&#x27;rect.bar&#x27;</span>)</span><br><span class="line">    .<span class="title function_">data</span>(yearSlice,<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">name</span>)</span><br><span class="line">    .<span class="title function_">enter</span>()</span><br><span class="line">    .<span class="title function_">append</span>(<span class="string">&#x27;rect&#x27;</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>,<span class="string">&#x27;bar&#x27;</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>,<span class="title function_">xScale</span>(<span class="number">0</span>)+margin.<span class="property">left</span>+<span class="number">2</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)-<span class="title function_">xScale</span>(<span class="number">0</span>))</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(d.<span class="property">rank</span>))</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;height&#x27;</span>, <span class="title function_">yScale</span>(<span class="number">1</span>)-<span class="title function_">yScale</span>(<span class="number">0</span>)-barPadding)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;fill&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">color</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="品牌名label"><a href="#品牌名label" class="headerlink" title="品牌名label"></a>品牌名label</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//首次join text,品牌名</span></span><br><span class="line">svg.<span class="title function_">selectAll</span>(<span class="string">&#x27;text.label&#x27;</span>)</span><br><span class="line">    .<span class="title function_">data</span>(yearSlice, <span class="function"><span class="params">d</span> =&gt;</span> name)</span><br><span class="line">    .<span class="title function_">enter</span>()</span><br><span class="line">    .<span class="title function_">append</span>(<span class="string">&#x27;text&#x27;</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;label&#x27;</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)-<span class="number">8</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(d.<span class="property">rank</span>)+((<span class="title function_">yScale</span>(<span class="number">1</span>)-<span class="title function_">yScale</span>(<span class="number">0</span>))/<span class="number">2</span>))</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;text-anchor&#x27;</span>,<span class="string">&#x27;end&#x27;</span>)</span><br><span class="line">    .<span class="title function_">text</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">name</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="数值"><a href="#数值" class="headerlink" title="数值"></a>数值</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//首次join text,数值</span></span><br><span class="line">svg.<span class="title function_">selectAll</span>(<span class="string">&#x27;text.valueLabel&#x27;</span>)</span><br><span class="line">    .<span class="title function_">data</span>(yearSlice, <span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">name</span>)</span><br><span class="line">    .<span class="title function_">enter</span>()</span><br><span class="line">    .<span class="title function_">append</span>(<span class="string">&#x27;text&#x27;</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;valueLabel&#x27;</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)+<span class="number">9</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>,<span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(d.<span class="property">rank</span>) +((<span class="title function_">yScale</span>(<span class="number">1</span>)-<span class="title function_">yScale</span>(<span class="number">0</span>))/<span class="number">2</span>))</span><br><span class="line">    .<span class="title function_">text</span>(<span class="function"><span class="params">d</span> =&gt;</span> d3.<span class="title function_">format</span>(<span class="string">&#x27;,.0f&#x27;</span>)(d.<span class="property">lastValue</span>));</span><br></pre></td></tr></table></figure>
+<h4 id="年份：标记当前是第几年的数据"><a href="#年份：标记当前是第几年的数据" class="headerlink" title="年份：标记当前是第几年的数据"></a>年份：标记当前是第几年的数据</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//年份</span></span><br><span class="line">  yearText = svg.<span class="title function_">append</span>(<span class="string">&#x27;text&#x27;</span>)</span><br><span class="line">      .<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;yearText&#x27;</span>)</span><br><span class="line">      .<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>, width-margin.<span class="property">right</span>+<span class="number">60</span>)</span><br><span class="line">      .<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, height-<span class="number">25</span>)</span><br><span class="line">      .<span class="title function_">attr</span>(<span class="string">&#x27;font-size&#x27;</span>,<span class="string">&#x27;2em&#x27;</span> )</span><br><span class="line">      .<span class="title function_">style</span>(<span class="string">&#x27;font-weight&#x27;</span>, <span class="string">&#x27;bold&#x27;</span>)</span><br><span class="line">      .<span class="title function_">style</span>(<span class="string">&#x27;fill&#x27;</span>, <span class="string">&#x27;#2eb0c5d9&#x27;</span>)</span><br><span class="line">      .<span class="title function_">style</span>(<span class="string">&#x27;text-anchor&#x27;</span>, <span class="string">&#x27;end&#x27;</span>)</span><br><span class="line">      .<span class="title function_">html</span>(~~year)</span><br></pre></td></tr></table></figure>
+<h3 id="设置时间触发器ticker"><a href="#设置时间触发器ticker" class="headerlink" title="设置时间触发器ticker"></a>设置时间触发器ticker</h3><p>接下来，设置触发器ticker，每隔某个间隔（这里为了看着连贯，间隔设置为500ms），就重新绑定一次数据，更新图元。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> ticker = d3.<span class="title function_">interval</span>(<span class="function"><span class="params">e</span> =&gt;</span>&#123;</span><br><span class="line">    <span class="comment">//更新部分函数</span></span><br><span class="line">&#125;,tickDuration)</span><br><span class="line"><span class="comment">//tickDuration是更新部分函数的执行间隔</span></span><br></pre></td></tr></table></figure>
+<h3 id="编写更新函数（重中之重）"><a href="#编写更新函数（重中之重）" class="headerlink" title="编写更新函数（重中之重）"></a>编写更新函数（重中之重）</h3><p>这部分是这个程序最最关键的部分，要求思路必须非常清晰，下面我分成四个部分介绍</p>
+<ul>
+<li>更新数据，即重新得到前12名数据</li>
+<li>更新x坐标轴（因为数据值会变大，原来的坐标轴不适用了）</li>
+<li>重新进行数据-图元绑定</li>
+<li>年份更新</li>
+</ul>
+<h4 id="更新数据，重新获得前12名数据"><a href="#更新数据，重新获得前12名数据" class="headerlink" title="更新数据，重新获得前12名数据"></a>更新数据，重新获得前12名数据</h4><p>这步与数据预处理中的最后一步相同</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">yearSlice = data.<span class="title function_">filter</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">year</span> == year &amp;&amp; !<span class="built_in">isNaN</span>(d.<span class="property">value</span>)).<span class="title function_">sort</span>(<span class="function">(<span class="params">a,b</span>) =&gt;</span> b.<span class="property">value</span>-a.<span class="property">value</span>).<span class="title function_">slice</span>(<span class="number">0</span>,top_n);</span><br><span class="line">yearSlice.<span class="title function_">forEach</span>(<span class="function">(<span class="params">d,i</span>)=&gt;</span>&#123;</span><br><span class="line">    d.<span class="property">rank</span> = i;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="更新坐标轴"><a href="#更新坐标轴" class="headerlink" title="更新坐标轴"></a>更新坐标轴</h4><p>数据随着年份进行更新，数据空间的最大值改变了，因此要改变比例尺，重新映射数据。由于是数据空间改变了，因此修改<code>domain()</code>即可，<strong>修改后，要用<code>call()</code>坐标轴图元才会执行更新。</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">xScale.<span class="title function_">domain</span>([<span class="number">0</span>,d3.<span class="title function_">max</span>(yearSlice,<span class="function"><span class="params">d</span>=&gt;</span>d.<span class="property">value</span>)]);</span><br><span class="line">svg.<span class="title function_">select</span>(<span class="string">&#x27;.xAxis&#x27;</span>)</span><br><span class="line">    .<span class="title function_">transition</span>()</span><br><span class="line">    .<span class="title function_">duration</span>(tickDuration)</span><br><span class="line">    .<span class="title function_">ease</span>(d3.<span class="property">easeLinear</span>)</span><br><span class="line">    .<span class="title function_">call</span>(xAxis);</span><br></pre></td></tr></table></figure>
+<h4 id="重新进行数据-图元绑定"><a href="#重新进行数据-图元绑定" class="headerlink" title="重新进行数据-图元绑定"></a>重新进行数据-图元绑定</h4><p>重新绑定和初次绑定一样，对于<strong>矩形，品牌名，数值</strong>都要重新绑定，对于年份也要更新。这里为了方便，<strong>仅以矩形的重新绑定为例讲解思路</strong>。在<strong>数值的重新绑定</strong>中会讲一下如何实现<strong>数值的渐变</strong></p>
+<p><strong>以矩形的重新绑定为例:</strong></p>
+<p>分为三步骤 <strong><code>enter(),update(),exit()</code></strong> 。翻译翻译就是：</p>
+<ul>
+<li>把新出现在top12中的数据绑定上，并绘制在坐标轴中。(<code>enter()</code>)</li>
+<li>没有跌出top12的数据需要更新，重新绑定图元(<code>update()</code>)</li>
+<li>把跌出top12的数据绑定的图元清除（<code>exit()</code>）</li>
+</ul>
+<h5 id="第一步：绑定，获取update-形态"><a href="#第一步：绑定，获取update-形态" class="headerlink" title="第一步：绑定，获取update()形态"></a>第一步：绑定，获取<code>update()</code>形态</h5><p>首先，为了方便操作，首先绑定数据，绑定后获得数据的update形态</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> bars = svg.<span class="title function_">selectAll</span>(<span class="string">&#x27;.bar&#x27;</span>)</span><br><span class="line">.<span class="title function_">data</span>(yearSlice, <span class="function"><span class="params">d</span>=&gt;</span> d.<span class="property">name</span>);</span><br></pre></td></tr></table></figure>
+<h5 id="第二步：enter"><a href="#第二步：enter" class="headerlink" title="第二步：enter()"></a>第二步：enter()</h5><p>想要制造没有出现的矩形从下面滑上来的效果，因此y的值首先要设置在画布外面，最后通过动画缓动效果滑到坐标轴中，根据排名设置y</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//enter,将尚未存在top12中的数据加入进来</span></span><br><span class="line"><span class="comment">//注意，transition前的y是在svg之外的，这样才会做成从下面往上浮现的效果</span></span><br><span class="line">bars.<span class="title function_">enter</span>()</span><br><span class="line">			.<span class="title function_">append</span>(<span class="string">&#x27;rect&#x27;</span>)</span><br><span class="line">			.<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>,<span class="string">&#x27;bar&#x27;</span>)</span><br><span class="line">			.<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>,<span class="title function_">xScale</span>(<span class="number">0</span>)+margin.<span class="property">left</span>+<span class="number">2</span>)</span><br><span class="line">			.<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)-<span class="title function_">xScale</span>(<span class="number">0</span>))</span><br><span class="line">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(top_n+<span class="number">1</span>)+<span class="number">20</span>)</span><br><span class="line">			.<span class="title function_">attr</span>(<span class="string">&#x27;height&#x27;</span>, <span class="title function_">yScale</span>(<span class="number">1</span>)-<span class="title function_">yScale</span>(<span class="number">0</span>)-barPadding)</span><br><span class="line">			.<span class="title function_">attr</span>(<span class="string">&#x27;fill&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">color</span>)</span><br><span class="line">			.<span class="title function_">transition</span>()</span><br><span class="line">			.<span class="title function_">duration</span>(tickDuration)</span><br><span class="line">			.<span class="title function_">ease</span>(d3.<span class="property">easeLinear</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>,<span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(d.<span class="property">rank</span>))</span><br></pre></td></tr></table></figure>
+<h5 id="第三步-update"><a href="#第三步-update" class="headerlink" title="第三步 update()"></a>第三步 update()</h5><p>原来在画布中的矩形只需要更新它的排名(即y值)，和它的宽度(即value)即可。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//第二次update,之前存在top12的数据要进行修改</span></span><br><span class="line">bars.<span class="title function_">transition</span>()</span><br><span class="line">    .<span class="title function_">duration</span>(tickDuration)</span><br><span class="line">    .<span class="title function_">ease</span>(d3.<span class="property">easeLinear</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)-<span class="title function_">xScale</span>(<span class="number">0</span>))</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span><span class="title function_">yScale</span>(d.<span class="property">rank</span>))</span><br></pre></td></tr></table></figure>
+<h5 id="第四步-exit"><a href="#第四步-exit" class="headerlink" title="第四步 exit()"></a>第四步 exit()</h5><p>退出的时候直接把y值改到画布外面即可，然后再<code>remove()</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//最后一步exit()</span></span><br><span class="line">bars.<span class="title function_">exit</span>()</span><br><span class="line">    .<span class="title function_">transition</span>()</span><br><span class="line">    .<span class="title function_">duration</span>(tickDuration)</span><br><span class="line">    .<span class="title function_">ease</span>(d3.<span class="property">easeLinear</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(top_n+<span class="number">1</span>)+<span class="number">5</span>)</span><br><span class="line">    .<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)-<span class="title function_">xScale</span>(<span class="number">0</span>)-<span class="number">1</span>)</span><br><span class="line">    .<span class="title function_">remove</span>()</span><br></pre></td></tr></table></figure>
+<h5 id="数值渐变"><a href="#数值渐变" class="headerlink" title="数值渐变"></a>数值渐变</h5><p>在可视化中想要做成从0-100数值慢慢上涨的动画效果，需要用到<code>tween()</code>和<code>d3.interpolateRound()</code>，</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">.<span class="title function_">attr</span>()...</span><br><span class="line">.<span class="title function_">tween</span>(<span class="string">&quot;textTween&quot;</span>,<span class="keyword">function</span>(<span class="params">d</span>)&#123;</span><br><span class="line">    <span class="comment">//做出在两个value间跳动的效果</span></span><br><span class="line">    <span class="keyword">let</span> i = d3.<span class="title function_">interpolateRound</span>(d.<span class="property">lastValue</span>,d.<span class="property">value</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">function</span>(<span class="params">t</span>)&#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">textContent</span> = d3.<span class="title function_">format</span>(<span class="string">&#x27;,&#x27;</span>)(<span class="title function_">i</span>(t));</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
+<p>其他的代码贴在最后，与矩形的更新相同</p>
+<h4 id="年份更新"><a href="#年份更新" class="headerlink" title="年份更新"></a>年份更新</h4><p>这里很有意思，直接贴代码。<br>值得一提的是，为了让年份慢慢更新，每次只加0.1</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">yearText.<span class="title function_">html</span>(~~year)</span><br><span class="line"><span class="comment">//~~year：等于向上取整，2018.1 取反等于 -2019， 再次取反等于2019</span></span><br><span class="line"><span class="keyword">if</span>(year == <span class="number">2018</span>)&#123;</span><br><span class="line">    ticker.<span class="title function_">stop</span>();</span><br><span class="line">&#125;</span><br><span class="line">year = d3.<span class="title function_">format</span>(<span class="string">&#x27;.1f&#x27;</span>)(+(year)+ <span class="number">0.1</span>)</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">title</span>&gt;</span>brandRank<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;./js/d3.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">		  text<span class="selector-class">.Title</span>&#123;</span></span><br><span class="line"><span class="language-css">      <span class="attribute">font-size</span>: <span class="number">2em</span>;</span></span><br><span class="line"><span class="language-css">      <span class="attribute">font-weight</span>: <span class="number">500</span>;</span></span><br><span class="line"><span class="language-css">    &#125;</span></span><br><span class="line"><span class="language-css">      text<span class="selector-class">.subTitle</span>&#123;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">font-weight</span>: <span class="number">500</span>;</span></span><br><span class="line"><span class="language-css">        fill: <span class="number">#777777</span>;</span></span><br><span class="line"><span class="language-css">      &#125;</span></span><br><span class="line"><span class="language-css">      text<span class="selector-class">.label</span>&#123;</span></span><br><span class="line"><span class="language-css">      	<span class="attribute">font-weight</span>:bold;</span></span><br><span class="line"><span class="language-css">      &#125;</span></span><br><span class="line"><span class="language-css">	</span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">svg</span> <span class="attr">width</span>=<span class="string">&quot;960&quot;</span> <span class="attr">height</span>=<span class="string">&quot;600&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">		<span class="keyword">let</span> svg = d3.<span class="title function_">select</span>(<span class="string">&#x27;body&#x27;</span>).<span class="title function_">select</span>(<span class="string">&#x27;svg&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">		<span class="keyword">const</span> top_n = <span class="number">12</span>;</span></span><br><span class="line"><span class="language-javascript">		<span class="keyword">const</span> margin = &#123;</span></span><br><span class="line"><span class="language-javascript">			top : <span class="number">80</span>,</span></span><br><span class="line"><span class="language-javascript">			right : <span class="number">65</span>,</span></span><br><span class="line"><span class="language-javascript">			bottom : <span class="number">5</span>,</span></span><br><span class="line"><span class="language-javascript">			left : <span class="number">20</span> </span></span><br><span class="line"><span class="language-javascript">		&#125;;</span></span><br><span class="line"><span class="language-javascript">		<span class="keyword">let</span> height = +(svg.<span class="title function_">attr</span>(<span class="string">&#x27;height&#x27;</span>))</span></span><br><span class="line"><span class="language-javascript">		<span class="keyword">let</span> width = +(svg.<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>))</span></span><br><span class="line"><span class="language-javascript">		<span class="keyword">let</span> xAxis;</span></span><br><span class="line"><span class="language-javascript">		<span class="keyword">let</span> xScale;</span></span><br><span class="line"><span class="language-javascript">		<span class="keyword">let</span> yScale;</span></span><br><span class="line"><span class="language-javascript">		<span class="keyword">let</span> yearText;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">		<span class="keyword">const</span> barPadding = (+svg.<span class="title function_">attr</span>(<span class="string">&#x27;height&#x27;</span>)-margin.<span class="property">top</span>-margin.<span class="property">bottom</span>)/(top_n*<span class="number">5</span>)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">		<span class="keyword">let</span> title = svg.<span class="title function_">append</span>(<span class="string">&#x27;text&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">		.<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>,<span class="string">&#x27;Title&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">		.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="number">30</span>)</span></span><br><span class="line"><span class="language-javascript">		.<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>,width/<span class="number">2</span> )</span></span><br><span class="line"><span class="language-javascript">		.<span class="title function_">text</span>(<span class="string">&#x27;BrandRank&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">		<span class="keyword">let</span> subTitle = svg.<span class="title function_">append</span>(<span class="string">&#x27;text&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">		.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="number">55</span> )</span></span><br><span class="line"><span class="language-javascript">		.<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>, width-margin.<span class="property">right</span>-<span class="number">70</span>)</span></span><br><span class="line"><span class="language-javascript">		.<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;subTitle&#x27;</span> )</span></span><br><span class="line"><span class="language-javascript">		.<span class="title function_">text</span>(<span class="string">&quot;Brand value  ,  $m&quot;</span>)</span></span><br><span class="line"><span class="language-javascript">		<span class="keyword">let</span> year = <span class="number">2000</span>;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">		<span class="keyword">const</span> tickDuration = <span class="number">500</span>;<span class="comment">//执行间隔</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">		<span class="keyword">const</span> render_init = <span class="keyword">function</span>(<span class="params">yearSlice</span>)&#123;</span></span><br><span class="line"><span class="language-javascript">			xScale = d3.<span class="title function_">scaleLinear</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">domain</span>([<span class="number">0</span>,d3.<span class="title function_">max</span>(yearSlice,<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">value</span>)])</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">range</span>([margin.<span class="property">left</span> , width-margin.<span class="property">right</span>])</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">nice</span>()</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			yScale = d3.<span class="title function_">scaleLinear</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">domain</span>([top_n, <span class="number">0</span>])</span></span><br><span class="line"><span class="language-javascript">	        .<span class="title function_">range</span>([height-margin.<span class="property">bottom</span>, margin.<span class="property">top</span>]);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			xAxis = d3.<span class="title function_">axisTop</span>(xScale)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">ticks</span>(width &gt; <span class="number">500</span> ? <span class="number">5</span>:<span class="number">2</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">tickSize</span>(-(height-margin.<span class="property">top</span>-margin.<span class="property">bottom</span>))</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">tickFormat</span>(<span class="function"><span class="params">d</span> =&gt;</span> d3.<span class="title function_">format</span>(<span class="string">&#x27;,&#x27;</span>)(d))</span></span><br><span class="line"><span class="language-javascript">			;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			svg.<span class="title function_">append</span>(<span class="string">&#x27;g&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>,<span class="string">&#x27;xAxis&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">call</span>(xAxis)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;transform&#x27;</span>,<span class="string">`translate(<span class="subst">$&#123;margin.left&#125;</span>,<span class="subst">$&#123;margin.top&#125;</span>)`</span>)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//首次join rect</span></span></span><br><span class="line"><span class="language-javascript">			svg.<span class="title function_">selectAll</span>(<span class="string">&#x27;rect.bar&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">data</span>(yearSlice,<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">name</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">enter</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">append</span>(<span class="string">&#x27;rect&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>,<span class="string">&#x27;bar&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>,<span class="title function_">xScale</span>(<span class="number">0</span>)+margin.<span class="property">left</span>+<span class="number">2</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)-<span class="title function_">xScale</span>(<span class="number">0</span>))</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(d.<span class="property">rank</span>))</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;height&#x27;</span>, <span class="title function_">yScale</span>(<span class="number">1</span>)-<span class="title function_">yScale</span>(<span class="number">0</span>)-barPadding)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;fill&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">color</span>)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//首次join text,品牌名</span></span></span><br><span class="line"><span class="language-javascript">			svg.<span class="title function_">selectAll</span>(<span class="string">&#x27;text.label&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">data</span>(yearSlice, <span class="function"><span class="params">d</span> =&gt;</span> name)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">enter</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">append</span>(<span class="string">&#x27;text&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;label&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)-<span class="number">8</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(d.<span class="property">rank</span>)+((<span class="title function_">yScale</span>(<span class="number">1</span>)-<span class="title function_">yScale</span>(<span class="number">0</span>))/<span class="number">2</span>))</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;text-anchor&#x27;</span>,<span class="string">&#x27;end&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">text</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">name</span>)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//首次join text,数值</span></span></span><br><span class="line"><span class="language-javascript">			svg.<span class="title function_">selectAll</span>(<span class="string">&#x27;text.valueLabel&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">data</span>(yearSlice, <span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">name</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">enter</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">append</span>(<span class="string">&#x27;text&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;valueLabel&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)+<span class="number">9</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>,<span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(d.<span class="property">rank</span>) +((<span class="title function_">yScale</span>(<span class="number">1</span>)-<span class="title function_">yScale</span>(<span class="number">0</span>))/<span class="number">2</span>))</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">text</span>(<span class="function"><span class="params">d</span> =&gt;</span> d3.<span class="title function_">format</span>(<span class="string">&#x27;,.0f&#x27;</span>)(d.<span class="property">lastValue</span>));</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//年份</span></span></span><br><span class="line"><span class="language-javascript">		    yearText = svg.<span class="title function_">append</span>(<span class="string">&#x27;text&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">		      .<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;yearText&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">		      .<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>, width-margin.<span class="property">right</span>+<span class="number">60</span>)</span></span><br><span class="line"><span class="language-javascript">		      .<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, height-<span class="number">25</span>)</span></span><br><span class="line"><span class="language-javascript">		      .<span class="title function_">attr</span>(<span class="string">&#x27;font-size&#x27;</span>,<span class="string">&#x27;2em&#x27;</span> )</span></span><br><span class="line"><span class="language-javascript">		      .<span class="title function_">style</span>(<span class="string">&#x27;font-weight&#x27;</span>, <span class="string">&#x27;bold&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">		      .<span class="title function_">style</span>(<span class="string">&#x27;fill&#x27;</span>, <span class="string">&#x27;#2eb0c5d9&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">		      .<span class="title function_">style</span>(<span class="string">&#x27;text-anchor&#x27;</span>, <span class="string">&#x27;end&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">		      .<span class="title function_">html</span>(~~year)</span></span><br><span class="line"><span class="language-javascript">		&#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">		d3.<span class="title function_">csv</span>(<span class="string">&quot;./data/brand_values.csv&quot;</span>).<span class="title function_">then</span>(<span class="function"><span class="params">data</span> =&gt;</span>&#123;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//数据预处理</span></span></span><br><span class="line"><span class="language-javascript">			data.<span class="title function_">forEach</span>(<span class="function"><span class="params">d</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript">				d.<span class="property">lastValue</span> = +d.<span class="property">lastValue</span></span></span><br><span class="line"><span class="language-javascript">				d.<span class="property">value</span> = <span class="built_in">isNaN</span>(d.<span class="property">value</span>) ? <span class="number">0</span> : +(d.<span class="property">value</span>)</span></span><br><span class="line"><span class="language-javascript">				d.<span class="property">year</span> = +d.<span class="property">year</span></span></span><br><span class="line"><span class="language-javascript">				d.<span class="property">rank</span> = +d.<span class="property">rank</span></span></span><br><span class="line"><span class="language-javascript">				d.<span class="property">color</span> = d3.<span class="title function_">hsl</span>(<span class="title class_">Math</span>.<span class="title function_">random</span>()*<span class="number">360</span>,<span class="number">0.75</span>,<span class="number">0.75</span>,<span class="number">0.8</span>)</span></span><br><span class="line"><span class="language-javascript">			&#125;)</span></span><br><span class="line"><span class="language-javascript">			<span class="variable language_">console</span>.<span class="title function_">log</span>(data);</span></span><br><span class="line"><span class="language-javascript">			<span class="keyword">let</span> yearSlice = data.<span class="title function_">filter</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">year</span> == year &amp;&amp; !<span class="built_in">isNaN</span>(d.<span class="property">value</span>))</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">sort</span>(<span class="function">(<span class="params">a,b</span>) =&gt;</span> b.<span class="property">value</span> - a.<span class="property">value</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">slice</span>(<span class="number">0</span>,top_n)</span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//此时索引就是排名了</span></span></span><br><span class="line"><span class="language-javascript">			yearSlice.<span class="title function_">forEach</span>(<span class="function">(<span class="params">d,i</span>) =&gt;</span> d.<span class="property">rank</span> = i)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="title function_">render_init</span>(yearSlice);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="keyword">let</span> ticker = d3.<span class="title function_">interval</span>(<span class="function"><span class="params">e</span> =&gt;</span>&#123;</span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//重新切分数据</span></span></span><br><span class="line"><span class="language-javascript">			yearSlice = data.<span class="title function_">filter</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">year</span> == year &amp;&amp; !<span class="built_in">isNaN</span>(d.<span class="property">value</span>)).<span class="title function_">sort</span>(<span class="function">(<span class="params">a,b</span>) =&gt;</span> b.<span class="property">value</span>-a.<span class="property">value</span>).<span class="title function_">slice</span>(<span class="number">0</span>,top_n);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			yearSlice.<span class="title function_">forEach</span>(<span class="function">(<span class="params">d,i</span>)=&gt;</span>&#123;</span></span><br><span class="line"><span class="language-javascript">				d.<span class="property">rank</span> = i;</span></span><br><span class="line"><span class="language-javascript">			&#125;)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//对x轴进行重新映射</span></span></span><br><span class="line"><span class="language-javascript">			xScale.<span class="title function_">domain</span>([<span class="number">0</span>,d3.<span class="title function_">max</span>(yearSlice,<span class="function"><span class="params">d</span>=&gt;</span>d.<span class="property">value</span>)])</span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//x轴随着图元的值修改</span></span></span><br><span class="line"><span class="language-javascript">			svg.<span class="title function_">select</span>(<span class="string">&#x27;.xAxis&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">transition</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">duration</span>(tickDuration)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">ease</span>(d3.<span class="property">easeLinear</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">call</span>(xAxis)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//第一步：获取update部分</span></span></span><br><span class="line"><span class="language-javascript">			<span class="keyword">let</span> bars = svg.<span class="title function_">selectAll</span>(<span class="string">&#x27;.bar&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">data</span>(yearSlice, <span class="function"><span class="params">d</span>=&gt;</span> d.<span class="property">name</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//enter,将尚未存在top12中的数据加入进来</span></span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//注意，transition前的y是在svg之外的，这样才会做成从下面往上浮现的效果</span></span></span><br><span class="line"><span class="language-javascript">			bars.<span class="title function_">enter</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">append</span>(<span class="string">&#x27;rect&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>,<span class="string">&#x27;bar&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>,<span class="title function_">xScale</span>(<span class="number">0</span>)+margin.<span class="property">left</span>+<span class="number">2</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)-<span class="title function_">xScale</span>(<span class="number">0</span>))</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(top_n+<span class="number">1</span>)+<span class="number">20</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;height&#x27;</span>, <span class="title function_">yScale</span>(<span class="number">1</span>)-<span class="title function_">yScale</span>(<span class="number">0</span>)-barPadding)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;fill&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">color</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">transition</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">duration</span>(tickDuration)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">ease</span>(d3.<span class="property">easeLinear</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>,<span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(d.<span class="property">rank</span>))</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//第二次update,之前存在top12的数据要进行修改</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			bars.<span class="title function_">transition</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">duration</span>(tickDuration)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">ease</span>(d3.<span class="property">easeLinear</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)-<span class="title function_">xScale</span>(<span class="number">0</span>))</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span><span class="title function_">yScale</span>(d.<span class="property">rank</span>))</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//最后一步exit()</span></span></span><br><span class="line"><span class="language-javascript">			bars.<span class="title function_">exit</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">transition</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">duration</span>(tickDuration)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">ease</span>(d3.<span class="property">easeLinear</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(top_n+<span class="number">1</span>)+<span class="number">5</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;width&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)-<span class="title function_">xScale</span>(<span class="number">0</span>)-<span class="number">1</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">remove</span>()</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//labels与bars相同</span></span></span><br><span class="line"><span class="language-javascript">			<span class="keyword">let</span> labels = svg.<span class="title function_">selectAll</span>(<span class="string">&#x27;.label&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">data</span>(yearSlice,<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">name</span>)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			labels.<span class="title function_">enter</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">append</span>(<span class="string">&#x27;text&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;label&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)-<span class="number">8</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(top_n+<span class="number">1</span>)+<span class="number">20</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;text-anchor&#x27;</span>,<span class="string">&#x27;end&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">text</span>(<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">name</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">transition</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">duration</span>(tickDuration)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">ease</span>(d3.<span class="property">easeLinear</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(d.<span class="property">rank</span>)+((<span class="title function_">yScale</span>(<span class="number">1</span>)-<span class="title function_">yScale</span>(<span class="number">0</span>))/<span class="number">2</span>) +<span class="number">1</span>)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			labels.<span class="title function_">transition</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">duration</span>(tickDuration)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">ease</span>(d3.<span class="property">easeLinear</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>,<span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>) -<span class="number">8</span> )</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(d.<span class="property">rank</span>)+((<span class="title function_">yScale</span>(<span class="number">1</span>)-<span class="title function_">yScale</span>(<span class="number">0</span>))/<span class="number">2</span>)+<span class="number">1</span>)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			labels.<span class="title function_">exit</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">transition</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">duration</span>(tickDuration)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">ease</span>(d3.<span class="property">easeLinear</span>)</span></span><br><span class="line"><span class="language-javascript">			<span class="comment">// .attr(&#x27;x&#x27;, d =&gt; xScale(d.value) -8 )</span></span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>,<span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(top_n+<span class="number">1</span>)+<span class="number">20</span> )</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">remove</span>()</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//valueLabels与bars相同</span></span></span><br><span class="line"><span class="language-javascript">			<span class="keyword">let</span> valueLabels = svg.<span class="title function_">selectAll</span>(<span class="string">&#x27;.valueLabel&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">data</span>(yearSlice,<span class="function"><span class="params">d</span> =&gt;</span> d.<span class="property">name</span>)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			valueLabels</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">enter</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">append</span>(<span class="string">&#x27;text&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;valueLabel&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)+<span class="number">9</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>,<span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(top_n) +<span class="number">20</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">text</span>(<span class="function"><span class="params">d</span> =&gt;</span> d3.<span class="title function_">format</span>(<span class="string">&#x27;,.0f&#x27;</span>)(d.<span class="property">lastValue</span>))</span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//enter进来的时候用lastvalue，后面update的时候再慢慢增加至value</span></span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">transition</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">duration</span>(tickDuration)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">ease</span>(d3.<span class="property">easeLinear</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(d.<span class="property">rank</span>) +((<span class="title function_">yScale</span>(<span class="number">1</span>)-<span class="title function_">yScale</span>(<span class="number">0</span>))/<span class="number">2</span>) );</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="comment">//update加一点数值渐变效果</span></span></span><br><span class="line"><span class="language-javascript">			valueLabels</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">transition</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">duration</span>(tickDuration)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">ease</span>(d3.<span class="property">easeLinear</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)+<span class="number">9</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(d.<span class="property">rank</span>) +((<span class="title function_">yScale</span>(<span class="number">1</span>)-<span class="title function_">yScale</span>(<span class="number">0</span>))/<span class="number">2</span>) )</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">tween</span>(<span class="string">&quot;textTween&quot;</span>,<span class="keyword">function</span>(<span class="params">d</span>)&#123;</span></span><br><span class="line"><span class="language-javascript">				<span class="comment">//做出在两个value间跳动的效果</span></span></span><br><span class="line"><span class="language-javascript">				<span class="keyword">let</span> i = d3.<span class="title function_">interpolateRound</span>(d.<span class="property">lastValue</span>,d.<span class="property">value</span>);</span></span><br><span class="line"><span class="language-javascript">				<span class="keyword">return</span> <span class="keyword">function</span>(<span class="params">t</span>)&#123;</span></span><br><span class="line"><span class="language-javascript">					<span class="variable language_">this</span>.<span class="property">textContent</span> = d3.<span class="title function_">format</span>(<span class="string">&#x27;,&#x27;</span>)(<span class="title function_">i</span>(t));</span></span><br><span class="line"><span class="language-javascript">				&#125;;</span></span><br><span class="line"><span class="language-javascript">			&#125;);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			valueLabels.<span class="title function_">exit</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">transition</span>()</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">duration</span>(tickDuration)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">ease</span>(d3.<span class="property">easeLinear</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;x&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">xScale</span>(d.<span class="property">value</span>)+<span class="number">9</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">attr</span>(<span class="string">&#x27;y&#x27;</span>, <span class="function"><span class="params">d</span> =&gt;</span> <span class="title function_">yScale</span>(top_n+<span class="number">1</span>)+<span class="number">20</span>)</span></span><br><span class="line"><span class="language-javascript">			.<span class="title function_">remove</span>()</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			yearText.<span class="title function_">html</span>(~~year)</span></span><br><span class="line"><span class="language-javascript">     		<span class="comment">//~~year：等于向上取整，2018.1 取反等于 -2019， 再次取反等于2019</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">			<span class="keyword">if</span>(year == <span class="number">2018</span>)&#123;</span></span><br><span class="line"><span class="language-javascript">				ticker.<span class="title function_">stop</span>();</span></span><br><span class="line"><span class="language-javascript">			&#125;</span></span><br><span class="line"><span class="language-javascript">			year = d3.<span class="title function_">format</span>(<span class="string">&#x27;.1f&#x27;</span>)(+(year)+ <span class="number">0.1</span>)</span></span><br><span class="line"><span class="language-javascript">			&#125;,tickDuration);<span class="comment">//end of tick</span></span></span><br><span class="line"><span class="language-javascript">			</span></span><br><span class="line"><span class="language-javascript">		&#125;);<span class="comment">//end of d3.csv.then()</span></span></span><br><span class="line"><span class="language-javascript">	</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="可视化效果"><a href="#可视化效果" class="headerlink" title="可视化效果"></a>可视化效果</h2><p><img src="https://img-blog.csdnimg.cn/d3dbe9f0f81b460397450415296dd07f.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1JSaWUx,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%81%E7%89%8C%E6%8E%92%E5%90%8D%E5%8A%A8%E6%80%81%E5%8F%AF%E8%A7%86%E5%8C%96-D3-js"><span class="nav-number">1.</span> <span class="nav-text">品牌排名动态可视化   @ D3.js</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E6%B8%85%E5%8D%95"><span class="nav-number">1.1.</span> <span class="nav-text">任务清单</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E5%88%86%E6%9E%90"><span class="nav-number">1.2.</span> <span class="nav-text">思路分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%BB%E5%B8%83%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.3.</span> <span class="nav-text">画布初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">1.4.</span> <span class="nav-text">数据预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E5%B0%86%E6%89%80%E6%9C%89%E5%80%BC%E8%BD%AC%E6%8D%A2%E4%B8%BA%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.4.1.</span> <span class="nav-text">注意将所有值转换为数值类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E8%AE%BE%E7%BD%AE%E7%BC%BA%E5%A4%B1%E5%80%BC%E7%9A%84%E7%BC%BA%E7%9C%81%E5%80%BC"><span class="nav-number">1.4.2.</span> <span class="nav-text">注意设置缺失值的缺省值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E6%AF%8F%E4%B8%AA%E6%95%B0%E6%8D%AE%E8%AE%BE%E7%BD%AE%E9%A2%9C%E8%89%B2"><span class="nav-number">1.4.3.</span> <span class="nav-text">为每个数据设置颜色</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%87%E6%BB%A4%E6%95%B0%E6%8D%AE%EF%BC%8C%E4%BB%85%E4%BF%9D%E7%95%99%E5%BD%93%E5%89%8D%E5%B9%B4%E4%BB%BD%E7%9A%84%EF%BC%8C%E6%95%B0%E6%8D%AE%E5%88%87%E7%89%87%EF%BC%8C%E8%AE%BE%E7%BD%AE%E6%8E%92%E5%90%8D"><span class="nav-number">1.4.4.</span> <span class="nav-text">过滤数据，仅保留当前年份的，数据切片，设置排名</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A6%96%E6%AC%A1%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A"><span class="nav-number">1.5.</span> <span class="nav-text">首次数据绑定</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9D%90%E6%A0%87%E8%BD%B4"><span class="nav-number">1.5.1.</span> <span class="nav-text">坐标轴</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9F%A9%E5%BD%A2bar"><span class="nav-number">1.5.2.</span> <span class="nav-text">矩形bar</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%81%E7%89%8C%E5%90%8Dlabel"><span class="nav-number">1.5.3.</span> <span class="nav-text">品牌名label</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E5%80%BC"><span class="nav-number">1.5.4.</span> <span class="nav-text">数值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B4%E4%BB%BD%EF%BC%9A%E6%A0%87%E8%AE%B0%E5%BD%93%E5%89%8D%E6%98%AF%E7%AC%AC%E5%87%A0%E5%B9%B4%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="nav-number">1.5.5.</span> <span class="nav-text">年份：标记当前是第几年的数据</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E6%97%B6%E9%97%B4%E8%A7%A6%E5%8F%91%E5%99%A8ticker"><span class="nav-number">1.6.</span> <span class="nav-text">设置时间触发器ticker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E6%9B%B4%E6%96%B0%E5%87%BD%E6%95%B0%EF%BC%88%E9%87%8D%E4%B8%AD%E4%B9%8B%E9%87%8D%EF%BC%89"><span class="nav-number">1.7.</span> <span class="nav-text">编写更新函数（重中之重）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E6%95%B0%E6%8D%AE%EF%BC%8C%E9%87%8D%E6%96%B0%E8%8E%B7%E5%BE%97%E5%89%8D12%E5%90%8D%E6%95%B0%E6%8D%AE"><span class="nav-number">1.7.1.</span> <span class="nav-text">更新数据，重新获得前12名数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E5%9D%90%E6%A0%87%E8%BD%B4"><span class="nav-number">1.7.2.</span> <span class="nav-text">更新坐标轴</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E6%96%B0%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE-%E5%9B%BE%E5%85%83%E7%BB%91%E5%AE%9A"><span class="nav-number">1.7.3.</span> <span class="nav-text">重新进行数据-图元绑定</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E7%BB%91%E5%AE%9A%EF%BC%8C%E8%8E%B7%E5%8F%96update-%E5%BD%A2%E6%80%81"><span class="nav-number">1.7.3.1.</span> <span class="nav-text">第一步：绑定，获取update()形态</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9Aenter"><span class="nav-number">1.7.3.2.</span> <span class="nav-text">第二步：enter()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5-update"><span class="nav-number">1.7.3.3.</span> <span class="nav-text">第三步 update()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5-exit"><span class="nav-number">1.7.3.4.</span> <span class="nav-text">第四步 exit()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%95%B0%E5%80%BC%E6%B8%90%E5%8F%98"><span class="nav-number">1.7.3.5.</span> <span class="nav-text">数值渐变</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B4%E4%BB%BD%E6%9B%B4%E6%96%B0"><span class="nav-number">1.7.4.</span> <span class="nav-text">年份更新</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">完整代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E6%95%88%E6%9E%9C"><span class="nav-number">3.</span> <span class="nav-text">可视化效果</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"> Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+</body>
+</html>

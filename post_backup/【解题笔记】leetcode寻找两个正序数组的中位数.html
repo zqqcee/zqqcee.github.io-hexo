@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="MXnxXuB_QrrsHGVDyL1PctN3b34klY8nvY_MD6CFETw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zqqcee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="leetcode【寻找两个正序数组中位数】做题笔记，包含解题步骤、思考过程与完整代码">
+<meta property="og:type" content="website">
+<meta property="og:title" content="【解题笔记】 leetcode寻找两个正序数组的中位数">
+<meta property="og:url" content="https://zqqcee.github.io/post_backup/%E3%80%90%E8%A7%A3%E9%A2%98%E7%AC%94%E8%AE%B0%E3%80%91leetcode%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="leetcode【寻找两个正序数组中位数】做题笔记，包含解题步骤、思考过程与完整代码">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/5f5cb439549892ea54bf440cbeb5e4f2.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/b4957edb9e7f81e741409d81c620c0d3.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/e8db0a47c978096643b032c559afaff1.png">
+<meta property="article:published_time" content="2023-06-16T04:58:34.375Z">
+<meta property="article:modified_time" content="2022-08-03T03:02:08.865Z">
+<meta property="article:author" content="zqqcee">
+<meta property="article:tag" content="leetcode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/img_convert/5f5cb439549892ea54bf440cbeb5e4f2.png">
+
+<link rel="canonical" href="https://zqqcee.github.io/post_backup/%E3%80%90%E8%A7%A3%E9%A2%98%E7%AC%94%E8%AE%B0%E3%80%91leetcode%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'en'
+  };
+</script>
+
+  <title>【解题笔记】 leetcode寻找两个正序数组的中位数 | zqqcee
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Comes in a big package "📦" </p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-chitchat">
+
+    <a href="/chitchat/" rel="section"><i class="fa fa-fan fa-fw"></i>Chitchat</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-leetcode">
+
+    <a href="/leetcode/" rel="section"><i class="fa fa-crosshairs fa-fw"></i>Leetcode</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="en">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">【解题笔记】 leetcode寻找两个正序数组的中位数
+</h1>
+
+<div class="post-meta">
+    <div class="post-description">leetcode【寻找两个正序数组中位数】做题笔记，包含解题步骤、思考过程与完整代码</div>
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h2 id="问题转化"><a href="#问题转化" class="headerlink" title="问题转化"></a>问题转化</h2><p>首先，考虑只有一个有序数组的情况：寻找中位数的问题可以转化为寻找一条分割线，满足以下两个条件：</p>
+<ul>
+<li>这条分割线在数组元素个素为奇数的时候，分割线左边的元素比右边多一个，中位数就是分割线左边的元素。</li>
+<li>数组元素个数为偶数的时候，分割线左边的元素与右边的元素一样多。中位数是分割线左右两个元素的平均值。</li>
+</ul>
+<p>下面考虑两个有序数组，我们可以在两个数组上都划分一条分割线，这两条分割线有以下两个条件 ：</p>
+<ul>
+<li>两条分割线左边的元素个数 = 两条分割线右边的元素个数</li>
+<li>两条分割线左边的元素均小于右边的元素<br>此时，这道题就从寻找中位数转化为了寻找满足上述两个条件的分割线。题目要求时间复杂度为<code>O(log (m+n))</code>，因此能够直接联想到使用二分查找法来找分割线。<h2 id="解题步骤"><a href="#解题步骤" class="headerlink" title="解题步骤"></a>解题步骤</h2>寻找满足上述两个条件的分割线，那么我们就<strong>围绕上述两个条件</strong>来编码：为了描述方便，将nums1设置为长度较短的数组，nums2设置为长度较长的数组。<h3 id="第一个条件："><a href="#第一个条件：" class="headerlink" title="第一个条件："></a>第一个条件：</h3>要考虑奇数和偶数的情况，如果两个数组长度之和为奇数，那么我们就规定左边元素比右边元素多；如果两个数组长度之和为偶数，那么两边元素相等。由于Java的除法是向下取整（即5/2=2），因此可以讲奇偶两种情况合并，得到左边元素的总个数<script type="math/tex; mode=display">
+totalLeft = \frac{m+n+1}{2}~~~~~~~~//其中m，n分别代表两个数组的长度</script></li>
+</ul>
+<h3 id="第二个条件："><a href="#第二个条件：" class="headerlink" title="第二个条件："></a>第二个条件：</h3><p>要使分割线左边元素均小于右边的元素，因为两个数组均为有序数组，那么满足以下条件即可：<br>设<code>i</code>为nums1分割线右边的元素，<code>j</code>为nums2分割线右边的元素。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">nums1[i-<span class="number">1</span>]&lt;=nums2[j] &amp;&amp; nums2[j-<span class="number">1</span>]&lt;=nums1[i]</span><br></pre></td></tr></table></figure>
+<h3 id="根据上述两个条件编码："><a href="#根据上述两个条件编码：" class="headerlink" title="根据上述两个条件编码："></a>根据上述两个条件编码：</h3><ul>
+<li><p>据此，根据第一个条件，我们可以知道<code>i</code>和<code>j</code>的等量关系，即<code>i+j=totalLeft</code>。知道这个等量关系以后就很好办了，我们每次只需要移动<code>i</code>，让<code>j=totalLeft-i</code>即可。</p>
+</li>
+<li><p>根据第二个条件，我们只需要比较<code>nums1[i-1]</code>与<code>nums2[j]</code>的大小关系即可。如果前者大，说明分割线太靠右了；反之，继续向右寻找看还有没有满足条件的。<br>如下图：此时<code>i</code>指向元素2，<code>j</code>指向元素4。<code>1&lt;4</code>，因此<code>nums1</code>的分割线右移。由<code>j=totalLeft-i</code>得，<code>nums2</code>的分割线左移。</p>
+</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/5f5cb439549892ea54bf440cbeb5e4f2.png" alt=""><br>用<strong>二分查找法</strong>编码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//第一步：将长度最短的数组设置为nums1</span></span><br><span class="line"><span class="keyword">if</span> (nums2.length &lt; nums1.length) &#123;</span><br><span class="line">  <span class="type">int</span>[] temp = nums1;</span><br><span class="line">  nums1 = nums2;</span><br><span class="line">  nums2 = temp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//第二步：设置分割线左边元素的个数</span></span><br><span class="line"><span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> nums1.length;</span><br><span class="line"><span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> nums2.length;</span><br><span class="line"><span class="type">int</span> <span class="variable">totalLeft</span> <span class="operator">=</span> (m + n + <span class="number">1</span>) / <span class="number">2</span>; <span class="comment">//合并奇数和偶数的情况</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//第三步，设置left与right，代表nums1分割线的查找区间。注：right需要设置为nums1.length，因为i可以为nums1.length,此时分割线就在nums1的最右边</span></span><br><span class="line"><span class="type">int</span> <span class="variable">left</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> <span class="variable">right</span> <span class="operator">=</span> nums1.length;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*两个条件：</span></span><br><span class="line"><span class="comment">        1. 分隔线左边的元素个数等于分隔线右边的元素个素</span></span><br><span class="line"><span class="comment">        2. 分隔线左边的所有元素均小于分隔线右边的元素个素</span></span><br><span class="line"><span class="comment">        即nums1[i-1] &lt;= nums2[j] &amp;&amp; nums2[j-1] &lt;= num1[i]</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">        注：i是nums1分割线右边的第一个元素，它的下标 = 分隔线左边元素的个数；</span></span><br><span class="line"><span class="comment">        j同理，因此: i + j = totalLeft，可以根据该表达式，由i确定j。</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line"><span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">  <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> left + (right - left + <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">  <span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> totalLeft - i;</span><br><span class="line">  <span class="keyword">if</span> (nums1[i - <span class="number">1</span>] &gt; nums2[j]) &#123;</span><br><span class="line">    <span class="comment">//说明nums1的分隔线太靠右了，需要在[left,i-1处继续寻找]</span></span><br><span class="line">    right = i - <span class="number">1</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">//需要在[i,right]处继续寻找</span></span><br><span class="line">    left = i;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//第四步：分割线划分完毕，确定两个数组分割线右边的位置i，j。此时left所指向的元素是nums1分割线右边的元素</span></span><br><span class="line"><span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> left;</span><br><span class="line"><span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> totalLeft - i;</span><br></pre></td></tr></table></figure>
+<h3 id="极端情况："><a href="#极端情况：" class="headerlink" title="极端情况："></a>极端情况：</h3><p>下面讨论四种分割线划分的极端情况，仅以两种情况举例说明</p>
+<ul>
+<li><p><code>nums1</code>的分割线在数组最左边<br><img src="https://img-blog.csdnimg.cn/img_convert/b4957edb9e7f81e741409d81c620c0d3.png" alt="分割线在数组最左边">    </p>
+<ul>
+<li>因为<code>nums1</code>分隔线左边没有元素，因此可以得出两个数组分割线左边的最大值肯定在<code>nums2</code>中。</li>
+<li>此时要把<code>nums1[i-1]</code>设置为无限小的值，使得最后选择左边元素最大值的时候不要选中它。</li>
+</ul>
+</li>
+<li><p><code>nums1</code>的分割线在数组最右边<br>  <img src="https://img-blog.csdnimg.cn/img_convert/e8db0a47c978096643b032c559afaff1.png" alt="分割线在数组最右边"></p>
+<ul>
+<li>因为<code>nums1</code>分隔线右边没有元素，因此可以得出两个数组分割线右边的最小值肯定在<code>nums2</code>中。</li>
+<li>此时要把<code>nums1[i]</code>设置为无限大的值，使得最后选择右边元素最小值的时候不要选中它。</li>
+</ul>
+</li>
+<li><code>nums2</code>的分割线在数组最左边</li>
+<li><code>nums2</code>的分割线在数组最左边<br>因此，考虑到四种极端情况，要在获得中位数前加上以下代码：<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">nums1LeftMax</span> <span class="operator">=</span> i == <span class="number">0</span> ? Integer.MIN_VALUE : nums1[i - <span class="number">1</span>];</span><br><span class="line"><span class="comment">//此时nums1分割线左边没有元素了，因此nums1分割线左边元素的最大值要设置成无限小，在比较时直接选中nums2分割线的左边元素，其余同理</span></span><br><span class="line"><span class="type">int</span> <span class="variable">nums1RightMin</span> <span class="operator">=</span> i == m ? Integer.MAX_VALUE : nums1[i];</span><br><span class="line"><span class="type">int</span> <span class="variable">nums2LeftMax</span> <span class="operator">=</span> j == <span class="number">0</span> ? Integer.MIN_VALUE : nums2[j - <span class="number">1</span>];</span><br><span class="line"><span class="type">int</span> <span class="variable">nums2RightMin</span> <span class="operator">=</span> j == n ? Integer.MAX_VALUE : nums2[j];</span><br></pre></td></tr></table></figure>
+<h3 id="得到中位数"><a href="#得到中位数" class="headerlink" title="得到中位数"></a>得到中位数</h3>分割线划分完毕后，即可求得中位数：</li>
+<li>数组长度和为奇数：两条分割线左边元素的最大值</li>
+<li>数组长度和为偶数：两条分割线左边元素最大值与右边元素最小值的平均值<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//最后一步：中位数</span></span><br><span class="line"><span class="keyword">if</span> ((m + n) % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">  <span class="comment">//偶数</span></span><br><span class="line">  <span class="keyword">return</span> (<span class="type">double</span>)(Math.max(nums1LeftMax, nums2LeftMax) + Math.min(nums1RightMin, nums2RightMin)) / <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> Math.max(nums1LeftMax, nums2LeftMax);</span><br></pre></td></tr></table></figure>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2>在写二分查找法时，如果<strong>查找到右区间时</strong>使用<code>left=middle</code>的方式编码，那么需要注意避免<strong>死循环</strong>的情况。<br>比如某个区间只有两个数<code>[i,j]</code>，如果<code>left=i</code>，<code>right=j</code>，那么若中间值一直不动，就会陷入死循环。因此确定中间值的时候应该使用<code>left + (right - left + 1) / 2</code>,这样就能保证如果二分查找查到了右区间，左边界加一。详情可见代码</li>
+</ul>
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">findMedianSortedArrays</span><span class="params">(<span class="type">int</span>[] nums1, <span class="type">int</span>[] nums2)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//第一步：将长度最短的数组设置为nums1</span></span><br><span class="line">    <span class="keyword">if</span> (nums2.length &lt; nums1.length) &#123;</span><br><span class="line">      <span class="type">int</span>[] temp = nums1;</span><br><span class="line">      nums1 = nums2;</span><br><span class="line">      nums2 = temp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">//第二步：设置分割线左边元素的个数</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> nums1.length;</span><br><span class="line">    <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> nums2.length;</span><br><span class="line">    <span class="type">int</span> <span class="variable">totalLeft</span> <span class="operator">=</span> (m + n + <span class="number">1</span>) / <span class="number">2</span>; <span class="comment">//合并奇数和偶数的情况</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">//第三步，设置left与right，代表nums1分割线的查找区间。注：right需要设置为nums1.length，因为i可以为nums1.length,此时分割线就在nums1的最右边</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">left</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> <span class="variable">right</span> <span class="operator">=</span> nums1.length;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*两个条件：</span></span><br><span class="line"><span class="comment">        1. 分隔线左边的元素个数等于分隔线右边的元素个素</span></span><br><span class="line"><span class="comment">        2. 分隔线左边的所有元素均小于分隔线右边的元素个素</span></span><br><span class="line"><span class="comment">        即nums1[i-1] &lt;= nums2[j] &amp;&amp; nums2[j-1] &lt;= num1[i]</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">        注：i是nums1分割线右边的第一个元素，它的下标 = 分隔线左边元素的个数；</span></span><br><span class="line"><span class="comment">        j同理，因此: i + j = totalLeft，可以根据该表达式，由i确定j。</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">    <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">      <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> left + (right - left + <span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">      <span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> totalLeft - i;</span><br><span class="line">      <span class="keyword">if</span> (nums1[i - <span class="number">1</span>] &gt; nums2[j]) &#123;</span><br><span class="line">        <span class="comment">//说明nums1的分隔线太靠右了，需要在[left,i-1处继续寻找]</span></span><br><span class="line">        right = i - <span class="number">1</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//需要在[i,right]处继续寻找</span></span><br><span class="line">        left = i;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//第四步：分割线划分完毕，确定两个数组分割线右边的位置i，j。此时left所指向的元素是nums1分割线右边的元素</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> left;</span><br><span class="line">    <span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> totalLeft - i;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//第五步：确定中位数，无论是奇数还是偶数，中位数都只与两个数组分割线左边元素的最大值x 和 右边元素的最小值y 有关。</span></span><br><span class="line">    <span class="comment">//因为设定分割线左边元素等于右边元素，或大于一，因此中位数=x 或中位数=（x+y）/2</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">nums1LeftMax</span> <span class="operator">=</span> i == <span class="number">0</span> ? Integer.MIN_VALUE : nums1[i - <span class="number">1</span>];</span><br><span class="line">    <span class="comment">//此时nums1分割线左边没有元素了，因此nums1分割线左边元素的最大值要设置成无限小，在比较时直接选中nums2分割线的左边元素，其余同理</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">nums1RightMin</span> <span class="operator">=</span> i == m ? Integer.MAX_VALUE : nums1[i];</span><br><span class="line">    <span class="type">int</span> <span class="variable">nums2LeftMax</span> <span class="operator">=</span> j == <span class="number">0</span> ? Integer.MIN_VALUE : nums2[j - <span class="number">1</span>];</span><br><span class="line">    <span class="type">int</span> <span class="variable">nums2RightMin</span> <span class="operator">=</span> j == n ? Integer.MAX_VALUE : nums2[j];</span><br><span class="line"></span><br><span class="line">    <span class="comment">//最后一步：中位数</span></span><br><span class="line">    <span class="keyword">if</span> ((m + n) % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="comment">//偶数</span></span><br><span class="line">      <span class="keyword">return</span> (<span class="type">double</span>)(Math.max(nums1LeftMax, nums2LeftMax) + Math.min(nums1RightMin, nums2RightMin)) / <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> Math.max(nums1LeftMax, nums2LeftMax);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%BD%AC%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">问题转化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">解题步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%9D%A1%E4%BB%B6%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">第一个条件：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E4%B8%AA%E6%9D%A1%E4%BB%B6%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">第二个条件：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E4%B8%8A%E8%BF%B0%E4%B8%A4%E4%B8%AA%E6%9D%A1%E4%BB%B6%E7%BC%96%E7%A0%81%EF%BC%9A"><span class="nav-number">2.3.</span> <span class="nav-text">根据上述两个条件编码：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%81%E7%AB%AF%E6%83%85%E5%86%B5%EF%BC%9A"><span class="nav-number">2.4.</span> <span class="nav-text">极端情况：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%97%E5%88%B0%E4%B8%AD%E4%BD%8D%E6%95%B0"><span class="nav-number">2.5.</span> <span class="nav-text">得到中位数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F"><span class="nav-number">3.</span> <span class="nav-text">注意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">完整代码</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"> Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+</body>
+</html>

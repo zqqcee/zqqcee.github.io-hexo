@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="MXnxXuB_QrrsHGVDyL1PctN3b34klY8nvY_MD6CFETw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zqqcee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="双指针数组&#x2F;链表658. 找到 K 个最接近的元素题目： 给定一个 排序好 的数组 arr ，两个整数 k 和 x ，从数组中找到最靠近 x（两数之差最小）的 k 个数。返回的结果必须要是按升序排好的。 整数 a 比整数 b 更接近 x 需要满足： |a - x| &lt; |b - x| 或者|a - x| &#x3D;&#x3D; |b - x| 且 a &lt; b 思路一： 题意寻找离x最近的k个数，只需要按">
+<meta property="og:type" content="website">
+<meta property="og:title" content="zqqcee">
+<meta property="og:url" content="https://zqqcee.github.io/leetcode/array.html">
+<meta property="og:site_name" content="zqqcee">
+<meta property="og:description" content="双指针数组&#x2F;链表658. 找到 K 个最接近的元素题目： 给定一个 排序好 的数组 arr ，两个整数 k 和 x ，从数组中找到最靠近 x（两数之差最小）的 k 个数。返回的结果必须要是按升序排好的。 整数 a 比整数 b 更接近 x 需要满足： |a - x| &lt; |b - x| 或者|a - x| &#x3D;&#x3D; |b - x| 且 a &lt; b 思路一： 题意寻找离x最近的k个数，只需要按">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://zqqcee.github.io/leetcode/img/linkedlist1.png">
+<meta property="og:image" content="https://zqqcee.github.io/leetcode/img/1615105296-bmiPxl-image.png">
+<meta property="og:image" content="https://zqqcee.github.io/leetcode/img/reverse_ex1.png">
+<meta property="article:published_time" content="2023-06-17T07:19:12.109Z">
+<meta property="article:modified_time" content="2023-06-17T07:19:12.098Z">
+<meta property="article:author" content="zqqcee">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zqqcee.github.io/leetcode/img/linkedlist1.png">
+
+<link rel="canonical" href="https://zqqcee.github.io/leetcode/array">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'en'
+  };
+</script>
+
+  <title> | zqqcee
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zqqcee</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Comes in a big package "📦" </p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-chitchat">
+
+    <a href="/chitchat/" rel="section"><i class="fa fa-fan fa-fw"></i>Chitchat</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-leetcode">
+
+    <a href="/leetcode/" rel="section"><i class="fa fa-crosshairs fa-fw"></i>Leetcode</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block" lang="en">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <h2 id="双指针数组-链表"><a href="#双指针数组-链表" class="headerlink" title="双指针数组/链表"></a>双指针数组/链表</h2><h3 id="658-找到-K-个最接近的元素"><a href="#658-找到-K-个最接近的元素" class="headerlink" title="658. 找到 K 个最接近的元素"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-k-closest-elements/">658. 找到 K 个最接近的元素</a></h3><p><strong>题目</strong>：</p>
+<p>给定一个 排序好 的数组 arr ，两个整数 k 和 x ，从数组中找到最靠近 x（两数之差最小）的 k 个数。返回的结果必须要是按升序排好的。</p>
+<p>整数 a 比整数 b 更接近 x 需要满足：</p>
+<p>|a - x| &lt; |b - x| 或者<br>|a - x| == |b - x| 且 a &lt; b</p>
+<p><strong>思路一</strong>：</p>
+<p>题意寻找离x最近的k个数，只需要按照它的要求写排序规则即可。排序规则为：与x的差绝对值越小，排位越靠前。最后，用<code>subList</code>取出前k个数再进行一次排序即可。</p>
+<p><strong>思路二</strong>：</p>
+<p>可以先找到x在数组arr中的位置，即找到两个值，left和right，使得[0,left]的数都小于等于x，[right,arr.lenth-1]的数都大于x。</p>
+<p>找位置的问题可以转化为用二分查找找左右边界的问题，这里可以选择找左边界或右边界，找到左边界后，右边界就是left+1；</p>
+<p>找到边界后，用两个指针来不断扩大窗口，找到k个数字</p>
+<h3 id="80-删除有序数组中的重复项（通解）"><a href="#80-删除有序数组中的重复项（通解）" class="headerlink" title="80. 删除有序数组中的重复项（通解）"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/">80. 删除有序数组中的重复项</a>（通解）</h3><p><strong>题目：</strong></p>
+<p> nums ，请你<strong>原地</strong>删除重复出现的元素，使得出现次数超过k次的元素只出现<strong>k次</strong> （也就是说超出k次的元素要删除），返回删除后数组的新长度。</p>
+<p>不要使用额外的数组空间，你必须在 原地 修改输入数组 并在使用 O(1) 额外空间的条件下完成。</p>
+<p><strong>思路一：需要回溯，从后往前，适用于数组，不适用于链表</strong></p>
+<p>双指针，一个slow指针用于维护，一个fast指针用于查找。 slow指针之前的元素，即[0,slow)都已经维护完成；fast指针之前的元素，即[0,fast)都已经检查完毕。</p>
+<p>因为是有序数组，让出现次数超过k次的元素只出现k次，那么slow的前k个数字arr[slow-k]就不能与当前正在检测的数字arr[fast]相同，如果相同，fast位置的元素就不能保留，如果不相同，那么fast位置的元素就可以保留。</p>
+<p>因此，我们需要判断元素是否满足<strong><code>arr[slow-k]!=arr[fast]</code></strong>，如果<strong><code>arr[slow-k]==arr[fast]</code></strong>，那么说明fast指针指向的这个元素不应该被保留，继续检测，如果满足上述条件，那么fast指针指向的这个元素就应该保留，继续检测。</p>
+<p><strong>模版</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">removeDuplicatesK</span><span class="params">(<span class="type">int</span>[] nums,<span class="type">int</span> k)</span>&#123;</span><br><span class="line">  <span class="type">int</span> <span class="variable">s</span> <span class="operator">=</span> k;</span><br><span class="line">  <span class="type">int</span> <span class="variable">f</span> <span class="operator">=</span> k;</span><br><span class="line">  <span class="keyword">while</span>(f&lt;nums.length)&#123;</span><br><span class="line">    <span class="keyword">if</span>(nums[s-k]!=nums[f])&#123;</span><br><span class="line">      <span class="comment">//保留</span></span><br><span class="line">      nums[s] = nums[f];</span><br><span class="line">      s++;</span><br><span class="line">    &#125;</span><br><span class="line">    f++;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> s;<span class="comment">//s表示保留几个元素</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="82-删除排序链表中的重复元素-II"><a href="#82-删除排序链表中的重复元素-II" class="headerlink" title="82. 删除排序链表中的重复元素 II"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/remove-duplicates-from-sorted-list-ii/">82. 删除排序链表中的重复元素 II</a></h3><p><strong>题目</strong>：</p>
+<p>给定一个已排序的链表的头 <code>head</code> ， 删除原始链表中所有重复数字的节点，只留下不同的数字 。返回 已排序的链表 。</p>
+<p><img src="img/linkedlist1.png" alt="img"></p>
+<p><strong>思路</strong>：</p>
+<ul>
+<li>注意：链表题目如果有可能更改头节点的话，应该设一个虚拟节点dummy，最终返回dummy.next即可</li>
+</ul>
+<p>首先，设置一个current节点指向头节点，判断<code>current.next==current.next.next</code>吗，如果等于的话，我们就需要找到那个不和current.next相等的值，作为current.next</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> current.next.val;</span><br><span class="line"><span class="type">ListNode</span> <span class="variable">node</span> <span class="operator">=</span> current.next;</span><br><span class="line"><span class="keyword">while</span>(node != <span class="literal">null</span> &amp;&amp; node.next.val==x)&#123;</span><br><span class="line">  node = node.next;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//退出循环时，node就是我们要接在current后面的节点</span></span><br><span class="line">current.next = node;</span><br></pre></td></tr></table></figure>
+<h2 id="二分搜索【重要】"><a href="#二分搜索【重要】" class="headerlink" title="二分搜索【重要】"></a>二分搜索【重要】</h2><p><strong>主要是搜索二分边界的含义</strong></p>
+<ul>
+<li><p>搜索左侧边界的含义。</p>
+<ul>
+<li><p>返回的这个值是 <code>nums</code> 中大于等于 <code>target</code> 的最小元素索引。<br>比如：【1, 2, 3, 3, 4, 4, 5, 6】target = 3, 返回第一个的索引 <code>2</code></p>
+</li>
+<li><p>返回的这个值是 <code>target</code> 应该插入在 <code>nums</code> 中的索引位置。【理解为找到一个区间】<br>比如：【1, 4, 6, 8, 10】,target = 2，返回应该插入的索引<code>1</code>。</p>
+</li>
+<li><p>返回的这个值是 <code>nums</code> 中小于 <code>target</code> 的元素个数。<br>同上，比如【1, 4, 6, 8, 10】,target = 4，返回个数<code>1</code>。target = 7，返回个数<code>3</code>。</p>
+</li>
+</ul>
+</li>
+<li><p>搜索右侧边界的含义</p>
+</li>
+</ul>
+<h3 id="二分搜索答案空间"><a href="#二分搜索答案空间" class="headerlink" title="二分搜索答案空间"></a>二分搜索答案空间</h3><p>一般都是暴力会超时，用二分提速。</p>
+<h5 id="1011-在-D-天内送达包裹的能力"><a href="#1011-在-D-天内送达包裹的能力" class="headerlink" title="1011. 在 D 天内送达包裹的能力"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/capacity-to-ship-packages-within-d-days/">1011. 在 D 天内送达包裹的能力</a></h5><p><strong>题目：</strong></p>
+<p>传送带上的包裹必须在 days 天内从一个港口运送到另一个港口。传送带上的第 i 个包裹的重量为 weights[i]。每一天，我们都会按给出重量（weights）的顺序往传送带上装载包裹。我们装载的重量不会超过船的最大运载重量。返回能在 days 天内将传送带上的所有包裹送达的船的最低运载能力。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：weights = [1,2,3,4,5,6,7,8,9,10], days = 5</span><br><span class="line">输出：15</span><br><span class="line">解释：</span><br><span class="line">船舶最低载重 15 就能够在 5 天内送达所有包裹，如下所示：</span><br><span class="line">第 1 天：1, 2, 3, 4, 5</span><br><span class="line">第 2 天：6, 7</span><br><span class="line">第 3 天：8</span><br><span class="line">第 4 天：9</span><br><span class="line">第 5 天：10</span><br></pre></td></tr></table></figure>
+<p><strong>思路：</strong></p>
+<p>由于枚举答案空间会超时，因此在答案空间中用二分搜索找答案。答案空间：[max(weight),sum(weight)]，找满足运输条件的左边界。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">shipWithinDays</span><span class="params">(<span class="type">int</span>[] weights, <span class="type">int</span> days)</span> &#123;</span><br><span class="line">  <span class="comment">//设定左右边界</span></span><br><span class="line">  <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">  <span class="type">int</span> <span class="variable">max</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> w:weights)&#123;</span><br><span class="line">    sum+=w;</span><br><span class="line">    max = Math.max(max,w);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="type">int</span> <span class="variable">l</span> <span class="operator">=</span> max;</span><br><span class="line">  <span class="type">int</span> <span class="variable">r</span> <span class="operator">=</span> sum;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">while</span>(l&lt;=r)&#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">mid</span> <span class="operator">=</span> l+((r-l)&gt;&gt;<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span>(validate(mid,weights,days))&#123;</span><br><span class="line">      <span class="comment">//validate用来判断能否完成运输</span></span><br><span class="line">      r = mid-<span class="number">1</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      l = mid+<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="410-分割数组的最大值"><a href="#410-分割数组的最大值" class="headerlink" title="410. 分割数组的最大值"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/split-array-largest-sum/">410. 分割数组的最大值</a></h5><p><strong>题目：</strong></p>
+<p>给定一个非负整数数组 <code>nums</code> 和一个整数 <code>m</code> ，你需要将这个数组分成 <code>m</code> 个非空的连续子数组。设计一个算法使得这 <code>m</code> 个子数组各自和的最大值最小。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：nums = [7,2,5,10,8], m = 2</span><br><span class="line">输出：18</span><br><span class="line">解释：</span><br><span class="line">一共有四种方法将 nums 分割为 2 个子数组。 </span><br><span class="line">其中最好的方式是将其分为 [7,2,5] 和 [10,8] 。</span><br><span class="line">因为此时这两个子数组各自的和的最大值为18，在所有情况中最小。</span><br></pre></td></tr></table></figure>
+<p><strong>思路：</strong></p>
+<p>这题的难点有三个：</p>
+<ul>
+<li>找到二分空间</li>
+<li>找到m与最大值的关系</li>
+<li>找到二分查找的条件</li>
+</ul>
+<p>下面一个一个来解决。</p>
+<p>第一步：找到二分空间，子数组最大值的取值范围应该是<code>[数组中的最小值，数组的和]</code></p>
+<p>第二步：找到m与最大值的关系，从二分空间中可以看出，如果子数组的最大值取数组中的最小值，那么数组会被分割成<code>n=nums.length</code>个；如果子数组的最大值取数组的和，那么数组会被分割成<code>1</code>个。</p>
+<p>第三步：从第二步可以看出，子数组的最大值取的越大，被分割的个数就越大；反之，子数组的最大值取的越小，被分割的个数就越少。因此我们可以找到这个值的左边界，使得满足子数组被分割的个数=m。</p>
+<h5 id="2517-礼盒的最大甜蜜度"><a href="#2517-礼盒的最大甜蜜度" class="headerlink" title="2517. 礼盒的最大甜蜜度"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/">2517. 礼盒的最大甜蜜度</a></h5><p><strong>题目：</strong></p>
+<p>给你一个正整数数组 price ，其中 price[i] 表示第 i 类糖果的价格，另给你一个正整数 k 。商店组合 k 类 不同 糖果打包成礼盒出售。礼盒的 甜蜜度 是礼盒中任意两种糖果 价格 绝对差的最小值。返回礼盒的 最大 甜蜜度。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：price = [13,5,1,8,21,2], k = 3</span><br><span class="line">输出：8</span><br><span class="line">解释：选出价格分别为 [13,5,21] 的三类糖果。</span><br><span class="line">礼盒的甜蜜度为 min(|13 - 5|, |13 - 21|, |5 - 21|) = min(8, 8, 16) = 8 。</span><br><span class="line">可以证明能够取得的最大甜蜜度就是 8 。</span><br></pre></td></tr></table></figure>
+<p><strong>思路：</strong></p>
+<p><strong>非常重要的一点：最小的最大，最大的最小，基本都是二分</strong></p>
+<p>因为<strong>最小的最大代表寻找右边界，最大的最小代表寻找左边界</strong></p>
+<p>知道使用二分以后，代码其实就很好写了。因为题目需要寻找最大的甜蜜度，因此我们需要二分甜蜜度，而二分的判断条件就用当前甜蜜度可以装入多少种糖果来作为条件。假设在<code>t</code>甜蜜度下，可以放入<code>cnt</code>种糖果，且<code>cnt&gt;=k</code>，那么说明甜蜜度还可以更大，让<code>cnt</code>更小，此时我们就要继续向右寻找，据此可以写出如下二分代码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">maximumTastiness</span><span class="params">(<span class="type">int</span>[] price, <span class="type">int</span> k)</span> &#123;</span><br><span class="line">        <span class="comment">//找右边界</span></span><br><span class="line">        Arrays.sort(price);</span><br><span class="line">        <span class="type">int</span> <span class="variable">max</span> <span class="operator">=</span> -<span class="number">1</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> price.length;</span><br><span class="line">        <span class="type">int</span> <span class="variable">l</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">r</span> <span class="operator">=</span> price[n-<span class="number">1</span>]-price[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">while</span>(l&lt;=r)&#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">mid</span> <span class="operator">=</span> (l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span>(validate(price,k,mid))&#123;</span><br><span class="line">                l = mid+<span class="number">1</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                r = mid-<span class="number">1</span>;</span><br><span class="line">            &#125;       </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> r;        </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">validate</span><span class="params">(<span class="type">int</span>[] price, <span class="type">int</span> k,<span class="type">int</span> t)</span>&#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">prev</span> <span class="operator">=</span> price[<span class="number">0</span>];</span><br><span class="line">        <span class="type">int</span> <span class="variable">cnt</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> p:price)&#123;</span><br><span class="line">            <span class="keyword">if</span>(p-prev&gt;=t)&#123;</span><br><span class="line">                cnt++;</span><br><span class="line">                prev = p;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果有很多都满足，那么我可以让甜蜜度更大一些</span></span><br><span class="line">        <span class="keyword">return</span> cnt&gt;=k;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="递归链表题【不太掌握】"><a href="#递归链表题【不太掌握】" class="headerlink" title="递归链表题【不太掌握】"></a>递归链表题【不太掌握】</h2><p> 涉及到反转的问题，都可以化整为零，及讲一个复杂的反转问题，转化到基础的化简问题上来</p>
+<h4 id="反转整个"><a href="#反转整个" class="headerlink" title="反转整个"></a>反转整个</h4><h5 id="206-反转链表"><a href="#206-反转链表" class="headerlink" title="206. 反转链表"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/reverse-linked-list/">206. 反转链表</a></h5><p><strong>题目：</strong></p>
+<p>给你单链表的头节点 <code>head</code> ，请你反转链表，并返回反转后的链表。</p>
+<p><strong>思路；</strong></p>
+<p>模版：注意basecase，<code>dfs</code>的<code>return</code>值，和修改逻辑</p>
+<p>可以修改前驱节点</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> ListNode <span class="title function_">reverseList</span><span class="params">(ListNode head)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> dfs(head);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ListNode <span class="title function_">dfs</span><span class="params">(ListNode head)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(head == <span class="literal">null</span> || head.next == <span class="literal">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> head; <span class="comment">//到最后一个节点返回</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">node</span> <span class="operator">=</span> dfs(head.next);</span><br><span class="line">        head.next.next = head;</span><br><span class="line">        head.next = <span class="literal">null</span>; <span class="comment">// 前驱节点</span></span><br><span class="line">        <span class="keyword">return</span> node; <span class="comment">// node一直指向最后一个节点</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="反转前N"><a href="#反转前N" class="headerlink" title="反转前N"></a>反转前N</h4><p><strong>代码：</strong></p>
+<pre><code>private ListNode reverseN(ListNode head, int n)&#123;
+    if(n==1)&#123;
+        pre = head.next;
+        return head;
+    &#125;
+    ListNode last = reverseN(head.next,n-1);
+    head.next.next = head;
+    head.next = pre;
+    return last;
+&#125;
+</code></pre><h4 id="反转区间"><a href="#反转区间" class="headerlink" title="反转区间"></a><strong>反转区间</strong></h4><h5 id="92-反转链表-II"><a href="#92-反转链表-II" class="headerlink" title="92. 反转链表 II"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/reverse-linked-list-ii/">92. 反转链表 II</a></h5><p><strong>题目：</strong></p>
+<p>给你单链表的头指针 head 和两个整数 left 和 right ，其中 left &lt;= right 。请你反转从位置 left 到位置 right 的链表节点，返回 反转后的链表 。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：head = [1,2,3,4,5], left = 2, right = 4</span><br><span class="line">输出：[1,4,3,2,5]</span><br></pre></td></tr></table></figure>
+<p><strong>思路：</strong></p>
+<ul>
+<li>头插法（需要记忆），代码比较难写<ul>
+<li>先将 curr 的下一个节点记录为 next；</li>
+<li>执行操作 ①：把 curr 的下一个节点指向 next 的下一个节点；</li>
+<li>执行操作 ②：把 next 的下一个节点指向 pre 的下一个节点；</li>
+<li>执行操作 ③：把 pre 的下一个节点指向 next。</li>
+</ul>
+</li>
+</ul>
+<p><img src="img/1615105296-bmiPxl-image.png" alt="image.png"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> ListNode <span class="title function_">reverseBetween</span><span class="params">(ListNode head, <span class="type">int</span> left, <span class="type">int</span> right)</span> &#123;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">dummy</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ListNode</span>(-<span class="number">1</span>);</span><br><span class="line">        dummy.next = head;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">pre</span> <span class="operator">=</span> dummy;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i&lt;left-<span class="number">1</span>; i++)&#123;</span><br><span class="line">            pre = pre.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">cur</span> <span class="operator">=</span> pre.next;</span><br><span class="line">        ListNode nxt;</span><br><span class="line">        <span class="comment">//头插法</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i&lt;right-left;i++)&#123;</span><br><span class="line">            nxt = cur.next;</span><br><span class="line">            cur.next = nxt.next;</span><br><span class="line">            nxt.next = pre.next;</span><br><span class="line">            pre.next= nxt;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dummy.next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>递归反转</li>
+</ul>
+<p>先实现反转前N，再将头指针调整至要反转的起始节点</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    ListNode pre;</span><br><span class="line">    <span class="keyword">public</span> ListNode <span class="title function_">reverseBetween</span><span class="params">(ListNode head, <span class="type">int</span> left, <span class="type">int</span> right)</span> &#123;</span><br><span class="line">        <span class="keyword">while</span>(left == <span class="number">1</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> reverseN(head,right);</span><br><span class="line">        &#125;</span><br><span class="line">      </span><br><span class="line">        head.next = reverseBetween(head.next,left-<span class="number">1</span>,right-<span class="number">1</span>);<span class="comment">//将head指针调整到left位置，并用reverseN函数</span></span><br><span class="line">        <span class="keyword">return</span> head;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ListNode <span class="title function_">reverseN</span><span class="params">(ListNode head, <span class="type">int</span> n)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(n==<span class="number">1</span>)&#123;</span><br><span class="line">            pre = head.next;</span><br><span class="line">            <span class="keyword">return</span> head;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">last</span> <span class="operator">=</span> reverseN(head.next,n-<span class="number">1</span>);</span><br><span class="line">        head.next.next = head;</span><br><span class="line">        head.next = pre;</span><br><span class="line">        <span class="keyword">return</span> last;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="反转一组"><a href="#反转一组" class="headerlink" title="反转一组"></a>反转一组</h4><h5 id="25-K-个一组翻转链表"><a href="#25-K-个一组翻转链表" class="headerlink" title="25. K 个一组翻转链表"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/reverse-nodes-in-k-group/">25. K 个一组翻转链表</a></h5><p><strong>题目：</strong></p>
+<p>给你链表的头节点 head ，每 k 个节点一组进行翻转，请你返回修改后的链表。k 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：head = [1,2,3,4,5], k = 2</span><br><span class="line">输出：[2,1,4,3,5]</span><br></pre></td></tr></table></figure>
+<p><img src="img/reverse_ex1.png" alt="img"></p>
+<p><strong>思路：</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> ListNode <span class="title function_">reverseKGroup</span><span class="params">(ListNode head, <span class="type">int</span> k)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (head == <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="comment">// 区间 [a, b) 包含 k 个待反转元素</span></span><br><span class="line">        ListNode a, b;</span><br><span class="line">        a = b = head;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i&lt;k;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(b==<span class="literal">null</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> head;</span><br><span class="line">            &#125;</span><br><span class="line">            b = b.next;<span class="comment">//调整到下一个head</span></span><br><span class="line">        &#125;</span><br><span class="line">      </span><br><span class="line">	      <span class="comment">//注意这个地方</span></span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">newHead</span> <span class="operator">=</span> reverse(a,b);</span><br><span class="line">        a.next = reverseKGroup(b,k);</span><br><span class="line">        <span class="keyword">return</span> newHead;</span><br><span class="line">    &#125;</span><br><span class="line">    ListNode <span class="title function_">reverse</span><span class="params">(ListNode a, ListNode b)</span> &#123;</span><br><span class="line">        ListNode pre, cur, nxt;</span><br><span class="line">        pre = <span class="literal">null</span>; cur = a; nxt = a;</span><br><span class="line">        <span class="comment">// while 终止的条件改一下就行了</span></span><br><span class="line">        <span class="keyword">while</span> (cur != b) &#123;</span><br><span class="line">            nxt = cur.next;</span><br><span class="line">            cur.next = pre;</span><br><span class="line">            pre = cur;</span><br><span class="line">            cur = nxt;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 返回反转后的头结点</span></span><br><span class="line">        <span class="keyword">return</span> pre;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h2><p><strong>思路：</strong></p>
+<p>看到用滑动窗口的题，直接套模版</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">resolve</span><span class="params">()</span>&#123;</span><br><span class="line">  Map&lt;Character,Integer&gt; window = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();<span class="comment">//window，窗口内元素出现的次数。&lt;元素，出现次数&gt;        </span></span><br><span class="line">  Map&lt;Character,Integer&gt; need = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();<span class="comment">//need，标准元素出现的次数</span></span><br><span class="line">  <span class="type">int</span> <span class="variable">l</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">  <span class="type">int</span> <span class="variable">r</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span>(r还可以继续往右滑)&#123;</span><br><span class="line">    r++;</span><br><span class="line">    <span class="comment">//操作</span></span><br><span class="line">    <span class="comment">//判断</span></span><br><span class="line">    <span class="keyword">while</span>(窗口需要收缩)&#123;</span><br><span class="line">      l++</span><br><span class="line">      <span class="comment">//操作</span></span><br><span class="line">			<span class="comment">//判断</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="220-存在重复元素-III"><a href="#220-存在重复元素-III" class="headerlink" title="220. 存在重复元素 III"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/contains-duplicate-iii/">220. 存在重复元素 III</a></h4><p><strong>题目：</strong></p>
+<p>给你一个整数数组 nums 和两个整数 k 和 t 。请你判断是否存在 两个不同下标 i 和 j，使得 abs(nums[i] - nums[j]) &lt;= t ，同时又满足 abs(i - j) &lt;= k 。如果存在则返回 true，不存在返回 false。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：nums = [1,2,3,1], k = 3, t = 0</span><br><span class="line">输出：true</span><br></pre></td></tr></table></figure>
+<p><strong>思路：</strong></p>
+<p>看到题目，要找一个区间内<code>下标之差&lt;=k</code>是否存在两个数值之差&lt;=t的元素。很容易想到使用滑动窗口。</p>
+<p>现在需要寻找一种数据结构，满足以下条件：</p>
+<ul>
+<li>支持添加删除元素，便于维护滑动窗口</li>
+<li>内部元素有序</li>
+<li>易于查找，能够查找到是否存在某个区间内的数字。</li>
+</ul>
+<p>Java中，底层使用红黑树实现的TreeSet能够解决我们的问题。</p>
+<blockquote>
+<p><strong>查找某个区间内的元素，可以使用这个方法:</strong></p>
+<p>比如现在窗口内新增一个元素u，我想要知道是否存在一个元素与u的差值是否小于等于<code>t</code><br>那么我只需要知道是否存在一个元素落在区间<code>[u-t,u+t]</code>中<br>进一步，我只需要找到所有<code>&gt;=u-t</code>的最小元素，是否<code>&lt;=u+t</code>即可。</p>
+<p>而找这种边界数字，TreeSet刚好可以实现</p>
+</blockquote>
+<p><strong>代码:</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">containsNearbyAlmostDuplicate</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> indexDiff, <span class="type">int</span> valueDiff)</span> &#123;</span><br><span class="line">        TreeSet&lt;Long&gt; window = <span class="keyword">new</span> <span class="title class_">TreeSet</span>&lt;Long&gt;();</span><br><span class="line">        <span class="type">int</span> <span class="variable">r</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">l</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(r&lt;nums.length)&#123;</span><br><span class="line">            <span class="type">Long</span> <span class="variable">ceil</span> <span class="operator">=</span> window.ceiling((<span class="type">long</span>)(nums[r]-valueDiff)); <span class="comment">//找&gt;=nums[r]-valueDiff的最小元素</span></span><br><span class="line">            <span class="keyword">if</span>(ceil != <span class="literal">null</span> &amp;&amp; ceil&lt;=(<span class="type">long</span>)(nums[r]+valueDiff))&#123;<span class="comment">//看这个元素是否&lt;=nums[r]+valueDiff</span></span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            window.add((<span class="type">long</span>)nums[r]);<span class="comment">//这句不能放在上面，如果不存在，窗口扩大</span></span><br><span class="line">            r++;</span><br><span class="line">            <span class="keyword">if</span>(r-l&gt;indexDiff)&#123;</span><br><span class="line">                <span class="comment">//窗口大小超过了indexDiff，需要缩小窗口</span></span><br><span class="line">                window.remove((<span class="type">long</span>)nums[l]);</span><br><span class="line">                l++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;        </span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="滑动哈希"><a href="#滑动哈希" class="headerlink" title="滑动哈希"></a>滑动哈希</h3><h5 id="187-重复的DNA序列"><a href="#187-重复的DNA序列" class="headerlink" title="187. 重复的DNA序列"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/repeated-dna-sequences/">187. 重复的DNA序列</a></h5><p><strong>题目：</strong></p>
+<p>DNA序列 由一系列核苷酸组成，缩写为 ‘A’, ‘C’, ‘G’ 和 ‘T’.。例如，”ACGAATTCCG” 是一个 DNA序列 。在研究 DNA 时，识别 DNA 中的重复序列非常有用。给定一个表示 DNA序列 的字符串 s ，返回所有在 DNA 分子中出现不止一次的 长度为 10 的序列(子字符串)。你可以按 任意顺序 返回答案。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：s = &quot;AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT&quot;</span><br><span class="line">输出：[&quot;AAAAACCCCC&quot;,&quot;CCCCCAAAAA&quot;]</span><br></pre></td></tr></table></figure>
+<p><strong>思路</strong>：</p>
+<p>滑动窗口+hash</p>
+<h2 id="前缀和"><a href="#前缀和" class="headerlink" title="前缀和"></a>前缀和</h2><h5 id="560-和为-K-的子数组【基础】"><a href="#560-和为-K-的子数组【基础】" class="headerlink" title="560. 和为 K 的子数组【基础】"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/subarray-sum-equals-k/">560. 和为 K 的子数组</a>【基础】</h5><p><strong>题目：</strong></p>
+<p>给你一个整数数组 <code>nums</code> 和一个整数 <code>k</code> ，请你统计并返回 <em>该数组中和为 <code>k</code> 的连续子数组的个数</em> 。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：nums = [1,1,1], k = 2</span><br><span class="line">输出：2</span><br></pre></td></tr></table></figure>
+<h5 id="525-连续数组"><a href="#525-连续数组" class="headerlink" title="525. 连续数组"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/contiguous-array/">525. 连续数组</a></h5><h5 id="523-连续的子数组和"><a href="#523-连续的子数组和" class="headerlink" title="523. 连续的子数组和"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/continuous-subarray-sum/">523. 连续的子数组和</a></h5><h5 id="327-区间和的个数"><a href="#327-区间和的个数" class="headerlink" title="327. 区间和的个数"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/count-of-range-sum/">327. 区间和的个数</a></h5><h5 id="918-环形子数组的最大和"><a href="#918-环形子数组的最大和" class="headerlink" title="918. 环形子数组的最大和"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-sum-circular-subarray/">918. 环形子数组的最大和</a></h5><p>和环形dp一样，把子数组拆分成两部分考虑</p>
+<h5 id="974-和可被-K-整除的子数组"><a href="#974-和可被-K-整除的子数组" class="headerlink" title="974. 和可被 K 整除的子数组"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/subarray-sums-divisible-by-k/">974. 和可被 K 整除的子数组</a></h5><p>难度中等434</p>
+<p>// 注意 Java 取模的特殊性，当被除数为负数时取模结果为负数，需要纠正</p>
+<h5 id="1171-从链表中删去总和值为零的连续节点"><a href="#1171-从链表中删去总和值为零的连续节点" class="headerlink" title="1171. 从链表中删去总和值为零的连续节点"></a><strong><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/remove-zero-sum-consecutive-nodes-from-linked-list/">1171. 从链表中删去总和值为零的连续节点</a></strong></h5><ul>
+<li><p><strong>题目：</strong></p>
+<p>给你一个链表的头节点 head，请你编写代码，反复删去链表中由 总和 值为 0 的连续节点组成的序列，直到不存在这样的序列为止。</p>
+<p>删除完毕后，请你返回最终结果链表的头节点。</p>
+</li>
+<li><p>思路：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * public class ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode next;</span></span><br><span class="line"><span class="comment"> *     ListNode() &#123;&#125;</span></span><br><span class="line"><span class="comment"> *     ListNode(int val) &#123; this.val = val; &#125;</span></span><br><span class="line"><span class="comment"> *     ListNode(int val, ListNode next) &#123; this.val = val; this.next = next; &#125;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> ListNode <span class="title function_">removeZeroSumSublists</span><span class="params">(ListNode head)</span> &#123;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">dummy</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ListNode</span>(<span class="number">0</span>,head);</span><br><span class="line">        <span class="type">int</span> <span class="variable">presum</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        HashMap&lt;Integer,ListNode&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">ListNode</span> <span class="variable">node</span> <span class="operator">=</span> dummy; node!=<span class="literal">null</span>;node= node.next)&#123;</span><br><span class="line">            presum+=node.val; </span><br><span class="line">            map.put(presum,node);</span><br><span class="line">        &#125;</span><br><span class="line">        presum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">ListNode</span> <span class="variable">node</span> <span class="operator">=</span> dummy; node!=<span class="literal">null</span>; node= node.next)&#123;</span><br><span class="line">            presum+=node.val; </span><br><span class="line">            <span class="keyword">if</span>(map.containsKey(presum))&#123;</span><br><span class="line">                node.next = map.get(presum).next;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dummy.next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>注意，链表的头节点需要修改时，要使用虚拟节点<code>dummy</code></strong></p>
+</li>
+</ul>
+<h2 id="差分数组"><a href="#差分数组" class="headerlink" title="差分数组"></a>差分数组</h2><h5 id=""><a href="#" class="headerlink" title=" "></a> </h5><h4 id="差分数组-贪心"><a href="#差分数组-贪心" class="headerlink" title="差分数组 / 贪心"></a>差分数组 / 贪心</h4><h5 id="1094-拼车"><a href="#1094-拼车" class="headerlink" title="1094. 拼车-"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/car-pooling/">1094. 拼车-</a></h5><p><strong>题目：</strong></p>
+<p>​    车上最初有 capacity 个空座位。车 只能 向一个方向行驶（也就是说，不允许掉头或改变方向。给定整数 capacity 和一个数组 trips ,  trip[i] = [numPassengersi, fromi, toi] 表示第 i 次旅行有 numPassengersi 乘客，接他们和放他们的位置分别是 fromi 和 toi 。这些位置是从汽车的初始位置向东的公里数。当且仅当你可以在所有给定的行程中接送所有乘客时，返回 true，否则请返回 false。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：trips = [[2,1,5],[3,3,7]], capacity = 4</span><br><span class="line">输出：false</span><br></pre></td></tr></table></figure>
+<p><strong>思路：</strong></p>
+<ul>
+<li>差分数组【经典解法】</li>
+</ul>
+<p>​    经典解法，用差分数组，乘客在起始点上车和在终点下车，可以模拟为：对一个数组的一个区间进行加操作。得到差分数组后，可以反推出每个地点的乘客数量，如果有某个点乘客数量大于<code>容量</code>，那么就返回<code>false</code>。</p>
+<p>​    这里需要注意的是，由于我们不知道有多少个点，因此需要从数据范围中寻找<code>diff</code>数组需要开辟的空间。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">carPooling</span><span class="params">(<span class="type">int</span>[][] trips, <span class="type">int</span> capacity)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[] diff = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">1001</span>];</span><br><span class="line">        <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> trips.length;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i&lt;m;i++)&#123;</span><br><span class="line">            diff[trips[i][<span class="number">1</span>]] += trips[i][<span class="number">0</span>];</span><br><span class="line">            <span class="keyword">if</span>(trips[i][<span class="number">2</span>] &lt; <span class="number">1001</span>)&#123;</span><br><span class="line">                diff[trips[i][<span class="number">2</span>]] -= trips[i][<span class="number">0</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="type">int</span>[] res = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">1001</span>];</span><br><span class="line">        res[<span class="number">0</span>] = diff[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">if</span>(res[<span class="number">0</span>] &gt;capacity)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>;i&lt;<span class="number">1001</span>;i++)&#123;</span><br><span class="line">            res[i] = res[i-<span class="number">1</span>]+ diff[i];</span><br><span class="line">            <span class="keyword">if</span>(res[i] &gt; capacity)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优先级队列+构造新类+贪心</li>
+</ul>
+<p>​    这个解法比较新，记录。</p>
+<p>​    首先，将<code>trips</code>数组按照<strong>开始站点</strong>从小到大排序。接着，创建一个优先级队列（小根堆），维护<code>trips</code>数组每个<code>trip</code>的<strong>结束站点</strong>。然后，遍历<code>trips</code>。</p>
+<p>​    如果当前的<code>trip</code>的<strong>开始站点</strong>，<strong>大于等于</strong>优先级队列中的队首结束站点，那么就应该调整优先级队列，因为队首的那个<code>trip</code>的乘客已经全部下车了</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span>(!pq.isEmpty() &amp;&amp; pq.peek().end &lt;= trip.start)&#123;</span><br><span class="line">  <span class="type">Trip</span> <span class="variable">t</span> <span class="operator">=</span> pq.poll();</span><br><span class="line">  sum -= t.cnt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    如果当前的<code>trip</code>的开始站点，小于优先级队列中的队首结束站点，那么当前<code>trip</code>入队。</p>
+<p>​    最后，更新当前车上的乘客数，并判断是否大于<code>capacity</code></p>
+<p>​    由于优先级队列需要根据<code>trip</code>的结束时间排序，需要获取队首元素的结束站点，上车人数。因此需要建一个辅助类<code>Trip</code>，将每一个<code>trip</code>存成这个辅助类，加入优先级队列中。</p>
+<p>完整代码如下 ：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">carPooling</span><span class="params">(<span class="type">int</span>[][] trips, <span class="type">int</span> capacity)</span> &#123;</span><br><span class="line">        Arrays.sort(trips,(<span class="type">int</span>[] a,<span class="type">int</span>[] b) -&gt; a[<span class="number">1</span>] - b[<span class="number">1</span>]);</span><br><span class="line">        <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> trips.length;</span><br><span class="line">        PriorityQueue&lt;Trip&gt; pq = <span class="keyword">new</span> <span class="title class_">PriorityQueue</span>&lt;Trip&gt;((Trip a,Trip b)-&gt; a.end-b.end);</span><br><span class="line">        pq.offer(<span class="keyword">new</span> <span class="title class_">Trip</span>(trips[<span class="number">0</span>][<span class="number">0</span>],trips[<span class="number">0</span>][<span class="number">1</span>],trips[<span class="number">0</span>][<span class="number">2</span>])); <span class="comment">//结束时间</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> trips[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">if</span>(sum&gt;capacity)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span> ; i&lt;m ; i++)&#123;</span><br><span class="line">            <span class="type">Trip</span> <span class="variable">trip</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Trip</span>(trips[i][<span class="number">0</span>],trips[i][<span class="number">1</span>],trips[i][<span class="number">2</span>]);</span><br><span class="line">            <span class="comment">//这里要包含等于的情况，因为上车和下车同时发生时，也要调整队列。</span></span><br><span class="line">            <span class="keyword">if</span>(trip.start &gt;= pq.peek().end)&#123;</span><br><span class="line">                <span class="keyword">while</span>(!pq.isEmpty() &amp;&amp; pq.peek().end &lt;= trip.start)&#123;</span><br><span class="line">                    <span class="type">Trip</span> <span class="variable">t</span> <span class="operator">=</span> pq.poll();</span><br><span class="line">                    sum -= t.cnt;</span><br><span class="line">                &#125;</span><br><span class="line">                pq.offer(trip);</span><br><span class="line">                sum += trip.cnt;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                pq.offer(trip);</span><br><span class="line">                sum += trip.cnt;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(sum&gt;capacity)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Trip</span>&#123;</span><br><span class="line">    <span class="type">int</span> start;</span><br><span class="line">    <span class="type">int</span> end;</span><br><span class="line">    <span class="type">int</span> cnt;</span><br><span class="line">    Trip( <span class="type">int</span> cnt, <span class="type">int</span> start, <span class="type">int</span> end)&#123;</span><br><span class="line">        <span class="built_in">this</span>.start = start;</span><br><span class="line">        <span class="built_in">this</span>.end = end;</span><br><span class="line">        <span class="built_in">this</span>.cnt = cnt;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84-%E9%93%BE%E8%A1%A8"><span class="nav-number">1.</span> <span class="nav-text">双指针数组&#x2F;链表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#658-%E6%89%BE%E5%88%B0-K-%E4%B8%AA%E6%9C%80%E6%8E%A5%E8%BF%91%E7%9A%84%E5%85%83%E7%B4%A0"><span class="nav-number">1.1.</span> <span class="nav-text">658. 找到 K 个最接近的元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#80-%E5%88%A0%E9%99%A4%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9%EF%BC%88%E9%80%9A%E8%A7%A3%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">80. 删除有序数组中的重复项（通解）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#82-%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0-II"><span class="nav-number">1.3.</span> <span class="nav-text">82. 删除排序链表中的重复元素 II</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E6%90%9C%E7%B4%A2%E3%80%90%E9%87%8D%E8%A6%81%E3%80%91"><span class="nav-number">2.</span> <span class="nav-text">二分搜索【重要】</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E6%90%9C%E7%B4%A2%E7%AD%94%E6%A1%88%E7%A9%BA%E9%97%B4"><span class="nav-number">2.1.</span> <span class="nav-text">二分搜索答案空间</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1011-%E5%9C%A8-D-%E5%A4%A9%E5%86%85%E9%80%81%E8%BE%BE%E5%8C%85%E8%A3%B9%E7%9A%84%E8%83%BD%E5%8A%9B"><span class="nav-number">2.1.0.1.</span> <span class="nav-text">1011. 在 D 天内送达包裹的能力</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#410-%E5%88%86%E5%89%B2%E6%95%B0%E7%BB%84%E7%9A%84%E6%9C%80%E5%A4%A7%E5%80%BC"><span class="nav-number">2.1.0.2.</span> <span class="nav-text">410. 分割数组的最大值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2517-%E7%A4%BC%E7%9B%92%E7%9A%84%E6%9C%80%E5%A4%A7%E7%94%9C%E8%9C%9C%E5%BA%A6"><span class="nav-number">2.1.0.3.</span> <span class="nav-text">2517. 礼盒的最大甜蜜度</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%92%E5%BD%92%E9%93%BE%E8%A1%A8%E9%A2%98%E3%80%90%E4%B8%8D%E5%A4%AA%E6%8E%8C%E6%8F%A1%E3%80%91"><span class="nav-number">3.</span> <span class="nav-text">递归链表题【不太掌握】</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8D%E8%BD%AC%E6%95%B4%E4%B8%AA"><span class="nav-number">3.0.1.</span> <span class="nav-text">反转整个</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#206-%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8"><span class="nav-number">3.0.1.1.</span> <span class="nav-text">206. 反转链表</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8D%E8%BD%AC%E5%89%8DN"><span class="nav-number">3.0.2.</span> <span class="nav-text">反转前N</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8D%E8%BD%AC%E5%8C%BA%E9%97%B4"><span class="nav-number">3.0.3.</span> <span class="nav-text">反转区间</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#92-%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8-II"><span class="nav-number">3.0.3.1.</span> <span class="nav-text">92. 反转链表 II</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8D%E8%BD%AC%E4%B8%80%E7%BB%84"><span class="nav-number">3.0.4.</span> <span class="nav-text">反转一组</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#25-K-%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8"><span class="nav-number">3.0.4.1.</span> <span class="nav-text">25. K 个一组翻转链表</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"><span class="nav-number">4.</span> <span class="nav-text">滑动窗口</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#220-%E5%AD%98%E5%9C%A8%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0-III"><span class="nav-number">4.0.1.</span> <span class="nav-text">220. 存在重复元素 III</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E5%93%88%E5%B8%8C"><span class="nav-number">4.1.</span> <span class="nav-text">滑动哈希</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#187-%E9%87%8D%E5%A4%8D%E7%9A%84DNA%E5%BA%8F%E5%88%97"><span class="nav-number">4.1.0.1.</span> <span class="nav-text">187. 重复的DNA序列</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E7%BC%80%E5%92%8C"><span class="nav-number">5.</span> <span class="nav-text">前缀和</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#560-%E5%92%8C%E4%B8%BA-K-%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E3%80%90%E5%9F%BA%E7%A1%80%E3%80%91"><span class="nav-number">5.0.0.1.</span> <span class="nav-text">560. 和为 K 的子数组【基础】</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#525-%E8%BF%9E%E7%BB%AD%E6%95%B0%E7%BB%84"><span class="nav-number">5.0.0.2.</span> <span class="nav-text">525. 连续数组</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#523-%E8%BF%9E%E7%BB%AD%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E5%92%8C"><span class="nav-number">5.0.0.3.</span> <span class="nav-text">523. 连续的子数组和</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#327-%E5%8C%BA%E9%97%B4%E5%92%8C%E7%9A%84%E4%B8%AA%E6%95%B0"><span class="nav-number">5.0.0.4.</span> <span class="nav-text">327. 区间和的个数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#918-%E7%8E%AF%E5%BD%A2%E5%AD%90%E6%95%B0%E7%BB%84%E7%9A%84%E6%9C%80%E5%A4%A7%E5%92%8C"><span class="nav-number">5.0.0.5.</span> <span class="nav-text">918. 环形子数组的最大和</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#974-%E5%92%8C%E5%8F%AF%E8%A2%AB-K-%E6%95%B4%E9%99%A4%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84"><span class="nav-number">5.0.0.6.</span> <span class="nav-text">974. 和可被 K 整除的子数组</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1171-%E4%BB%8E%E9%93%BE%E8%A1%A8%E4%B8%AD%E5%88%A0%E5%8E%BB%E6%80%BB%E5%92%8C%E5%80%BC%E4%B8%BA%E9%9B%B6%E7%9A%84%E8%BF%9E%E7%BB%AD%E8%8A%82%E7%82%B9"><span class="nav-number">5.0.0.7.</span> <span class="nav-text">1171. 从链表中删去总和值为零的连续节点</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%AE%E5%88%86%E6%95%B0%E7%BB%84"><span class="nav-number">6.</span> <span class="nav-text">差分数组</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link"><span class="nav-number">6.0.0.1.</span> <span class="nav-text"> </span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%AE%E5%88%86%E6%95%B0%E7%BB%84-%E8%B4%AA%E5%BF%83"><span class="nav-number">6.0.1.</span> <span class="nav-text">差分数组 &#x2F; 贪心</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1094-%E6%8B%BC%E8%BD%A6"><span class="nav-number">6.0.1.1.</span> <span class="nav-text">1094. 拼车-</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zqqcee"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">zqqcee</p>
+  <div class="site-description" itemprop="description"> Research interest in Visualization and Visual Analytics <br> Contact Me: <a>zqqcee@gmail.com</a></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zqqcee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zqqcee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/RRie1" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;RRie1" rel="noopener" target="_blank"><i class="fab fa-mailchimp fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zqqcee</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
