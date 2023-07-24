@@ -972,4 +972,53 @@ totalLeft = \frac{m+n+1}{2}~~~~~~~~//其中m，n分别代表两个数组的长�
         <tag>nginx</tag>
       </tags>
   </entry>
+  <entry>
+    <title>在博客中应用ipad-cursor，@Hexo(Theme:NexT)</title>
+    <url>/2023/07/23/ebae3e5deab8/</url>
+    <content><![CDATA[<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>前两天睡前刷<code>twitter</code>，偶然间刷到一个很棒的项目<code>ipad-cursor</code>，想把这个用在自己的博客中。问了一下作者<a href="https://github.com/CatsJuice">@CatsJuice</a>，发现暂未提供关于Hexo的支持，于是想着自己把这个功能加上，说不定还能写个<code>hexo-plugin</code>。</p>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p><img src="/Users/zqqcee/Desktop/屏幕录制2023-07-24 下午4.35.30.gif" alt="屏幕录制2023-07-24 下午4.35.30"></p>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><p>只需要为想要添加<code>ipad-cursor</code>效果的元素添加属性<code>data-cursor:block</code>或<code>data-cursor:text</code>即可。</p>
+<ul>
+<li>创建<code>ipad-cursor-hexo</code>目录，放置在<code>/themes/next/source/js</code>下，</li>
+<li><p>创建两个js文件：<code>config.js</code>，<code>index.js</code>。</p>
+</li>
+<li><p>找到需要添加<code>data-cursor</code>的元素</p>
+<p>方式：直接在DevTools中选择，即可定位，如果元素没有<code>class</code>与<code>id</code>不方便定位，可以在<code>hexo</code>工程下找到这个元素对应的<code>.swig</code>文件，添加上<code>id</code>，方便选择器选择。</p>
+</li>
+<li><p>使用js为其添加属性<code>document.querySelector(&#39;xx&#39;)?.setAttribute(&#39;data-cursor&#39;,&#39;block&#39;)</code></p>
+</li>
+<li><p>创建初始化函数<code>init</code>，监听<code>DOMContentLoaded</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">init</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="variable language_">document</span>.<span class="title function_">querySelectorAll</span>(<span class="string">&#x27;*&#x27;</span>).<span class="title function_">forEach</span>(<span class="function"><span class="params">_</span> =&gt;</span> _.<span class="property">style</span>.<span class="property">cursor</span> = <span class="string">&#x27;none&#x27;</span>);</span><br><span class="line">  <span class="comment">//document.querySelector(&#x27;xxx&#x27;).setAttribute(&#x27;data-cursor&#x27;,&#x27;block&#x27;);</span></span><br><span class="line">  <span class="comment">//document.querySelector(&#x27;xxx&#x27;).setAttribute(&#x27;data-cursor&#x27;,&#x27;block&#x27;);</span></span><br><span class="line">  <span class="comment">//......</span></span><br><span class="line">  cursor.<span class="title function_">initCursor</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">on</span>(<span class="string">&#x27;DOMContentLoaded&#x27;</span>,init);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注：如果<code>selector</code>难以选择，考虑直接修改<code>.swig</code>文件，在标签上直接添加。</p>
+</li>
+</ul>
+<p><code>ipad-cursor</code>具体用法请参考：<a href="https://github.com/CatsJuice/ipad-cursor">github/ipad-cursor</a></p>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><ul>
+<li><p>鼠标样式不生效问题：</p>
+<ul>
+<li><p>这个问题主要呈现在当鼠标放置到<code>&lt;a&gt;，&lt;p&gt;</code>等标签中，鼠标会变为一个小手点击的样式。</p>
+</li>
+<li><p>NexT主题中，在一些地方设置了cursor的属性，<code>ipad-cursor</code>的原理是先设置<code>cursor:none</code>,再添加一个<code>&lt;div&gt;</code>随着鼠标移动。但是<code>cursor:none</code>会被NexT主题设置的样式覆盖掉。</p>
+</li>
+<li><p><strong>解决方法：</strong>需要手动将所有元素的style重新设置<code>cursor:none</code></p>
+</li>
+</ul>
+</li>
+<li><p>载入文章后cursor失效问题：</p>
+<ul>
+<li>这个问题主要呈现在当载入文章时，<code>cursor</code>失效。</li>
+<li>因为已经绑定了<code>document.on(&#39;DOMContentLoaded&#39;)</code>事件，排除ipad-cursor错误使用问题。进一步排查，发现在<code>&lt;head&gt;</code>中使用了相对路径引入js文件，而在载入文章后，相对路径改变，造成<code>ipad-cursor-hexo.js</code>文件无法生效问题</li>
+<li><strong>解决方法</strong>：在<code>&lt;head&gt;</code>使用绝对路径引入</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>thought</category>
+      </categories>
+      <tags>
+        <tag>javascript</tag>
+      </tags>
+  </entry>
 </search>

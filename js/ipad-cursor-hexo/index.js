@@ -14,9 +14,9 @@ const init = () => {
 }
 
 const setAttr = (item, type, style) => {
-    item.setAttribute('data-cursor', type);
+    item?.setAttribute('data-cursor', type);
     if (style) {
-        item.setAttribute('data-cursor-style'.style);
+        item?.setAttribute('data-cursor-style'.style);
     }
 }
 
@@ -52,5 +52,4 @@ const bindAttrNested = (query, cfg) => {
     })
 }
 
-document.addEventListener('DOMContentLoaded', init)
-
+document.addEventListener('DOMContentLoaded', init);
