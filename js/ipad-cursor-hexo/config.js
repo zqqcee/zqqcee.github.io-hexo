@@ -12,7 +12,27 @@ export const config = {
     },
     "div.post-body": {
         type: 'text'
-    }
-
-
+    },
+    "ul.motion-element>li": {
+        type: "block"
+    },
+    //sidebar
+    "div.sidebar-inner": {
+        type: 'text'
+    },
+    "p": {
+        type: 'text'
+    },
+    "a": {
+        type: 'block'
+    },
 };
+
+export const cursorConfig = {
+    normalStyle: {
+        background: '#ffcc00',
+    },
+    textStyle: {
+        background: '#ffcc00'
+    },
+}

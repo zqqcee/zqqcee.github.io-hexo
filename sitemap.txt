@@ -46,9 +46,9 @@ https://zqqcee.github.io/post_backup/%E3%80%90D3.js%E5%AE%9E%E6%88%98%E3%80%91%2
 https://zqqcee.github.io/post_backup/%E3%80%90%E8%A7%A3%E9%A2%98%E7%AC%94%E8%AE%B0%E3%80%91leetcode%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0.html
 https://zqqcee.github.io/tags/index.html
 https://zqqcee.github.io/
-https://zqqcee.github.io/tags/java/
-https://zqqcee.github.io/tags/javascript/
 https://zqqcee.github.io/tags/git/
+https://zqqcee.github.io/tags/javascript/
+https://zqqcee.github.io/tags/java/
 https://zqqcee.github.io/tags/leetcode/
 https://zqqcee.github.io/tags/nginx/
 https://zqqcee.github.io/categories/thought/
