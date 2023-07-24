@@ -9,7 +9,7 @@ import cursor from "https://unpkg.com/ipad-cursor@latest"
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('li.menu-item').forEach(_ => {
         _.setAttribute('data-cursor', 'block');
-        _.setAttribute('data-cursor-style', 'radius: 50%')
+        // _.setAttribute('data-cursor-style', 'radius: 50%')
     });
     document.querySelectorAll('article').forEach(_ => {
         _.setAttribute('data-cursor', 'text');
