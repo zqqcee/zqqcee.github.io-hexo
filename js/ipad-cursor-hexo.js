@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('a.btn').forEach(_ => _.setAttribute('data-cursor', 'block'));
     document.querySelector('a.brand').setAttribute('data-cursor', 'block');
-    document.querySelector('svg#github_banner').setAttribute('data-cursor', 'block');
     document.querySelectorAll('p').forEach(_ => _.setAttribute('data-cursor', 'text'));
     document.querySelector('div.site-description')
     document.querySelectorAll('*').forEach(_ => _.style.cursor = 'none');
