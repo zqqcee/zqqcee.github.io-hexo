@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
           resultItem += '</li>';
           resultItems.push({
             item: resultItem,
-            id  : resultItems.length,
+            id: resultItems.length,
             hitCount,
             searchTextCount
           });
@@ -214,9 +214,9 @@ document.addEventListener('DOMContentLoaded', () => {
         isfetched = true;
         datas = isXml ? [...new DOMParser().parseFromString(res, 'text/xml').querySelectorAll('entry')].map(element => {
           return {
-            title  : element.querySelector('title').textContent,
+            title: element.querySelector('title').textContent,
             content: element.querySelector('content').textContent,
-            url    : element.querySelector('url').textContent
+            url: element.querySelector('url').textContent
           };
         }) : JSON.parse(res);
         // Only match articles with not empty titles
