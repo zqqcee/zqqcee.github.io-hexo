@@ -1,4 +1,3 @@
-// import cursor from "https://unpkg.com/ipad-cursor@latest"
 import init from "https://unpkg.com/ipad-cursor-hexo@latest";
 
 import { config, cursorConfig } from "./config.js"
