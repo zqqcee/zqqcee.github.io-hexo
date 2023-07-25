@@ -6,5 +6,4 @@ const effect = () => {
     document.querySelector('img').style.userSelect = 'none'
 }
 
-
 document.addEventListener('DOMContentLoaded', () => init(config, cursorConfig));
