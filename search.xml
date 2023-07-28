@@ -912,8 +912,8 @@ totalLeft = \frac{m+n+1}{2}~~~~~~~~//其中m，n分别代表两个数组的长�
     <title>在博客中应用ipad-cursor，@Hexo(Theme:NexT)</title>
     <url>/2023/07/23/ebae3e5deab8/</url>
     <content><![CDATA[<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>前两天睡前刷<code>twitter</code>，偶然间刷到一个很棒的项目<code>ipad-cursor</code>，想把这个用在自己的博客中。问了一下作者<a href="https://github.com/CatsJuice">@CatsJuice</a>，发现暂未提供关于Hexo的支持，于是想着自己把这个功能加上，说不定还能写个<code>hexo-plugin</code>。</p>
-<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p><img src="/Users/zqqcee/Desktop/屏幕录制2023-07-24 下午4.35.30.gif" alt="屏幕录制2023-07-24 下午4.35.30"></p>
-<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><p>只需要为想要添加<code>ipad-cursor</code>效果的元素添加属性<code>data-cursor:block</code>或<code>data-cursor:text</code>即可。</p>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202307281006407.gif" alt="屏幕录制2023-07-24 下午4.35.30"></p>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><h3 id="方法1"><a href="#方法1" class="headerlink" title="方法1"></a>方法1</h3><p>只需要为想要添加<code>ipad-cursor</code>效果的元素添加属性<code>data-cursor:block</code>或<code>data-cursor:text</code>即可。</p>
 <ul>
 <li>创建<code>ipad-cursor-hexo</code>目录，放置在<code>/themes/next/source/js</code>下，</li>
 <li><p>创建两个js文件：<code>config.js</code>，<code>index.js</code>。</p>
@@ -930,6 +930,42 @@ totalLeft = \frac{m+n+1}{2}~~~~~~~~//其中m，n分别代表两个数组的长�
 </li>
 </ul>
 <p><code>ipad-cursor</code>具体用法请参考：<a href="https://github.com/CatsJuice/ipad-cursor">github/ipad-cursor</a></p>
+<hr>
+<h3 id="方法2-使用ipad-cursor-hexo插件，【推荐-🔥🔥🔥】"><a href="#方法2-使用ipad-cursor-hexo插件，【推荐-🔥🔥🔥】" class="headerlink" title="方法2:  使用ipad-cursor-hexo插件，【推荐 🔥🔥🔥】"></a>方法2:  使用ipad-cursor-hexo插件，【推荐 🔥🔥🔥】</h3><p>使用<a href="https://github.com/zqqcee/ipad-cursor-hexo">ipad-cursor-hexo</a>进行设置，ipad-cursor-hexo是一个使用<strong>配置项</strong>进行ipad-cursor配置的库，只需要按照要求编写配置项，只需不超过10行代码，即可在你的博客中添加ipad-cursor</p>
+<p><strong>步骤：</strong></p>
+<ul>
+<li><p><strong>创建一个名为<code>ipad-cursor</code>的文件夹，放在目录<code>$&#123;SourcePath&#125;/themes/next/source/js</code>下</strong></p>
+</li>
+<li><p><strong>创建一个js文件，名为<code>index.js</code>，在 <code>$&#123;SourcePath&#125;/themes/next/source/js/ipad-cursor-hexo</code>中</strong></p>
+</li>
+<li><p><strong>编写配置文件</strong></p>
+<ul>
+<li><p>首先，你可以配置需要在哪些标签上绑定样式，比如：</p>
+<p>如果你想要在<code>&lt;div id=&quot;article&quot;&gt;&lt;/div&gt;</code> 上，添加<code>data-cursor=&quot;text&quot;</code>的属性，那么你应该编写如下配置项，对象的key是你想要在<code>document.querySelectorAll</code>传入的内容 </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">const config = &#123;</span><br><span class="line">  &quot;div#article&quot;:&#123;</span><br><span class="line">    type:&#x27;text&#x27;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果你想要配置它的 <code>cursor-style</code>, 你可以添加如下配置项</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">const config = &#123;</span><br><span class="line">  &quot;div#article&quot;:&#123;</span><br><span class="line">    type:&#x27;text&#x27;,</span><br><span class="line">    style:&#x27;radius:50%&#x27;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果你想要将所有的type为text的<code>&lt;article&gt;</code>内的所有<code>&lt;a&gt;</code>修改为block，你应该使用如下配置语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">const config = &#123;</span><br><span class="line">  &quot;div#article&quot;:&#123;</span><br><span class="line">    type:&#x27;text&#x27;,</span><br><span class="line">    style:&#x27;radius:50%&#x27;</span><br><span class="line">    children:&#123;</span><br><span class="line">    	&quot;a&quot;:&#123;</span><br><span class="line">          type:&quot;block&quot;,</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其次，你可以配置cursor的样式，详见：<a href="https://github.com/CatsJuice/ipad-cursor#config">ipad-cursor config</a></p>
+</li>
+<li><p>最后，你可以配置一些副作用，比如让<code>img</code>标签不能被选中，因为被选中的<code>&lt;img&gt;</code>会变暗</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">effect</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;img&#x27;</span>).<span class="property">style</span>.<span class="property">userSelect</span> = <span class="string">&#x27;none&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>将<code>index.js</code>添加到hexo blog中</p>
+<ul>
+<li>打开 <code>$&#123;SourcePath&#125;/themes/next/layout/_partials/head/head.swig</code>文件</li>
+<li>在其中添加<code>&lt;script src=&quot;/js/ipad-cursor-hexo/index.js&quot; type=&quot;module&quot;&gt;&lt;/script&gt;</code></li>
+</ul>
+</li>
+<li><p>让<code>document</code>监听<code>&quot;DOMContentLoaded&quot;</code>事件，等DOM加载完毕后，执行<code>init</code>函数，<code>index.js</code>的完整代码如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> init <span class="keyword">from</span> <span class="string">&quot;https://unpkg.com/ipad-cursor-hexo@latest&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; config, cursorConfig &#125; <span class="keyword">from</span> <span class="string">&quot;./config.js&quot;</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">effect</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">    <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;img&#x27;</span>).<span class="property">style</span>.<span class="property">userSelect</span> = <span class="string">&#x27;none&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;DOMContentLoaded&#x27;</span>, <span class="function">() =&gt;</span> <span class="title function_">init</span>(config, cursorConfig,effect));</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>详情请见：<a href="https://github.com/zqqcee/ipad-cursor-hexo">zqqcee/ipad-cursor-hexo</a>，欢迎star🌟！</p>
 <h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><ul>
 <li><p>鼠标样式不生效问题：</p>
 <ul>
