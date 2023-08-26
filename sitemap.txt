@@ -1,3 +1,5 @@
+https://zqqcee.github.io/chitchat/3_goodpm.html
+https://zqqcee.github.io/chitchat/index.html
 https://zqqcee.github.io/2023/07/23/ebae3e5deab8/
 https://zqqcee.github.io/2023/07/20/065545eb7050/
 https://zqqcee.github.io/2022/08/02/173a07e755e3/
@@ -13,7 +15,6 @@ https://zqqcee.github.io/2022/08/03/64294984be89/
 https://zqqcee.github.io/leetcode/trick.html
 https://zqqcee.github.io/leetcode/data_structure.html
 https://zqqcee.github.io/chitchat/1_new_page.html
-https://zqqcee.github.io/chitchat/index.html
 https://zqqcee.github.io/chitchat/2_RicemanThought.html
 https://zqqcee.github.io/leetcode/index.html
 https://zqqcee.github.io/leetcode/tree.html
