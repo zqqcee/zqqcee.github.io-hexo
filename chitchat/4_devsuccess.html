@@ -22,19 +22,23 @@
     var CONFIG = {"hostname":"zqqcee.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="4 - What is the DS (Dev Success) in OSS? 3 - How to be a good Project Manager (PM)？ 2 -【设计中的博弈｜BDFL｜国内的开源产品】——听谷歌设计师Riceman访谈有感 1 - 新建一个Chitchat Page">
+  <meta name="description" content="What is the DS (Dev Success) in OSS?G6这两天发布Beta版本了，和G6的缘分非常奇妙，从五月份逛他们官网帮她们修了几个typo，到后面偶然撞见发布了issue hunt悬赏令随手接了一个，直到今天已经陆陆续续合入了22个PR了。G6是我第一个参与的开源社区，一个来自蚂蚁AntV的图可视化开源项目，写篇水文记录一下在做开源过程中的一些感悟。 Background">
 <meta property="og:type" content="website">
-<meta property="og:title" content="ChitChat 💬">
-<meta property="og:url" content="https://zqqcee.github.io/chitchat/index.html">
+<meta property="og:title" content="zqqcee">
+<meta property="og:url" content="https://zqqcee.github.io/chitchat/4_devsuccess.html">
 <meta property="og:site_name" content="zqqcee">
-<meta property="og:description" content="4 - What is the DS (Dev Success) in OSS? 3 - How to be a good Project Manager (PM)？ 2 -【设计中的博弈｜BDFL｜国内的开源产品】——听谷歌设计师Riceman访谈有感 1 - 新建一个Chitchat Page">
+<meta property="og:description" content="What is the DS (Dev Success) in OSS?G6这两天发布Beta版本了，和G6的缘分非常奇妙，从五月份逛他们官网帮她们修了几个typo，到后面偶然撞见发布了issue hunt悬赏令随手接了一个，直到今天已经陆陆续续合入了22个PR了。G6是我第一个参与的开源社区，一个来自蚂蚁AntV的图可视化开源项目，写篇水文记录一下在做开源过程中的一些感悟。 Background">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-06-16T05:25:22.000Z">
-<meta property="article:modified_time" content="2023-09-05T16:45:21.449Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202309060044330.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202309060044481.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202309060044622.png">
+<meta property="article:published_time" content="2023-09-05T16:44:59.733Z">
+<meta property="article:modified_time" content="2023-09-05T16:44:17.967Z">
 <meta property="article:author" content="zqqcee">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202309060044330.png">
 
-<link rel="canonical" href="https://zqqcee.github.io/chitchat/">
+<link rel="canonical" href="https://zqqcee.github.io/chitchat/4_devsuccess">
 
 
 <script id="page-configurations">
@@ -47,7 +51,7 @@
   };
 </script>
 
-  <title>ChitChat 💬 | zqqcee
+  <title> | zqqcee
 </title>
   
 
@@ -184,7 +188,7 @@
     <div class="post-block" lang="en">
       <header class="post-header">
 
-<h1 class="post-title" itemprop="name headline">ChitChat 💬
+<h1 class="post-title" itemprop="name headline">
 </h1>
 
 <div class="post-meta">
@@ -198,13 +202,31 @@
       
       
       <div class="post-body">
-          <ul>
-<li><h4 id="4-What-is-the-DS-Dev-Success-in-OSS"><a href="#4-What-is-the-DS-Dev-Success-in-OSS" class="headerlink" title="4 - What is the DS (Dev Success) in OSS?"></a><a href="4_devsuccess">4 - What is the DS (Dev Success) in OSS?</a></h4></li>
-<li><h4 id="3-How-to-be-a-good-Project-Manager-PM-？"><a href="#3-How-to-be-a-good-Project-Manager-PM-？" class="headerlink" title="3 - How to be a good Project Manager (PM)？"></a><a href="3_goodpm">3 - How to be a good Project Manager (PM)？</a></h4></li>
-<li><h4 id="2-【设计中的博弈｜BDFL｜国内的开源产品】——听谷歌设计师Riceman访谈有感"><a href="#2-【设计中的博弈｜BDFL｜国内的开源产品】——听谷歌设计师Riceman访谈有感" class="headerlink" title="2 -【设计中的博弈｜BDFL｜国内的开源产品】——听谷歌设计师Riceman访谈有感"></a><a href="2_RicemanThought">2 -【设计中的博弈｜BDFL｜国内的开源产品】——听谷歌设计师Riceman访谈有感</a></h4></li>
-<li><h4 id="1-新建一个Chitchat-Page"><a href="#1-新建一个Chitchat-Page" class="headerlink" title="1 - 新建一个Chitchat Page"></a><a href="1_new_page">1 - 新建一个Chitchat Page</a></h4></li>
+          <h1 id="What-is-the-DS-Dev-Success-in-OSS"><a href="#What-is-the-DS-Dev-Success-in-OSS" class="headerlink" title="What is the DS (Dev Success) in OSS?"></a>What is the DS (Dev Success) in OSS?</h1><p>G6这两天发布Beta版本了，和G6的缘分非常奇妙，从五月份逛他们官网帮她们修了几个typo，到后面偶然撞见发布了issue hunt悬赏令随手接了一个，直到今天已经陆陆续续合入了<strong>22</strong>个PR了。G6是我第一个参与的开源社区，一个来自蚂蚁AntV的图可视化开源项目，写篇水文记录一下在做开源过程中的一些感悟。</p>
+<h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>五月底，第一个项目已经步入了落地收尾阶段，马上要开启第二个子项目。这个项目听起来非常难，大致内容是做一个渐进式增量布局，用户在点击一个节点时，要将这个节点变为一个凸包，包裹着这个节点底下的子节点，凸包包裹着凸包。即包含了增量布局技术，又需要支持无限的层级下钻。甲方让我们基于svg给一个解决方案，这无疑在布局和渲染上都面临巨大的挑战。</p>
+<p>搜集资料阶段，逛G6官网发现了G6有一个叫Combo的可视化方案挺符合我们的要求的，初步玩了一下他们的demo，就知道我们要找的就是这个。但是因为一些懂得都懂的原因，我们不能直接用G6，而且G6 v4的ComboLayout在大规模点边图上容易出现重叠。在浏览官网的过程中，发现了几处demo有404 not found error。于是我想着哎这好修，那我给他们修一修吧！</p>
+<p>因为是第一次提PR，在敲commit信息的时候我非常谨慎，在写PR信息的时候我也非常谨慎，认认真真检查每一个单词，还检查了语法什么的，最后提交。一个修复文档的PR花了我一晚上。</p>
+<p>第二天，PR被合入，作者在我的PR下评论：非常感谢你的PR。我很兴奋，因为我在目前国内大型的可视化开源框架里有了我的第一条commit。</p>
+<p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202309060044330.png" alt="image-20230905000322235"></p>
+<p>非常机缘巧合，过了几天，G6推出了Issue Hunt计划，帮助他们完成功能的迁移和一些新Feature，就能够得到奖金。</p>
+<p>起先我不敢认领，因为之前从没参与过开源工作，也很害怕耽误事儿，自己完不成任务怎么办。但是我挺想做的，首先是想参与一下开源，其次是G6是图可视化领域非常有名的库，我的硕士研究方向就是图可视化，而且开源经历对于学生来说还蛮宝贵的，以后也很想进入蚂蚁的可视化团队工作。</p>
+<p>前3个Issue，我都是先做的差不多了，再写认领信息，然后认认真真地把PR写好，commit信息规规整整的写好，提交。好在有一些canvas开发基础，上手也比较快，写起来效率很高也很得劲。</p>
+<p>到后面因为我写了很多Item迁移的工作，觉得和简单写起来也很快，于是就把这部分工作个人包圆了。在写的期间帮忙修了一些小bug，最后在Beta发布前几天还帮忙把Item部分的函数注释完善了下，生成API文档。</p>
+<h2 id="Dev-Success"><a href="#Dev-Success" class="headerlink" title="Dev Success"></a>Dev Success</h2><p>Dev Success，我译为开发者成就感，这是我认为开源社区作者需要思考的一个点。意思是在维护一个开源社区的时候如何让开发者借助你的项目成功，也就是吸引开发者来贡献代码吧。</p>
+<p>我觉得G6的Issue Hunt就挺好的，至少对于我来说挺好的，既能参加开源项目，还有点小零花拿，还能认识行业的前辈，真好～！</p>
+<p>但是当然不是所有开源项目都应该拿钱来吸引人了，这里想了想其他的办法（意思是我有开源项目，我会这么做：）</p>
+<ul>
+<li><p>PR评论区/社交媒体上的感谢，对我来说收到一位敬重的行业前辈的一句感谢会挺开心的【成本：低】</p>
+</li>
+<li><p>评选年度最佳贡献开发者，邮寄一些周边。这点似乎许多社区都会做【成本：中】</p>
+</li>
+<li>【成本：高】的不建议，不建议在Dev Success上花费太多，因为这似乎有点违背开源精神</li>
 </ul>
-<h4 id=""><a href="#" class="headerlink" title=" "></a> </h4>
+<h2 id="羊腿学习法与Contributor学习法"><a href="#羊腿学习法与Contributor学习法" class="headerlink" title="羊腿学习法与Contributor学习法"></a>羊腿学习法与Contributor学习法</h2><p>羊腿学习法来自大圣：</p>
+<p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202309060044481.png" alt="image-20230906004234541"></p>
+<p>我还有一个Contributor学习法：如果想要在社区里找一个师兄，可以先帮他的项目提一些PR，做一些贡献。等到有一定的存在感了，约一顿饭就显得没有那么奇怪了。如下：</p>
+<p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202309060044622.png" alt="image-20230906004403071"></p>
+
       </div>
       
       
@@ -265,7 +287,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-What-is-the-DS-Dev-Success-in-OSS"><span class="nav-number">1.</span> <span class="nav-text">4 - What is the DS (Dev Success) in OSS?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-How-to-be-a-good-Project-Manager-PM-%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">3 - How to be a good Project Manager (PM)？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E3%80%90%E8%AE%BE%E8%AE%A1%E4%B8%AD%E7%9A%84%E5%8D%9A%E5%BC%88%EF%BD%9CBDFL%EF%BD%9C%E5%9B%BD%E5%86%85%E7%9A%84%E5%BC%80%E6%BA%90%E4%BA%A7%E5%93%81%E3%80%91%E2%80%94%E2%80%94%E5%90%AC%E8%B0%B7%E6%AD%8C%E8%AE%BE%E8%AE%A1%E5%B8%88Riceman%E8%AE%BF%E8%B0%88%E6%9C%89%E6%84%9F"><span class="nav-number">3.</span> <span class="nav-text">2 -【设计中的博弈｜BDFL｜国内的开源产品】——听谷歌设计师Riceman访谈有感</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%96%B0%E5%BB%BA%E4%B8%80%E4%B8%AAChitchat-Page"><span class="nav-number">4.</span> <span class="nav-text">1 - 新建一个Chitchat Page</span></a></li><li class="nav-item nav-level-4"><a class="nav-link"><span class="nav-number">5.</span> <span class="nav-text"> </span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#What-is-the-DS-Dev-Success-in-OSS"><span class="nav-number">1.</span> <span class="nav-text">What is the DS (Dev Success) in OSS?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Background"><span class="nav-number">1.1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dev-Success"><span class="nav-number">1.2.</span> <span class="nav-text">Dev Success</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BE%8A%E8%85%BF%E5%AD%A6%E4%B9%A0%E6%B3%95%E4%B8%8EContributor%E5%AD%A6%E4%B9%A0%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">羊腿学习法与Contributor学习法</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
