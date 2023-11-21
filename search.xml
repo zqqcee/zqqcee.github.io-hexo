@@ -1076,6 +1076,7 @@ totalLeft = \frac{m+n+1}{2}~~~~~~~~//其中m，n分别代表两个数组的长�
 </ol>
 <p>Chrome DevTools中有一个非常非常牛逼的功能，能够解决这两种场景下的痛点：<strong>Record</strong>。</p>
 <p>可以将自己的行为录制，并导出。但是我测试了一下，<strong>好像这个功能有点bug</strong>，必须要保证元素在windows中，不然会导致崩溃？录制效果如下，可以将录制代码导出，发送给其他人。自己开发可以用一下，让别人用就算了，不然崩溃了更急了</p>
+<p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202311212355281.gif" alt="record"></p>
 <h2 id="Emulate-Focus-Page"><a href="#Emulate-Focus-Page" class="headerlink" title="Emulate Focus Page"></a>Emulate Focus Page</h2><p>一些需要hover/active/focus状态来触发的元素是非常难调试的，通常的调试方法是为这个元素加一个状态，<code>addState</code>，如图：</p>
 <p>我想调试Reference这个元素将鼠标放上去后弹出的下拉菜单样式，可以找到这个元素，给他加一个:focus状态</p>
 <p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202311212330797.png" alt="image-20231120163609769"></p>
@@ -1094,8 +1095,9 @@ totalLeft = \frac{m+n+1}{2}~~~~~~~~//其中m，n分别代表两个数组的长�
 <p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202311212331842.png" alt="image-20231121000815880"></p>
 </li>
 </ul>
-<h2 id="在请求的时候可以加上header"><a href="#在请求的时候可以加上header" class="headerlink" title="在请求的时候可以加上header"></a>在请求的时候可以加上header</h2><p>有相关的插件能够做到，使用插件更加方便</p>
+<h2 id="在请求的时候可以加上响应头"><a href="#在请求的时候可以加上响应头" class="headerlink" title="在请求的时候可以加上响应头"></a>在请求的时候可以加上响应头</h2><p>添加请求头有相关的插件（ModHeader）能够做到，使用插件更加方便</p>
 <p>但原生调试工具也提供了支持，适合解决一些在个人项目中，需要后端解决的跨域问题，但后端还没来得及解决的情况。</p>
+<p><img src="/Users/zqqcee/Library/Application Support/typora-user-images/image-20231121234131533.png" alt="image-20231121234131533"></p>
 ]]></content>
   </entry>
 </search>
