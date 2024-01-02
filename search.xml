@@ -1059,7 +1059,7 @@ totalLeft = \frac{m+n+1}{2}~~~~~~~~//其中m，n分别代表两个数组的长�
       </tags>
   </entry>
   <entry>
-    <title></title>
+    <title>一些调试Web的小Tips</title>
     <url>/2023/11/20/f3a48a237d15/</url>
     <content><![CDATA[<h1 id="一些调试Web的小Tips"><a href="#一些调试Web的小Tips" class="headerlink" title="一些调试Web的小Tips"></a>一些调试Web的小Tips</h1><p>周末参加了FEDay，本文记录听<strong>Jecelyn</strong>的演讲后学到的小Tips💡 <a href="https://drive.google.com/file/d/1xCccv_U6jvBnq2SodLCia84jvX0f91Jj/view?usp=sharing">Slide Link</a></p>
 <h2 id="浏览器如何读懂我们写的代码——sourcemap"><a href="#浏览器如何读懂我们写的代码——sourcemap" class="headerlink" title="浏览器如何读懂我们写的代码——sourcemap"></a>浏览器如何读懂我们写的代码——sourcemap</h2><p>浏览器只能解析HTML，js，css，但没办法解析其他的如ts，sass等语言。甚至React，Vue，Angular等前端框架，更不用说一些其他的SSR框架。</p>
@@ -1097,7 +1097,7 @@ totalLeft = \frac{m+n+1}{2}~~~~~~~~//其中m，n分别代表两个数组的长�
 </ul>
 <h2 id="在请求的时候可以加上响应头"><a href="#在请求的时候可以加上响应头" class="headerlink" title="在请求的时候可以加上响应头"></a>在请求的时候可以加上响应头</h2><p>添加请求头有相关的插件（ModHeader）能够做到，使用插件更加方便</p>
 <p>但原生调试工具也提供了支持，适合解决一些在个人项目中，需要后端解决的跨域问题，但后端还没来得及解决的情况。</p>
-<p><img src="/Users/zqqcee/Library/Application Support/typora-user-images/image-20231121234131533.png" alt="image-20231121234131533"></p>
+<p><img src="https://raw.githubusercontent.com/zqqcee/img_repo/main/img/202401030120635.png" alt="image-20231121234131533"></p>
 ]]></content>
   </entry>
 </search>
