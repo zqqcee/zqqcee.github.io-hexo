@@ -29,10 +29,13 @@
 <meta property="og:site_name" content="zqqcee">
 <meta property="og:description" content="140. 单词拆分 II题目： 给定一个字符串 s 和一个字符串字典 wordDict ，在字符串 s 中增加空格来构建一个句子，使得句子中所有的单词都在词典中。以任意顺序 返回所有这些可能的句子。注意：词典中的同一个单词可能在分段中被重复使用多次。 输入:s &#x3D; &quot;catsanddog&quot;, wordDict &#x3D; [&quot;cat&quot;,&quot;cats&amp;quot">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-07-21T08:58:37.906Z">
-<meta property="article:modified_time" content="2023-06-17T07:19:22.205Z">
+<meta property="og:image" content="https://zqqcee.github.io/Users/zqqcee/Library/Application%20Support/typora-user-images/image-20240226223642012.png">
+<meta property="og:image" content="https://zqqcee.github.io/Users/zqqcee/Library/Application%20Support/typora-user-images/image-20240226223810307.png">
+<meta property="article:published_time" content="2024-02-26T14:38:21.592Z">
+<meta property="article:modified_time" content="2024-02-26T14:38:21.578Z">
 <meta property="article:author" content="zqqcee">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zqqcee.github.io/Users/zqqcee/Library/Application%20Support/typora-user-images/image-20240226223642012.png">
 
 <link rel="canonical" href="https://zqqcee.github.io/leetcode/backtrack">
 
@@ -220,17 +223,23 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">dfs</span><span class="params">(<span class="type">int</span>[]nums, <span class="type">int</span> start)</span>&#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">	  basecase</span></span><br><span class="line"><span class="comment">  **/</span></span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> start;i&lt;nums.length;i++)&#123;</span><br><span class="line">    track.add(nums[i]);</span><br><span class="line">    sum+=nums[i];</span><br><span class="line">    dfs(nums,i);<span class="comment">//这里由于可以重复选择，不再是i+1了</span></span><br><span class="line">    track.removeLast();</span><br><span class="line">    sum-=nums[i];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="回溯算法中的去重问题"><a href="#回溯算法中的去重问题" class="headerlink" title="回溯算法中的去重问题"></a>回溯算法中的去重问题</h3><p>去重问题可以这么分类</p>
 <ul>
-<li>可以排序<ul>
+<li>可以排序【树枝去重】<ul>
 <li>用<code>int start</code></li>
 <li>用<code>boolean[] used</code></li>
 </ul>
 </li>
-<li>不可以排序<ul>
+<li>不可以排序【树层去重】<ul>
 <li>用<code>HashMap</code></li>
 <li>用<code>int[]</code> 数组</li>
 </ul>
 </li>
 </ul>
+<p>树枝去重和树层去重的区别。比如求 [1,2,3,4,5,2,2,2,4]的子集，就必须要在从上至下的路径（也就是树枝上去重），之前选过2了，那么后面就不能再选2了</p>
+<p>而树层去重则指的是在同一层中，用了一个元素后，后面与这个元素相同的其他枝叶要被剪掉，比如下面这张图<code>[3,4,6,4,7,8,9....]</code></p>
+<p><img src="/Users/zqqcee/Library/Application Support/typora-user-images/image-20240226223642012.png" alt="image-20240226223642012" style="zoom:50%;" /></p>
+<p>找递增子序列，在选了第一个4之后，后面的4就不用再选了，因为第一个4的剩余路径已经包含了过后的所有4的剩余路径了，这就是树层剪枝。</p>
+<p>左边是树枝，右边是树层</p>
+<p><img src="/Users/zqqcee/Library/Application Support/typora-user-images/image-20240226223810307.png" alt="image-20240226223810307"></p>
 <h5 id="90-子集-II【用start去重】"><a href="#90-子集-II【用start去重】" class="headerlink" title="90. 子集 II【用start去重】"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/subsets-ii/">90. 子集 II</a>【用start去重】</h5><p><strong>题目：</strong></p>
 <p>给你一个整数数组 <code>nums</code> ，其中可能包含重复元素，请你返回该数组所有可能的子集（幂集）。解集 <strong>不能</strong> 包含重复的子集</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">输入：nums = [1,2,2]</span><br><span class="line">输出：[[],[1],[1,2],[1,2,2],[2],[2,2]]</span><br></pre></td></tr></table></figure>
